@@ -1,0 +1,17 @@
+{
+    "name": "@sushichan044/eslint-todo",
+    "type": "module",
+    "devDependencies": {
+        "@types/node": "22.13.0",
+        "@virtual-live-lab/eslint-config": "2.2.16",
+        "@virtual-live-lab/prettier-config": "2.0.15",
+        "@virtual-live-lab/tsconfig": "2.1.16",
+        "eslint": "9.19.0",
+        "prettier": "3.4.2",
+        "typescript": "5.7.3"
+    },
+    "packageManager": "pnpm@9.15.4",
+    "engines": {
+        "node": ">=20"
+    }
+}
