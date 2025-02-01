@@ -1,12 +1,11 @@
-/* eslint-disable import-x/no-extraneous-dependencies */
+import { ESLint } from "eslint";
 import { existsSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
-import { ESLint } from "eslint";
 
 type ESLintTodoEntry = {
-  files: string[];
   autoFix: boolean;
+  files: string[];
 };
 
 type ESLintTodo = Record<string, ESLintTodoEntry>;
@@ -47,17 +46,18 @@ const main = async (): Promise<void> => {
       }
 
       if (acc[message.ruleId] == null) {
-        // eslint-disable-next-line no-param-reassign
         acc[message.ruleId] = {
           autoFix: false,
           files: [],
         };
+      } else {
       }
-      acc[message.ruleId].files.push(
-        path.relative(process.cwd(), result.filePath)
-      );
-      // eslint-disable-next-line no-param-reassign
-      acc[message.ruleId].autoFix = message.fix != null;
+      if (acc[message.ruleId] != null) {
+        acc[message.ruleId]?.files.push(
+          path.relative(process.cwd(), result.filePath)
+        );
+        acc[message.ruleId]?.autoFix ??= message.fix != null;
+      }
     });
     return acc;
   }, {} as ESLintTodo);
@@ -69,7 +69,6 @@ const main = async (): Promise<void> => {
   Object.values(groupByRuleId).forEach((entry) => entry.files.sort());
 
   const sortedGroupByRuleId = sortedRuleId.reduce((acc, key) => {
-    // eslint-disable-next-line no-param-reassign
     acc[key] = groupByRuleId[key];
     return acc;
   }, {} as ESLintTodo);
@@ -80,5 +79,4 @@ const main = async (): Promise<void> => {
   );
 };
 
-// eslint-disable-next-line no-console
 main().catch(console.error);
