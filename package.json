@@ -1,8 +1,32 @@
 {
   "name": "@sushichan044/eslint-todo",
+  "version": "1.0.0",
   "type": "module",
+  "bin": {
+    "eslint-todo": "bin/eslint-todo.mjs"
+  },
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./cli": {
+      "import": "./dist/cli.mjs",
+      "types": "./dist/cli.d.ts"
+    },
+    "./eslint": {
+      "import": "./dist/eslint.mjs",
+      "types": "./dist/eslint.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "vitest"
+    "build": "unbuild",
+    "test": "vitest",
+    "eslint:inspect": "eslint --inspect-config"
   },
   "peerDependencies": {
     "eslint": "^8.57.0 || ^9.0.0"
@@ -19,10 +43,11 @@
     "eslint": "9.19.0",
     "prettier": "3.4.2",
     "typescript": "5.7.3",
+    "unbuild": "3.3.1",
     "vitest": "3.0.4"
   },
   "packageManager": "pnpm@9.15.4",
   "engines": {
-    "node": ">=20"
+    "node": "^20.0.0 || ^22.0.0 || ^23.0.0"
   }
 }
