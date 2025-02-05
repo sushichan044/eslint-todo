@@ -1,12 +1,14 @@
-type MaybePromise<T> = Promise<T> | T;
+import { createJiti } from "jiti";
 
-// ref: https://github.com/antfu/eslint-config/blob/9a2a48bcda2e9ed026a9031924f8f6eae4af6728/src/utils.ts#L110-L113
-export const interopDefault = async <T>(
-  m: MaybePromise<T>
-): Promise<T extends { default: infer U } ? U : T> => {
-  const resolved = await m;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/strict-boolean-expressions
-  return (resolved as any).default || resolved;
+const jiti = createJiti(import.meta.url);
+
+/**
+ * Safely import a module and return the default export.
+ * @param url
+ * @returns
+ */
+export const importDefault = async <T>(url: string): Promise<T> => {
+  return await jiti.import<T>(url, { default: true });
 };
 
 /**

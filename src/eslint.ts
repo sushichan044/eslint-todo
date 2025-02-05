@@ -7,7 +7,7 @@ import type { Options, UserOptions } from "./options";
 import type { ESLintTodo } from "./types";
 
 import { optionsWithDefault } from "./options";
-import { escapeGlobCharacters, interopDefault } from "./utils";
+import { escapeGlobCharacters, importDefault } from "./utils";
 
 export const eslintConfigTodo = async (
   userOptions: UserOptions = {}
@@ -20,7 +20,7 @@ export const eslintConfigTodo = async (
     return [];
   }
 
-  const todoModule = await interopDefault<ESLintTodo>(import(todoPath));
+  const todoModule = await importDefault<ESLintTodo>(todoPath);
 
   const config = buildESLintFlatConfig({
     todo: todoModule,
