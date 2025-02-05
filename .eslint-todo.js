@@ -3,15 +3,14 @@
  * Auto generated file by eslint-todo. DO NOT EDIT MANUALLY.
  */
 
-const eslintTodo = {
+export default {
   "no-undef": {
-    "autoFix": false,
-    "files": [
+    autoFix: false,
+
+    files: [
       "bin/eslint-todo.mjs",
       "bin/eslint-todo.mjs",
       "bin/eslint-todo.mjs"
     ]
   }
 };
-
-export default eslintTodo;

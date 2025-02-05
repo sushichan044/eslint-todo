@@ -6,7 +6,7 @@ import path from "node:path";
 import type { UserOptions } from "./options";
 import type { ESLintTodo } from "./types";
 
-import { generateESLintTodoFile } from "./codegen";
+import { generateESLintTodoModule } from "./codegen";
 import { type Options, optionsWithDefault } from "./options";
 import { isNonEmptyString } from "./utils";
 
@@ -20,7 +20,7 @@ const resetTodoFile = async (todoFilePath: string): Promise<void> => {
     return;
   }
 
-  await writeFile(todoFilePath, generateESLintTodoFile({}));
+  await writeFile(todoFilePath, generateESLintTodoModule({}));
 };
 
 /**
@@ -82,5 +82,5 @@ export const generateESLintTodo = async (
 
   const todoByRuleId = aggregateESLintTodoByRuleId(results, resolvedOptions);
 
-  await writeFile(resolvedTodoPath, generateESLintTodoFile(todoByRuleId));
+  await writeFile(resolvedTodoPath, generateESLintTodoModule(todoByRuleId));
 };

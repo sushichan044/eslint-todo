@@ -1,19 +1,28 @@
+import { generateCode, parseModule } from "magicast";
+
 import type { ESLintTodo } from "./types";
 
 /**
- * Create a JavaScript file from the ESLint todo list.
+ * Create a JavaScript module code from the ESLint todo list.
  * @returns
- * JavaScript file content.
+ * JavaScript file content. Just write it to a file.
  */
-export const generateESLintTodoFile = (eslintTodo: ESLintTodo): string => {
+export const generateESLintTodoModule = (eslintTodo: ESLintTodo): string => {
   const js = `/* eslint-disable */
 /**
  * Auto generated file by eslint-todo. DO NOT EDIT MANUALLY.
  */
 
-const eslintTodo = ${JSON.stringify(eslintTodo, null, 2)};
-
-export default eslintTodo;
+export default {};
 `;
-  return js;
+
+  const mod = parseModule(js);
+
+  mod.exports["default"] = eslintTodo;
+
+  const { code: jsCode } = generateCode(mod, {
+    format: { objectCurlySpacing: true, tabWidth: 2 },
+  });
+
+  return `${jsCode}\n`;
 };
