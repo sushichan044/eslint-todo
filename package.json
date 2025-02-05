@@ -5,10 +5,10 @@
     "test": "vitest"
   },
   "peerDependencies": {
-    "eslint": "^9.0.0"
+    "eslint": "^8.57.0 || ^9.0.0"
   },
   "dependencies": {
-    "valibot": "1.0.0-beta.14"
+    "defu": "6.1.4"
   },
   "devDependencies": {
     "@types/node": "22.13.0",
