@@ -1,4 +1,4 @@
-type MaybePromise<T> = Promise<T> | T;
+export type MaybePromise<T> = Promise<T> | T;
 
 // ref: https://github.com/antfu/eslint-config/blob/9a2a48bcda2e9ed026a9031924f8f6eae4af6728/src/utils.ts#L110-L113
 export const interopDefault = async <T>(

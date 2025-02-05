@@ -3,11 +3,13 @@ import { existsSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import type { UserOptions } from "./options";
+import type { ESLintTodoGeneratorUserHooks } from "./hook";
+import type { Options, UserOptions } from "./options";
 import type { ESLintTodo } from "./types";
 
 import { generateESLintTodoModule } from "./codegen";
-import { type Options, optionsWithDefault } from "./options";
+import { initializeHooks } from "./hook";
+import { optionsWithDefault } from "./options";
 import { isNonEmptyString } from "./utils";
 
 /**
@@ -66,21 +68,32 @@ const aggregateESLintTodoByRuleId = (
 };
 
 export const generateESLintTodo = async (
-  userOptions: UserOptions
+  userOptions: UserOptions,
+  userHooks: ESLintTodoGeneratorUserHooks = {}
 ): Promise<void> => {
   const resolvedOptions = optionsWithDefault(userOptions);
+
+  const hooker = initializeHooks(userHooks);
 
   const resolvedTodoPath = path.resolve(
     resolvedOptions.cwd,
     resolvedOptions.todoFile
   );
 
+  await hooker.callHook("beforeResetTodoFile", resolvedOptions.todoFile);
   await resetTodoFile(resolvedTodoPath);
+  await hooker.callHook("afterResetTodoFile", resolvedOptions.todoFile);
 
+  await hooker.callHook("beforeESLintLinting");
   const eslint = new ESLint();
   const results = await runESLintLinting(eslint, resolvedOptions);
+  await hooker.callHook("afterESLintLinting");
 
+  await hooker.callHook("beforeESLintTodoAggregation");
   const todoByRuleId = aggregateESLintTodoByRuleId(results, resolvedOptions);
+  await hooker.callHook("afterESLintTodoAggregation");
 
+  await hooker.callHook("beforeESLintTodoGeneration");
   await writeFile(resolvedTodoPath, generateESLintTodoModule(todoByRuleId));
+  await hooker.callHook("afterESLintTodoGeneration");
 };
