@@ -23,7 +23,7 @@ const cli = defineCommand({
     description:
       "Generate ESLint todo file and temporally suppress ESLint errors!",
     name: "@sushichan044/eslint-todo/cli",
-    version: "0.0.0",
+    version: "0.0.1",
   },
   async run({ args }) {
     const options = {

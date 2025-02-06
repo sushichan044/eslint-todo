@@ -1,6 +1,10 @@
 {
   "name": "@sushichan044/eslint-todo",
-  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sushichan044/eslint-todo.git"
+  },
+  "version": "0.0.1",
   "type": "module",
   "bin": {
     "eslint-todo": "bin/eslint-todo.mjs"
