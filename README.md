@@ -1,7 +1,7 @@
 # @sushichan044/eslint-todo
 
 > [!WARNING]
-> This tool only supports ESLint Flat Config.
+> This tool only supports ESLint Flat Config with ES Module.
 >
 > If you want to use this tool to migrate to ESLint Flat Config, create the Flat Config first and then run `eslint-todo`.
 
