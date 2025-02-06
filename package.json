@@ -30,7 +30,8 @@
   "scripts": {
     "build": "unbuild",
     "test": "vitest",
-    "eslint:inspect": "eslint --inspect-config"
+    "eslint:inspect": "eslint --inspect-config",
+    "publish": "pnpm publish --no-git-checks"
   },
   "peerDependencies": {
     "eslint": "^8.57.0 || ^9.0.0"
