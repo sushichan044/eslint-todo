@@ -66,7 +66,6 @@ You can specify the name of the ESLint Todo file.
 ESLint Todo file is like [this](./.eslint-todo.js).
 
 This object is used to disable ESLint rules for specific files.
-See more: [Ignore Files in ESLint Flat Config](https://eslint.org/docs/latest/use/configure/ignore).
 
 > [!NOTE]
 > In the future, a feature to correct only auto-fixable violations will be added.
