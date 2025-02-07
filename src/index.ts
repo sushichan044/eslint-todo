@@ -5,6 +5,7 @@ import path from "pathe";
 
 import type { Options, UserOptions } from "./options";
 import type { ESLintTodo } from "./types";
+import type { TodoFilePath } from "./utils/path";
 
 import { generateESLintTodoModule } from "./codegen";
 import { optionsWithDefault } from "./options";
@@ -19,7 +20,7 @@ export class ESLintTodoCore {
   // used for auto-fixing (future feature)
   readonly #eslintWithAutoFix: ESLint;
   readonly #options: Options;
-  readonly #todoFilePath: ReturnType<typeof resolveTodoFilePath>;
+  readonly #todoFilePath: TodoFilePath;
 
   constructor(userOptions: UserOptions) {
     this.#options = optionsWithDefault(userOptions);
@@ -44,6 +45,10 @@ export class ESLintTodoCore {
     const uniqueTodoList = removeDuplicateFilesFromTodo(todoByRuleId);
 
     return uniqueTodoList;
+  }
+
+  getTodoFilePath(): TodoFilePath {
+    return this.#todoFilePath;
   }
 
   /**

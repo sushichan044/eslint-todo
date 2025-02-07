@@ -2,7 +2,7 @@ import path from "pathe";
 
 import type { Options } from "../options";
 
-type TodoFilePath = {
+export type TodoFilePath = {
   absolute: string;
   relative: string;
 };

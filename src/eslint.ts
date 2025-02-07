@@ -4,6 +4,7 @@ import { existsSync } from "node:fs";
 
 import type { UserOptions } from "./options";
 import type { ESLintTodo } from "./types";
+import type { TodoFilePath } from "./utils/path";
 
 import { optionsWithDefault } from "./options";
 import { importDefault } from "./utils/import";
@@ -27,7 +28,7 @@ export const eslintConfigTodo = async (
 
 type ESLintConfigBuilderArgs = {
   todo: ESLintTodo;
-  todoFilePath: ReturnType<typeof resolveTodoFilePath>;
+  todoFilePath: TodoFilePath;
 };
 
 const buildESLintFlatConfig = (
