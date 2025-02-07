@@ -12,13 +12,13 @@ const consola = createConsola({ formatOptions: { date: false } });
 const cli = defineCommand({
   args: {
     "cwd": {
-      description: "Current working directory",
+      description: "Current working directory (default: .)",
       required: false,
       type: "string",
       valueHint: "path",
     },
     "todo-file": {
-      description: "ESLint todo file name",
+      description: "ESLint todo file name (default: .eslint-todo.js)",
       required: false,
       type: "string",
       valueHint: "filename",
