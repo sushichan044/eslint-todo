@@ -31,13 +31,13 @@ const resetTodoFile = async (todoFilePath: string): Promise<void> => {
  */
 const runESLintLinting = async (
   eslint: ESLint,
-  options: Options
+  options: Options,
 ): Promise<ESLint.LintResult[]> =>
   eslint.lintFiles(path.resolve(options.cwd, "**/*"));
 
 const aggregateESLintTodoByRuleId = (
   results: ESLint.LintResult[],
-  options: Options
+  options: Options,
 ): ESLintTodo => {
   return results.reduce((acc, lintResult) => {
     for (const message of lintResult.messages) {
@@ -55,7 +55,7 @@ const aggregateESLintTodoByRuleId = (
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         acc[message.ruleId]!.files.push(
-          path.relative(options.cwd, lintResult.filePath)
+          path.relative(options.cwd, lintResult.filePath),
         );
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         acc[message.ruleId]!.autoFix = message.fix != null;
@@ -66,13 +66,13 @@ const aggregateESLintTodoByRuleId = (
 };
 
 export const generateESLintTodo = async (
-  userOptions: UserOptions
+  userOptions: UserOptions,
 ): Promise<void> => {
   const resolvedOptions = optionsWithDefault(userOptions);
 
   const resolvedTodoPath = path.resolve(
     resolvedOptions.cwd,
-    resolvedOptions.todoFile
+    resolvedOptions.todoFile,
   );
 
   await resetTodoFile(resolvedTodoPath);

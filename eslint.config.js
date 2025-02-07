@@ -12,5 +12,5 @@ export default tseslint.config(
   {
     extends: [...(await eslintConfigTodo())],
     name: "@repo/eslint-config/todo",
-  }
+  },
 );

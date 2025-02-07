@@ -1,7 +1,7 @@
 {
-    "extends": "@virtual-live-lab/tsconfig/base",
-    "compilerOptions": {
-        "module": "ESNext",
-        "moduleResolution": "bundler"
-    }
+  "extends": "@virtual-live-lab/tsconfig/base",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler"
+  }
 }

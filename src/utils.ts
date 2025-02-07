@@ -32,7 +32,7 @@ export const escapeGlobCharacters = (glob: string): string => {
  * Check if the ruleId is a non-empty string.
  */
 export const isNonEmptyString = (
-  maybeString: string | null | undefined
+  maybeString: string | null | undefined,
 ): maybeString is string => {
   return maybeString != null && maybeString !== "";
 };

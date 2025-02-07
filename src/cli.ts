@@ -6,7 +6,7 @@ import { generateESLintTodo } from ".";
 
 const cli = defineCommand({
   args: {
-    cwd: {
+    "cwd": {
       description: "Current working directory",
       required: false,
       type: "string",

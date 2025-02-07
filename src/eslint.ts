@@ -10,7 +10,7 @@ import { optionsWithDefault } from "./options";
 import { escapeGlobCharacters, importDefault } from "./utils";
 
 export const eslintConfigTodo = async (
-  userOptions: UserOptions = {}
+  userOptions: UserOptions = {},
 ): Promise<Linter.Config[]> => {
   const resolvedOptions = optionsWithDefault(userOptions);
 
@@ -35,7 +35,7 @@ type ESLintConfigBuilderArgs = Options & {
 };
 
 const buildESLintFlatConfig = (
-  options: ESLintConfigBuilderArgs
+  options: ESLintConfigBuilderArgs,
 ): Linter.Config[] => {
   const { cwd, todo, todoFile } = options;
 
