@@ -1,8 +1,8 @@
 import { defineCommand, runMain } from "citty";
 
-import { resetTodoFile, writeTodoFile } from "./fs";
-import { generateESLintTodo } from "./index";
-import { optionsWithDefault } from "./options";
+import type { UserOptions } from "../options";
+
+import { ESLintTodoCore } from "../index";
 
 const cli = defineCommand({
   args: {
@@ -26,14 +26,18 @@ const cli = defineCommand({
     version: "0.0.1",
   },
   async run({ args }) {
-    const options = optionsWithDefault({
+    const options = {
       cwd: args.cwd,
       todoFile: args["todo-file"],
-    });
-    await resetTodoFile(options);
+    } satisfies UserOptions;
+    const eslintTodoCore = new ESLintTodoCore(options);
 
-    const todo = await generateESLintTodo(options);
-    await writeTodoFile(todo, options);
+    await eslintTodoCore.resetTodoFile();
+
+    const lintResults = await eslintTodoCore.lint();
+    const todo = eslintTodoCore.getESLintTodo(lintResults);
+
+    await eslintTodoCore.writeTodoFile(todo);
   },
 });
 

@@ -7,7 +7,8 @@ import type { Options, UserOptions } from "./options";
 import type { ESLintTodo } from "./types";
 
 import { optionsWithDefault } from "./options";
-import { escapeGlobCharacters, importDefault } from "./utils";
+import { importDefault } from "./utils/import";
+import { escapeGlobCharacters } from "./utils/string";
 
 export const eslintConfigTodo = async (
   userOptions: UserOptions = {},

@@ -16,8 +16,8 @@
       "types": "./dist/index.d.ts"
     },
     "./cli": {
-      "import": "./dist/cli.mjs",
-      "types": "./dist/cli.d.ts"
+      "import": "./dist/cli/index.mjs",
+      "types": "./dist/cli/index.d.ts"
     },
     "./eslint": {
       "import": "./dist/eslint.mjs",

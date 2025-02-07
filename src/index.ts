@@ -1,22 +1,75 @@
 import { ESLint } from "eslint";
+import { existsSync } from "fs";
+import { writeFile } from "fs/promises";
 import path from "pathe";
 
-import type { Options } from "./options";
+import type { Options, UserOptions } from "./options";
 import type { ESLintTodo } from "./types";
 
-import { isNonEmptyString } from "./utils";
+import { generateESLintTodoModule } from "./codegen";
+import { optionsWithDefault } from "./options";
+import { resolveTodoFilePath } from "./utils/path";
+import { isNonEmptyString } from "./utils/string";
 
 /**
- * Collect lint results from ESLint.
- * @param eslint
- * @param options
- * @returns
+ * ESLintTodo API Entrypoint.
  */
-const runESLintLinting = async (
-  eslint: ESLint,
-  options: Options,
-): Promise<ESLint.LintResult[]> =>
-  eslint.lintFiles(path.resolve(options.cwd, "**/*"));
+export class ESLintTodoCore {
+  readonly #eslint: ESLint;
+  // used for auto-fixing (future feature)
+  readonly #eslintWithAutoFix: ESLint;
+  readonly #options: Options;
+  readonly #todoFilePath: ReturnType<typeof resolveTodoFilePath>;
+
+  constructor(userOptions: UserOptions) {
+    this.#options = optionsWithDefault(userOptions);
+    this.#todoFilePath = resolveTodoFilePath(this.#options);
+
+    this.#eslint = new ESLint({ cwd: this.#options.cwd });
+    this.#eslintWithAutoFix = new ESLint({
+      cwd: this.#options.cwd,
+      fix: true,
+    });
+  }
+
+  /**
+   * Get ESLintTodo object.
+   * @param lintResults LintResults from ESLint
+   */
+  getESLintTodo(lintResults: ESLint.LintResult[]): ESLintTodo {
+    const todoByRuleId = aggregateESLintTodoByRuleId(
+      lintResults,
+      this.#options,
+    );
+    const uniqueTodoList = removeDuplicateFilesFromTodo(todoByRuleId);
+
+    return uniqueTodoList;
+  }
+
+  /**
+   * Run ESLint and collect the LintResults.
+   * @returns LintResults from ESLint
+   */
+  async lint(): Promise<ESLint.LintResult[]> {
+    const result = await this.#eslint.lintFiles(
+      path.resolve(this.#options.cwd, "**/*"),
+    );
+    return result;
+  }
+
+  async resetTodoFile(): Promise<void> {
+    if (!existsSync(this.#todoFilePath.absolute)) {
+      return;
+    }
+
+    await writeFile(this.#todoFilePath.absolute, generateESLintTodoModule({}));
+  }
+
+  async writeTodoFile(todo: ESLintTodo): Promise<void> {
+    const todoModule = generateESLintTodoModule(todo);
+    await writeFile(this.#todoFilePath.absolute, todoModule);
+  }
+}
 
 const aggregateESLintTodoByRuleId = (
   results: ESLint.LintResult[],
@@ -61,19 +114,4 @@ export const removeDuplicateFilesFromTodo = (todo: ESLintTodo): ESLintTodo => {
     };
     return acc;
   }, {} as ESLintTodo);
-};
-
-/**
- * Generate ESLint Todo object.
- */
-export const generateESLintTodo = async (
-  options: Options,
-): Promise<ESLintTodo> => {
-  const eslint = new ESLint({ cwd: options.cwd });
-  const results = await runESLintLinting(eslint, options);
-
-  const todoByRuleId = aggregateESLintTodoByRuleId(results, options);
-  const uniqueTodoList = removeDuplicateFilesFromTodo(todoByRuleId);
-
-  return uniqueTodoList;
 };
