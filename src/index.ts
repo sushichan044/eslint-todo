@@ -65,6 +65,21 @@ const aggregateESLintTodoByRuleId = (
   }, {} as ESLintTodo);
 };
 
+/**
+ * Format the ESLint todo object.
+ * @param todo
+ * @returns
+ */
+export const removeDuplicateFilesFromTodo = (todo: ESLintTodo): ESLintTodo => {
+  return Object.entries(todo).reduce((acc, [ruleId, entry]) => {
+    acc[ruleId] = {
+      ...entry,
+      files: [...new Set(entry.files)],
+    };
+    return acc;
+  }, {} as ESLintTodo);
+};
+
 export const generateESLintTodo = async (
   userOptions: UserOptions,
 ): Promise<void> => {
@@ -81,6 +96,7 @@ export const generateESLintTodo = async (
   const results = await runESLintLinting(eslint, resolvedOptions);
 
   const todoByRuleId = aggregateESLintTodoByRuleId(results, resolvedOptions);
+  const uniqueTodoList = removeDuplicateFilesFromTodo(todoByRuleId);
 
-  await writeFile(resolvedTodoPath, generateESLintTodoModule(todoByRuleId));
+  await writeFile(resolvedTodoPath, generateESLintTodoModule(uniqueTodoList));
 };
