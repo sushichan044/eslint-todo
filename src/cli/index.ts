@@ -1,8 +1,12 @@
 import { defineCommand, runMain } from "citty";
+import { createConsola } from "consola";
+import path from "pathe";
 
 import type { UserOptions } from "../options";
 
 import { ESLintTodoCore } from "../index";
+
+const consola = createConsola({ formatOptions: { date: false } });
 
 const cli = defineCommand({
   args: {
@@ -26,18 +30,34 @@ const cli = defineCommand({
     version: "0.0.1",
   },
   async run({ args }) {
-    const options = {
+    consola.info("eslint-todo CLI 0.0.1");
+
+    const cliCwd = process.cwd();
+    const options: UserOptions = {
       cwd: args.cwd,
       todoFile: args["todo-file"],
-    } satisfies UserOptions;
+    };
     const eslintTodoCore = new ESLintTodoCore(options);
+    const todoFilePathFromCli = path.relative(
+      cliCwd,
+      eslintTodoCore.getTodoFilePath().absolute,
+    );
 
-    await eslintTodoCore.resetTodoFile();
+    try {
+      await eslintTodoCore.resetTodoFile();
+    } catch (error) {
+      consola.error(error);
+      return;
+    }
 
+    consola.start("Running ESLint ...");
     const lintResults = await eslintTodoCore.lint();
-    const todo = eslintTodoCore.getESLintTodo(lintResults);
+    consola.success("ESLint finished!");
 
+    consola.start("Generating ESLint todo file ...");
+    const todo = eslintTodoCore.getESLintTodo(lintResults);
     await eslintTodoCore.writeTodoFile(todo);
+    consola.success(`ESLint todo file generated at ${todoFilePathFromCli}!`);
   },
 });
 
