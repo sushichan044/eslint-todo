@@ -6,6 +6,6 @@
 export default {
   "no-undef": {
     autoFix: false,
-    files: ["bin/eslint-todo.mjs"],
-  },
+    files: ["bin/eslint-todo.mjs"]
+  }
 };
