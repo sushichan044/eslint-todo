@@ -8,13 +8,14 @@ import type { ESLintTodo } from "./types";
  * JavaScript file content. Just write it to a file.
  */
 export const generateESLintTodoModule = (eslintTodo: ESLintTodo): string => {
-  const js = `/* eslint-disable */
-/**
- * Auto generated file by eslint-todo. DO NOT EDIT MANUALLY.
- */
-
-export default {};
-`;
+  const js = [
+    "/* eslint-disable */",
+    "/**",
+    " * Auto generated file by eslint-todo. DO NOT EDIT MANUALLY.",
+    " */",
+    "",
+    "export default {};",
+  ].join("\n");
 
   const mod = parseModule(js);
 
