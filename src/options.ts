@@ -19,10 +19,11 @@ export type Options = {
 export type UserOptions = Partial<Options>;
 
 export const optionsWithDefault = (options: UserOptions = {}): Options => {
-  return defu(options, defaultOptions);
+  return defu(options, getDefaultOptions());
 };
 
-const defaultOptions = {
-  cwd: cwd(),
-  todoFile: ".eslint-todo.js",
-} as const satisfies Options;
+const getDefaultOptions = () =>
+  ({
+    cwd: cwd(),
+    todoFile: ".eslint-todo.js",
+  }) as const satisfies Options;
