@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  ci:
+    name: Code Problem Check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/composite/setup
+
+      - name: Run ESLint
+        run: pnpm run lint
+
+      - name: Run Prettier
+        run: pnpm run format:ci
+
+      - name: Run Vitest
+        run: pnpm run test
