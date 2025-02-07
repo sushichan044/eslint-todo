@@ -4,6 +4,7 @@ import path from "pathe";
 
 import type { UserOptions } from "../options";
 
+import { version as pkgVersion } from "../../package.json";
 import { ESLintTodoCore } from "../index";
 
 const consola = createConsola({ formatOptions: { date: false } });
@@ -27,10 +28,10 @@ const cli = defineCommand({
     description:
       "Generate ESLint todo file and temporally suppress ESLint errors!",
     name: "@sushichan044/eslint-todo/cli",
-    version: "0.0.1",
+    version: pkgVersion,
   },
   async run({ args }) {
-    consola.info("eslint-todo CLI 0.0.1");
+    consola.info(`eslint-todo CLI ${pkgVersion}`);
 
     const cliCwd = process.cwd();
     const options: UserOptions = {
