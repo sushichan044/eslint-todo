@@ -1,7 +1,7 @@
 import { ESLint } from "eslint";
 import { existsSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
-import path from "node:path";
+import path from "pathe";
 
 import type { UserOptions } from "./options";
 import type { ESLintTodo } from "./types";

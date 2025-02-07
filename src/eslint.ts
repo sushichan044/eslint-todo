@@ -1,7 +1,7 @@
 import type { Linter } from "eslint";
 
 import { existsSync } from "node:fs";
-import path from "node:path";
+import path from "pathe";
 
 import type { Options, UserOptions } from "./options";
 import type { ESLintTodo } from "./types";
