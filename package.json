@@ -33,8 +33,10 @@
     "format": "prettier --write .",
     "format:ci": "prettier --check .",
     "test": "vitest",
+    "test:run": "vitest run",
     "eslint:inspect": "eslint --inspect-config",
-    "publish": "pnpm publish --no-git-checks"
+    "publish": "pnpm publish --no-git-checks",
+    "check": "pnpm run lint && pnpm run format:ci && pnpm run test:run"
   },
   "peerDependencies": {
     "eslint": "^8.57.0 || ^9.0.0"
