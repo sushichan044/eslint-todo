@@ -1,51 +1,44 @@
 import type { Linter } from "eslint";
 
 import { existsSync } from "node:fs";
-import path from "pathe";
 
-import type { Options, UserOptions } from "./options";
+import type { UserOptions } from "./options";
 import type { ESLintTodo } from "./types";
 
 import { optionsWithDefault } from "./options";
 import { importDefault } from "./utils/import";
+import { resolveTodoFilePath } from "./utils/path";
 import { escapeGlobCharacters } from "./utils/string";
 
 export const eslintConfigTodo = async (
   userOptions: UserOptions = {},
 ): Promise<Linter.Config[]> => {
-  const resolvedOptions = optionsWithDefault(userOptions);
+  const options = optionsWithDefault(userOptions);
+  const todoFilePath = resolveTodoFilePath(options);
 
-  const todoPath = path.resolve(resolvedOptions.cwd, resolvedOptions.todoFile);
-
-  if (!existsSync(todoPath)) {
+  if (!existsSync(todoFilePath.absolute)) {
     return [];
   }
 
-  const todoModule = await importDefault<ESLintTodo>(todoPath);
-
-  const config = buildESLintFlatConfig({
-    todo: todoModule,
-    ...resolvedOptions,
-  });
-
+  const todo = await importDefault<ESLintTodo>(todoFilePath.absolute);
+  const config = buildESLintFlatConfig({ todo, todoFilePath });
   return config;
 };
 
-type ESLintConfigBuilderArgs = Options & {
+type ESLintConfigBuilderArgs = {
   todo: ESLintTodo;
+  todoFilePath: ReturnType<typeof resolveTodoFilePath>;
 };
 
 const buildESLintFlatConfig = (
   options: ESLintConfigBuilderArgs,
 ): Linter.Config[] => {
-  const { cwd, todo, todoFile } = options;
+  const { todo, todoFilePath } = options;
 
   const configs: Linter.Config[] = [];
 
-  const relativeTodoFilePath = path.relative(cwd, path.resolve(cwd, todoFile));
-
   configs.push({
-    files: [relativeTodoFilePath],
+    files: [todoFilePath.relative],
     linterOptions: {
       reportUnusedDisableDirectives: false,
     },
