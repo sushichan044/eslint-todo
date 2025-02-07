@@ -29,6 +29,9 @@
   ],
   "scripts": {
     "build": "unbuild",
+    "lint": "eslint --max-warnings 0 .",
+    "format": "prettier --write .",
+    "format:ci": "prettier --check .",
     "test": "vitest",
     "eslint:inspect": "eslint --inspect-config",
     "publish": "pnpm publish --no-git-checks"
