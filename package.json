@@ -29,6 +29,7 @@
   ],
   "scripts": {
     "build": "unbuild",
+    "postinstall": "pnpm run build",
     "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write .",
     "format:ci": "prettier --check .",
