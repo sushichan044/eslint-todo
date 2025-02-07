@@ -50,7 +50,7 @@ const aggregateESLintTodoByRuleId = (
         files: [],
       };
 
-      if (Object.prototype.hasOwnProperty.call(acc, message.ruleId)) {
+      if (Object.hasOwn(acc, message.ruleId)) {
         // acc[message.ruleId] already exists
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
