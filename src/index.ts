@@ -92,7 +92,7 @@ export const generateESLintTodo = async (
 
   await resetTodoFile(resolvedTodoPath);
 
-  const eslint = new ESLint();
+  const eslint = new ESLint({ cwd: resolvedOptions.cwd });
   const results = await runESLintLinting(eslint, resolvedOptions);
 
   const todoByRuleId = aggregateESLintTodoByRuleId(results, resolvedOptions);
