@@ -1,27 +1,10 @@
 import { ESLint } from "eslint";
-import { existsSync } from "node:fs";
-import { writeFile } from "node:fs/promises";
 import path from "pathe";
 
-import type { UserOptions } from "./options";
+import type { Options } from "./options";
 import type { ESLintTodo } from "./types";
 
-import { generateESLintTodoModule } from "./codegen";
-import { type Options, optionsWithDefault } from "./options";
 import { isNonEmptyString } from "./utils";
-
-/**
- * Reset the ESLint todo file.
- * Use this function before re-generating the ESLint todo file.
- * @param todoFile
- */
-const resetTodoFile = async (todoFilePath: string): Promise<void> => {
-  if (!existsSync(todoFilePath)) {
-    return;
-  }
-
-  await writeFile(todoFilePath, generateESLintTodoModule({}));
-};
 
 /**
  * Collect lint results from ESLint.
@@ -80,23 +63,17 @@ export const removeDuplicateFilesFromTodo = (todo: ESLintTodo): ESLintTodo => {
   }, {} as ESLintTodo);
 };
 
+/**
+ * Generate ESLint Todo object.
+ */
 export const generateESLintTodo = async (
-  userOptions: UserOptions,
-): Promise<void> => {
-  const resolvedOptions = optionsWithDefault(userOptions);
+  options: Options,
+): Promise<ESLintTodo> => {
+  const eslint = new ESLint({ cwd: options.cwd });
+  const results = await runESLintLinting(eslint, options);
 
-  const resolvedTodoPath = path.resolve(
-    resolvedOptions.cwd,
-    resolvedOptions.todoFile,
-  );
-
-  await resetTodoFile(resolvedTodoPath);
-
-  const eslint = new ESLint({ cwd: resolvedOptions.cwd });
-  const results = await runESLintLinting(eslint, resolvedOptions);
-
-  const todoByRuleId = aggregateESLintTodoByRuleId(results, resolvedOptions);
+  const todoByRuleId = aggregateESLintTodoByRuleId(results, options);
   const uniqueTodoList = removeDuplicateFilesFromTodo(todoByRuleId);
 
-  await writeFile(resolvedTodoPath, generateESLintTodoModule(uniqueTodoList));
+  return uniqueTodoList;
 };
