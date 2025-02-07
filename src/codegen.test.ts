@@ -1,19 +1,19 @@
 import { describe, expect, it } from "vitest";
 
-import type { ESLintTodo } from "./types";
+import type { ESLintTodoV1 } from "./todofile/v1";
 
 import { generateESLintTodoModule } from "./codegen";
 
 describe("generateESLintTodoModule", () => {
   it("should generate a JavaScript module with the given ESLint todo list", () => {
-    const eslintTodo: ESLintTodo = {
+    const eslintTodo: ESLintTodoV1 = {
       "no-console": {
         autoFix: false,
         files: ["file1.js"],
       },
       "no-unused-vars": {
         autoFix: false,
-        files: ["file2.js", "file3.js"],
+        files: ["file2.js", "file3.js", "file3.js"],
       },
     };
 
@@ -33,7 +33,7 @@ describe("generateESLintTodoModule", () => {
 
         "no-unused-vars": {
           autoFix: false,
-          files: ["file2.js", "file3.js"]
+          files: ["file2.js", "file3.js", "file3.js"]
         }
       };
       "
@@ -41,7 +41,7 @@ describe("generateESLintTodoModule", () => {
   });
 
   it("should generate an empty JavaScript module if the ESLint todo list is empty", () => {
-    const eslintTodo: ESLintTodo = {};
+    const eslintTodo: ESLintTodoV1 = {};
 
     const result = generateESLintTodoModule(eslintTodo);
 

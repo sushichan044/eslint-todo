@@ -3,13 +3,13 @@ import type { Linter } from "eslint";
 import { existsSync } from "node:fs";
 
 import type { UserOptions } from "./options";
-import type { ESLintTodo } from "./types";
+import type { ESLintTodoV1 } from "./todofile/v1";
 import type { TodoFilePath } from "./utils/path";
 
 import { optionsWithDefault } from "./options";
+import { TodoFileV1 } from "./todofile/v1";
 import { importDefault } from "./utils/import";
 import { resolveTodoFilePath } from "./utils/path";
-import { escapeGlobCharacters } from "./utils/string";
 
 export const eslintConfigTodo = async (
   userOptions: UserOptions = {},
@@ -21,13 +21,13 @@ export const eslintConfigTodo = async (
     return [];
   }
 
-  const todo = await importDefault<ESLintTodo>(todoFilePath.absolute);
+  const todo = await importDefault<ESLintTodoV1>(todoFilePath.absolute);
   const config = buildESLintFlatConfig({ todo, todoFilePath });
   return config;
 };
 
 type ESLintConfigBuilderArgs = {
-  todo: ESLintTodo;
+  todo: ESLintTodoV1;
   todoFilePath: TodoFilePath;
 };
 
@@ -46,15 +46,9 @@ const buildESLintFlatConfig = (
     name: "@sushichan044/eslint-todo/setup",
   });
 
-  Object.entries(todo).forEach(([ruleId, entry]) => {
-    configs.push({
-      files: entry.files.map((f) => escapeGlobCharacters(f)),
-      name: `@sushichan044/eslint-todo/todo/${ruleId}`,
-      rules: {
-        [ruleId]: "off",
-      },
-    } satisfies Linter.Config);
-  });
+  if (TodoFileV1.isVersion(todo)) {
+    configs.push(...TodoFileV1.buildDisableConfigsForESLint(todo));
+  }
 
   return configs;
 };

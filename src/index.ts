@@ -4,13 +4,13 @@ import { writeFile } from "fs/promises";
 import path from "pathe";
 
 import type { Options, UserOptions } from "./options";
-import type { ESLintTodo } from "./types";
+import type { ESLintTodoV1 } from "./todofile/v1";
 import type { TodoFilePath } from "./utils/path";
 
 import { generateESLintTodoModule } from "./codegen";
 import { optionsWithDefault } from "./options";
+import { TodoFileV1 } from "./todofile/v1";
 import { resolveTodoFilePath } from "./utils/path";
-import { isNonEmptyString } from "./utils/string";
 
 /**
  * ESLintTodo API Entrypoint.
@@ -37,14 +37,8 @@ export class ESLintTodoCore {
    * Get ESLintTodo object.
    * @param lintResults LintResults from ESLint
    */
-  getESLintTodo(lintResults: ESLint.LintResult[]): ESLintTodo {
-    const todoByRuleId = aggregateESLintTodoByRuleId(
-      lintResults,
-      this.#options,
-    );
-    const uniqueTodoList = removeDuplicateFilesFromTodo(todoByRuleId);
-
-    return uniqueTodoList;
+  getESLintTodo(lintResults: ESLint.LintResult[]): ESLintTodoV1 {
+    return TodoFileV1.buildTodoFromLintResults(lintResults, this.#options);
   }
 
   getTodoFilePath(): TodoFilePath {
@@ -70,53 +64,8 @@ export class ESLintTodoCore {
     await writeFile(this.#todoFilePath.absolute, generateESLintTodoModule({}));
   }
 
-  async writeTodoFile(todo: ESLintTodo): Promise<void> {
+  async writeTodoFile(todo: ESLintTodoV1): Promise<void> {
     const todoModule = generateESLintTodoModule(todo);
     await writeFile(this.#todoFilePath.absolute, todoModule);
   }
 }
-
-const aggregateESLintTodoByRuleId = (
-  results: ESLint.LintResult[],
-  options: Options,
-): ESLintTodo => {
-  return results.reduce((acc, lintResult) => {
-    for (const message of lintResult.messages) {
-      if (!isNonEmptyString(message.ruleId)) {
-        continue;
-      }
-
-      acc[message.ruleId] ??= {
-        autoFix: false,
-        files: [],
-      };
-
-      if (Object.hasOwn(acc, message.ruleId)) {
-        // acc[message.ruleId] already exists
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        acc[message.ruleId]!.files.push(
-          path.relative(options.cwd, lintResult.filePath),
-        );
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        acc[message.ruleId]!.autoFix = message.fix != null;
-      }
-    }
-    return acc;
-  }, {} as ESLintTodo);
-};
-
-/**
- * Format the ESLint todo object.
- * @param todo
- * @returns
- */
-export const removeDuplicateFilesFromTodo = (todo: ESLintTodo): ESLintTodo => {
-  return Object.entries(todo).reduce((acc, [ruleId, entry]) => {
-    acc[ruleId] = {
-      ...entry,
-      files: [...new Set(entry.files)],
-    };
-    return acc;
-  }, {} as ESLintTodo);
-};
