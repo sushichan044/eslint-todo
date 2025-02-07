@@ -37,6 +37,7 @@
     "test:run": "vitest run",
     "eslint:inspect": "eslint --inspect-config",
     "publish": "pnpm publish --no-git-checks",
+    "pkg-pr-new": "pkg-pr-new publish --compact --comment=update --pnpm",
     "check": "pnpm run lint && pnpm run format:ci && pnpm run test:run"
   },
   "peerDependencies": {
@@ -56,6 +57,7 @@
     "@virtual-live-lab/prettier-config": "2.0.15",
     "@virtual-live-lab/tsconfig": "2.1.16",
     "eslint": "9.19.0",
+    "pkg-pr-new": "0.0.39",
     "prettier": "3.4.2",
     "typescript": "5.7.3",
     "typescript-eslint": "8.23.0",
