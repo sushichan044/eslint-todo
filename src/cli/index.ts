@@ -11,6 +11,13 @@ const consola = createConsola({ formatOptions: { date: false } });
 
 const cli = defineCommand({
   args: {
+    "correct": {
+      default: false,
+      description: "Enable correct mode",
+      required: false,
+      type: "boolean",
+      valueHint: "boolean",
+    },
     "cwd": {
       description: "Current working directory (default: .)",
       required: false,
@@ -18,6 +25,7 @@ const cli = defineCommand({
       valueHint: "path",
     },
     "todo-file": {
+      alias: "f",
       description: "ESLint todo file name (default: .eslint-todo.js)",
       required: false,
       type: "string",
@@ -44,21 +52,27 @@ const cli = defineCommand({
       eslintTodoCore.getTodoFilePath().absolute,
     );
 
-    try {
-      await eslintTodoCore.resetTodoFile();
-    } catch (error) {
-      consola.error(error);
+    if (!args.correct) {
+      // Generate ESLint todo file
+      try {
+        await eslintTodoCore.resetTodoFile();
+      } catch (error) {
+        consola.error(error);
+        return;
+      }
+
+      consola.start("Running ESLint ...");
+      const lintResults = await eslintTodoCore.lint();
+      consola.success("ESLint finished!");
+
+      consola.start("Generating ESLint todo file ...");
+      const todo = eslintTodoCore.getESLintTodo(lintResults);
+      await eslintTodoCore.writeTodoFile(todo);
+      consola.success(`ESLint todo file generated at ${todoFilePathFromCli}!`);
       return;
     }
 
-    consola.start("Running ESLint ...");
-    const lintResults = await eslintTodoCore.lint();
-    consola.success("ESLint finished!");
-
-    consola.start("Generating ESLint todo file ...");
-    const todo = eslintTodoCore.getESLintTodo(lintResults);
-    await eslintTodoCore.writeTodoFile(todo);
-    consola.success(`ESLint todo file generated at ${todoFilePathFromCli}!`);
+    // Correct mode (future feature)
   },
 });
 
