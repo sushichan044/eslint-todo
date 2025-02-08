@@ -28,6 +28,27 @@ describe("TodoModuleV1Handler", () => {
       ]);
     });
 
+    it("should escape glob characters in file paths for ESLint", () => {
+      const todoModuleV1 = {
+        "no-console": {
+          autoFix: false,
+          files: ["file*.js", "pages/[id].tsx"],
+        },
+      } satisfies TodoModuleV1;
+
+      const configs =
+        TodoModuleV1Handler.buildDisableConfigsForESLint(todoModuleV1);
+      expect(configs).toStrictEqual([
+        {
+          files: [String.raw`file\*.js`, String.raw`pages/\[id\].tsx`],
+          name: "@sushichan044/eslint-todo/todo/no-console",
+          rules: {
+            "no-console": "off",
+          },
+        },
+      ]);
+    });
+
     it("should generate empty array for empty module", () => {
       const todoModuleV1 = {} satisfies TodoModuleV1;
 

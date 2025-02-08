@@ -36,6 +36,35 @@ describe("TodoModuleV2Handler", () => {
         },
       ]);
     });
+
+    it("should escape glob characters in violations file paths for ESLint", () => {
+      const todoModuleV2 = {
+        meta: {
+          version: 2,
+        },
+        todo: {
+          "no-console": {
+            autoFix: false,
+            violations: {
+              "file*.js": 1,
+              "pages/[id].tsx": 1,
+            },
+          },
+        },
+      } satisfies TodoModuleV2;
+
+      const configs =
+        TodoModuleV2Handler.buildDisableConfigsForESLint(todoModuleV2);
+      expect(configs).toStrictEqual([
+        {
+          files: [String.raw`file\*.js`, String.raw`pages/\[id\].tsx`],
+          name: "@sushichan044/eslint-todo/todo/no-console",
+          rules: {
+            "no-console": "off",
+          },
+        },
+      ]);
+    });
   });
 
   describe("isVersion", () => {

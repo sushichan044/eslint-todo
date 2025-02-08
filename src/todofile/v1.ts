@@ -4,7 +4,7 @@ import { relative } from "pathe";
 import type { ESLintRuleId, TodoModuleHandler } from "./types";
 import type { TodoModuleV2 } from "./v2";
 
-import { isNonEmptyString } from "../utils/string";
+import { escapeGlobCharacters, isNonEmptyString } from "../utils/string";
 import { TodoModuleV2Handler } from "./v2";
 
 type ESLintTodoEntryV1 = {
@@ -41,7 +41,7 @@ export const TodoModuleV1Handler: TodoModuleHandler<
 
   buildDisableConfigsForESLint: (todo) => {
     return Object.entries(todo).map(([ruleId, entry]) => ({
-      files: entry.files,
+      files: entry.files.map(escapeGlobCharacters),
       name: `@sushichan044/eslint-todo/todo/${ruleId}`,
       rules: {
         [ruleId]: "off",

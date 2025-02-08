@@ -3,7 +3,7 @@ import * as v from "valibot";
 
 import type { ESLintRuleId, TodoModuleHandler } from "./types";
 
-import { isNonEmptyString } from "../utils/string";
+import { escapeGlobCharacters, isNonEmptyString } from "../utils/string";
 
 type ESLintTodoEntryV2 = {
   /**
@@ -54,7 +54,7 @@ export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
 
   buildDisableConfigsForESLint: ({ todo }) => {
     return Object.entries(todo).map(([ruleId, entry]) => ({
-      files: Object.keys(entry.violations),
+      files: Object.keys(entry.violations).map(escapeGlobCharacters),
       name: `@sushichan044/eslint-todo/todo/${ruleId}`,
       rules: {
         [ruleId]: "off",
