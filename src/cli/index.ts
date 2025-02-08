@@ -26,12 +26,27 @@ const cli = defineCommand({
       type: "string",
       valueHint: "path",
     },
+    "debug": {
+      description: "Enable debug mode",
+      required: false,
+      type: "boolean",
+    },
     "todo-file": {
       alias: "f",
       description: "ESLint todo file name (default: .eslint-todo.js)",
       required: false,
       type: "string",
       valueHint: "filename",
+    },
+    "trace": {
+      description: "Enable trace mode",
+      required: false,
+      type: "boolean",
+    },
+    "verbose": {
+      description: "Enable verbose mode",
+      required: false,
+      type: "boolean",
     },
   },
   meta: {
@@ -41,6 +56,14 @@ const cli = defineCommand({
     version: pkgVersion,
   },
   async run({ args }) {
+    if (args.debug === true) {
+      consola.level = 4;
+    } else if (args.trace === true) {
+      consola.level = 5;
+    } else if (args.verbose === true) {
+      consola.level = +999;
+    }
+
     consola.info(`eslint-todo CLI ${pkgVersion}`);
 
     const cliCwd = process.cwd();
