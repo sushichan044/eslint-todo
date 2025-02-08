@@ -2,14 +2,14 @@ import type { Linter } from "eslint";
 
 import { existsSync } from "node:fs";
 
-import type { UserOptions } from "./options";
-import type { SupportedModules } from "./todofile";
+import type { UserOptions } from "../options";
+import type { SupportedModules } from "../todofile";
 
-import { optionsWithDefault } from "./options";
-import { TodoModuleV1Handler } from "./todofile/v1";
-import { TodoModuleV2Handler } from "./todofile/v2";
-import { importDefault } from "./utils/import";
-import { resolveTodoFilePath } from "./utils/path";
+import { optionsWithDefault } from "../options";
+import { TodoModuleV1Handler } from "../todofile/v1";
+import { TodoModuleV2Handler } from "../todofile/v2";
+import { importDefault } from "../utils/import";
+import { resolveTodoFilePath } from "../utils/path";
 
 /**
  * Build ESLint configs for the todo file.

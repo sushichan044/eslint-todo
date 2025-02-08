@@ -20,8 +20,8 @@
       "types": "./dist/cli/index.d.ts"
     },
     "./eslint": {
-      "import": "./dist/eslint.mjs",
-      "types": "./dist/eslint.d.ts"
+      "import": "./dist/eslint/index.mjs",
+      "types": "./dist/eslint/index.d.ts"
     }
   },
   "files": [
