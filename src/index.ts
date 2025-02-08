@@ -4,12 +4,13 @@ import { writeFile } from "fs/promises";
 import path from "pathe";
 
 import type { Options, UserOptions } from "./options";
-import type { ESLintTodoV1 } from "./todofile/v1";
+import type { LatestSupportedModuleHandler } from "./todofile";
+import type { GetCurrentTodoModule, TodoModuleLike } from "./todofile/types";
 import type { TodoFilePath } from "./utils/path";
 
 import { generateESLintTodoModule } from "./codegen";
 import { optionsWithDefault } from "./options";
-import { TodoFileV1 } from "./todofile/v1";
+import { LATEST_MODULE_HANDLER } from "./todofile";
 import { resolveTodoFilePath } from "./utils/path";
 
 /**
@@ -37,8 +38,13 @@ export class ESLintTodoCore {
    * Get ESLintTodo object.
    * @param lintResults LintResults from ESLint
    */
-  getESLintTodo(lintResults: ESLint.LintResult[]): ESLintTodoV1 {
-    return TodoFileV1.buildTodoFromLintResults(lintResults, this.#options);
+  getESLintTodo(
+    lintResults: ESLint.LintResult[],
+  ): GetCurrentTodoModule<LatestSupportedModuleHandler> {
+    return LATEST_MODULE_HANDLER.buildTodoFromLintResults(
+      lintResults,
+      this.#options,
+    );
   }
 
   getTodoFilePath(): TodoFilePath {
@@ -61,10 +67,13 @@ export class ESLintTodoCore {
       return;
     }
 
-    await writeFile(this.#todoFilePath.absolute, generateESLintTodoModule({}));
+    await writeFile(
+      this.#todoFilePath.absolute,
+      generateESLintTodoModule(LATEST_MODULE_HANDLER.getDefaultTodo()),
+    );
   }
 
-  async writeTodoFile(todo: ESLintTodoV1): Promise<void> {
+  async writeTodoFile(todo: TodoModuleLike): Promise<void> {
     const todoModule = generateESLintTodoModule(todo);
     await writeFile(this.#todoFilePath.absolute, todoModule);
   }

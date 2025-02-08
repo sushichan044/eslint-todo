@@ -3,11 +3,11 @@ import type { ESLint } from "eslint";
 import path from "pathe";
 
 import type { Options } from "../options";
-import type { ESLintRuleId, TodoFile } from "./types";
+import type { ESLintRuleId, TodoModuleHandler } from "./types";
 
 import { isNonEmptyString } from "../utils/string";
 
-export type ESLintTodoEntryV1 = {
+type ESLintTodoEntryV1 = {
   /**
    * Whether rule can be auto fixed.
    */
@@ -31,12 +31,11 @@ export type ESLintTodoEntryV1 = {
  * }
  * ```
  */
-export type ESLintTodoV1 = Record<ESLintRuleId, ESLintTodoEntryV1>;
+export type TodoModuleV1 = Record<ESLintRuleId, ESLintTodoEntryV1>;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface ITodoFileV1 extends TodoFile<ESLintTodoV1> {}
+export const TodoModuleV1Handler: TodoModuleHandler<TodoModuleV1> = {
+  version: 1,
 
-export const TodoFileV1: ITodoFileV1 = {
   buildDisableConfigsForESLint: (todo) => {
     return Object.entries(todo).map(([ruleId, entry]) => ({
       files: entry.files,
@@ -46,48 +45,49 @@ export const TodoFileV1: ITodoFileV1 = {
       },
     }));
   },
+
   buildTodoFromLintResults(lintResult, options) {
     const todoByRuleId = aggregateESLintResultsByRule(lintResult, options);
     return removeDuplicateFilesFromTodo(todoByRuleId);
   },
-  isVersion(todo): todo is ESLintTodoV1 {
+
+  getDefaultTodo() {
+    return {};
+  },
+
+  isVersion(todo): todo is TodoModuleV1 {
     return !Object.hasOwn(todo, "meta");
   },
+
   upgradeToNextVersion: () => false,
-  version: 1,
 };
 
 const aggregateESLintResultsByRule = (
   results: ESLint.LintResult[],
   options: Options,
-): ESLintTodoV1 => {
-  return results.reduce((acc, lintResult) => {
-    for (const message of lintResult.messages) {
+): TodoModuleV1 => {
+  return results.reduce((todoMod, result) => {
+    const relativeFilePath = path.relative(options.cwd, result.filePath);
+
+    for (const message of result.messages) {
       if (!isNonEmptyString(message.ruleId)) {
         continue;
       }
-      const relativeFilePath = path.relative(options.cwd, lintResult.filePath);
 
-      acc[message.ruleId] ??= {
+      todoMod[message.ruleId] ??= {
         autoFix: false,
         files: [],
-        // v2 code
-        // violations: {
-        //   [relativeFilePath]: 0,
-        // },
       };
 
-      if (Object.hasOwn(acc, message.ruleId)) {
+      if (Object.hasOwn(todoMod, message.ruleId)) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        acc[message.ruleId]!.files.push(relativeFilePath);
-        // v2 code
-        // acc[message.ruleId]!.violations[relativeFilePath]!++;
+        todoMod[message.ruleId]!.files.push(relativeFilePath);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        acc[message.ruleId]!.autoFix = message.fix != null;
+        todoMod[message.ruleId]!.autoFix = message.fix != null;
       }
     }
-    return acc;
-  }, {} as ESLintTodoV1);
+    return todoMod;
+  }, TodoModuleV1Handler.getDefaultTodo());
 };
 
 /**
@@ -95,12 +95,12 @@ const aggregateESLintResultsByRule = (
  * @param todo
  * @returns
  */
-const removeDuplicateFilesFromTodo = (todo: ESLintTodoV1): ESLintTodoV1 => {
+const removeDuplicateFilesFromTodo = (todo: TodoModuleV1): TodoModuleV1 => {
   return Object.entries(todo).reduce((acc, [ruleId, entry]) => {
     acc[ruleId] = {
       ...entry,
       files: [...new Set(entry.files)],
     };
     return acc;
-  }, {} as ESLintTodoV1);
+  }, TodoModuleV1Handler.getDefaultTodo());
 };

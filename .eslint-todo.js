@@ -4,8 +4,17 @@
  */
 
 export default {
-  "no-undef": {
-    autoFix: false,
-    files: ["bin/eslint-todo.mjs"]
+  meta: {
+    version: 2
+  },
+
+  todo: {
+    "no-undef": {
+      autoFix: false,
+
+      violations: {
+        "bin/eslint-todo.mjs": 3
+      }
+    }
   }
 };

@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import type { ESLintTodoV1 } from "./todofile/v1";
+import type { TodoModuleLike } from "./todofile/types";
+import type { TodoModuleV1 } from "./todofile/v1";
+import type { TodoModuleV2 } from "./todofile/v2";
 
 import { generateESLintTodoModule } from "./codegen";
 
 describe("generateESLintTodoModule", () => {
-  it("should generate a JavaScript module with the given ESLint todo list", () => {
-    const eslintTodo: ESLintTodoV1 = {
+  it("can generate a TodoModule v1 JavaScript module", () => {
+    const eslintTodo: TodoModuleV1 = {
       "no-console": {
         autoFix: false,
         files: ["file1.js"],
@@ -40,8 +42,50 @@ describe("generateESLintTodoModule", () => {
     `);
   });
 
-  it("should generate an empty JavaScript module if the ESLint todo list is empty", () => {
-    const eslintTodo: ESLintTodoV1 = {};
+  it("can generate a TodoModule v2 JavaScript module", () => {
+    const eslintTodo: TodoModuleV2 = {
+      meta: {
+        version: 2,
+      },
+      todo: {
+        "no-console": {
+          autoFix: false,
+          violations: {
+            "file1.js": 1,
+          },
+        },
+      },
+    };
+
+    const result = generateESLintTodoModule(eslintTodo);
+
+    expect(result).toMatchInlineSnapshot(`
+      "/* eslint-disable */
+      /**
+       * Auto generated file by eslint-todo. DO NOT EDIT MANUALLY.
+       */
+
+      export default {
+        meta: {
+          version: 2
+        },
+
+        todo: {
+          "no-console": {
+            autoFix: false,
+
+            violations: {
+              "file1.js": 1
+            }
+          }
+        }
+      };
+      "
+    `);
+  });
+
+  it("should generate an empty JavaScript module if the module is empty", () => {
+    const eslintTodo: TodoModuleLike = {};
 
     const result = generateESLintTodoModule(eslintTodo);
 

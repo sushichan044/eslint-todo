@@ -2,15 +2,16 @@ import type { ESLint, Linter } from "eslint";
 
 import type { Options } from "../options";
 
-export type GetTodoFileSchema<T> = T extends TodoFile<infer U> ? U : never;
+export type TodoModuleLike = Record<string, unknown>;
 
-export type TodoFileLike = Record<string, unknown>;
+export type GetCurrentTodoModule<T extends TodoModuleHandler<TodoModuleLike>> =
+  ReturnType<T["getDefaultTodo"]>;
 
 export type ESLintRuleId = string;
 
-export interface TodoFile<
-  CURRENT extends TodoFileLike,
-  NEXT extends TodoFileLike = TodoFileLike,
+export interface TodoModuleHandler<
+  CURRENT extends TodoModuleLike,
+  NEXT extends TodoModuleLike = TodoModuleLike,
 > {
   /**
    * Build ESLint configs to disable todo rules.
@@ -26,10 +27,14 @@ export interface TodoFile<
     options: Options,
   ): CURRENT;
   /**
+   * Get a default todo object.
+   */
+  getDefaultTodo(): CURRENT;
+  /**
    * Check if the object is a version of this todo file.
    * @param todo Object to check.
    */
-  isVersion(todo: TodoFileLike): todo is CURRENT;
+  isVersion(todo: TodoModuleLike): todo is CURRENT;
   /**
    * Upgrade the todo object to the next version.
    * @param todo Current todo object

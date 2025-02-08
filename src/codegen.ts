@@ -1,13 +1,15 @@
 import { generateCode, parseModule } from "magicast";
 
-import type { ESLintTodoV1 } from "./todofile/v1";
+import type { TodoModuleLike } from "./todofile/types";
 
 /**
  * Create a JavaScript module code from the ESLint todo list.
  * @returns
  * JavaScript file content. Just write it to a file.
  */
-export const generateESLintTodoModule = (eslintTodo: ESLintTodoV1): string => {
+export const generateESLintTodoModule = (
+  eslintTodo: TodoModuleLike,
+): string => {
   const js = [
     "/* eslint-disable */",
     "/**",
