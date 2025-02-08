@@ -1,5 +1,6 @@
 // @ts-check
 import ts from "@virtual-live-lab/eslint-config/presets/ts";
+import vitest from "@vitest/eslint-plugin";
 import { composer } from "eslint-flat-config-utils";
 import tseslint from "typescript-eslint";
 
@@ -33,4 +34,14 @@ export default composer(
       "no-restricted-imports": "off",
     },
   })
-  .append(eslintConfigTodo());
+  .append(eslintConfigTodo())
+  .append({
+    files: ["**/*.test.ts", "**/*.spec.ts"],
+    plugins: {
+      vitest,
+    },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      "vitest/consistent-test-filename": "error",
+    },
+  });
