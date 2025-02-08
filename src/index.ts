@@ -11,6 +11,7 @@ import type { TodoFilePath } from "./utils/path";
 import { generateESLintTodoModule } from "./codegen";
 import { optionsWithDefault } from "./options";
 import { LATEST_MODULE_HANDLER } from "./todofile";
+import { importDefault } from "./utils/import";
 import { resolveTodoFilePath } from "./utils/path";
 
 /**
@@ -29,6 +30,18 @@ export class ESLintTodoCore {
     this.#todoFilePath = resolveTodoFilePath(this.#options);
 
     this.initializeESLint();
+  }
+
+  /**
+   * WARNING: DO NOT USE THIS METHOD DIRECTLY.
+   *
+   * You should use `launchRemoteCore()` to create a remote worker and use `RemoteESLintTodoCore.readTodoModule()` instead.
+   */
+  async _DO_NOT_USE_DIRECTLY_unsafeReadTodoModule(): Promise<TodoModuleLike> {
+    // If use import() here, it will be cached and this cannot be revalidated in the same process.
+    // So, this.lint() will run with cached todo file, even if the file is updated after this._DO_NOT_USE_DIRECTLY_unsafeReadTodoModule().
+    // To avoid this behavior, just use `RemoteESLintTodoCore.readTodoModule()` in the remote worker.
+    return await importDefault<TodoModuleLike>(this.#todoFilePath.absolute);
   }
 
   /**
