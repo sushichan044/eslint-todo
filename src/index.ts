@@ -12,7 +12,7 @@ import { generateESLintTodoModule } from "./codegen";
 import { optionsWithDefault } from "./options";
 import { LATEST_MODULE_HANDLER } from "./todofile";
 import { importDefault } from "./utils/import";
-import { resolveTodoFilePath } from "./utils/path";
+import { resolveTodoModulePath } from "./utils/path";
 
 /**
  * ESLintTodo API Entrypoint.
@@ -27,7 +27,7 @@ export class ESLintTodoCore {
 
   constructor(userOptions: UserOptions) {
     this.#options = optionsWithDefault(userOptions);
-    this.#todoFilePath = resolveTodoFilePath(this.#options);
+    this.#todoFilePath = resolveTodoModulePath(this.#options);
 
     this.initializeESLint();
   }

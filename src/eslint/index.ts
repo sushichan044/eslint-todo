@@ -7,14 +7,14 @@ import type { SupportedModules } from "../todofile";
 
 import { optionsWithDefault } from "../options";
 import { importDefault } from "../utils/import";
-import { resolveTodoFilePath } from "../utils/path";
+import { resolveTodoModulePath } from "../utils/path";
 import { buildESLintFlatConfig } from "./build";
 
 const eslintConfigTodo = async (
   userOptions: UserOptions = {},
 ): Promise<Linter.Config[]> => {
   const options = optionsWithDefault(userOptions);
-  const todoFilePath = resolveTodoFilePath(options);
+  const todoFilePath = resolveTodoModulePath(options);
 
   if (!existsSync(todoFilePath.absolute)) {
     return [];

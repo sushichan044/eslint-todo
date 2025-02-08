@@ -10,7 +10,7 @@ export type TodoFilePath = {
 /**
  * Resolve the absolute and relative path of the todo file.
  */
-export const resolveTodoFilePath = (options: Options): TodoFilePath => {
+export const resolveTodoModulePath = (options: Options): TodoFilePath => {
   const { cwd, todoFile } = options;
 
   const absolutePath = resolve(cwd, todoFile);

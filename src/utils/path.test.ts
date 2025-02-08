@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { Options } from "../options";
 
-import { resolveTodoFilePath } from "./path";
+import { resolveTodoModulePath } from "./path";
 
 describe("resolveTodoFilePath", () => {
   it("should resolve the correct absolute and relative paths", () => {
@@ -11,7 +11,7 @@ describe("resolveTodoFilePath", () => {
       todoFile: ".eslint-todo.js",
     };
 
-    const result = resolveTodoFilePath(options);
+    const result = resolveTodoModulePath(options);
 
     expect(result).toStrictEqual({
       absolute: "/home/sushi/workspace/.eslint-todo.js",
@@ -25,7 +25,7 @@ describe("resolveTodoFilePath", () => {
       todoFile: "nested/.eslint-todo.js",
     };
 
-    const result = resolveTodoFilePath(options);
+    const result = resolveTodoModulePath(options);
 
     expect(result).toStrictEqual({
       absolute: "/home/sushi/workspace/nested/.eslint-todo.js",
@@ -39,7 +39,7 @@ describe("resolveTodoFilePath", () => {
       todoFile: "/home/sushi/.eslint-todo.js",
     };
 
-    const result = resolveTodoFilePath(options);
+    const result = resolveTodoModulePath(options);
 
     expect(result).toStrictEqual({
       absolute: "/home/sushi/.eslint-todo.js",
