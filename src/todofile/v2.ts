@@ -1,4 +1,5 @@
 import path from "pathe";
+import * as v from "valibot";
 
 import type { ESLintRuleId, TodoModuleHandler } from "./types";
 
@@ -42,6 +43,11 @@ export type TodoModuleV2 = {
   };
   todo: Record<ESLintRuleId, ESLintTodoEntryV2>;
 };
+
+// only for version checking.
+const todoModuleMetaIsV2 = v.strictObject({
+  version: v.literal(2),
+});
 
 export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
   version: 2,
@@ -93,15 +99,11 @@ export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
   },
 
   isVersion(todo): todo is TodoModuleV2 {
-    return (
-      Object.hasOwn(todo, "meta") &&
-      // @ts-expect-error VERSION is always a number
-      Object.hasOwn(todo["meta"], "VERSION") &&
-      // @ts-expect-error VERSION is always a number
-      typeof todo["meta"].VERSION === "number" &&
-      // @ts-expect-error VERSION is always a number
-      todo["meta"].VERSION === 2
-    );
+    if (!Object.hasOwn(todo, "meta")) {
+      return false;
+    }
+
+    return v.safeParse(todoModuleMetaIsV2, todo["meta"]).success;
   },
 
   upgradeToNextVersion: () => false,
