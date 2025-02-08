@@ -31,7 +31,7 @@ jobs:
         uses: ./.github/composite/setup
 
       - name: Run ESLint
-        run: pnpm run lint
+        run: pnpm run lint:ci
 
       - name: Run Prettier
         run: pnpm run format:ci

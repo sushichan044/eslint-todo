@@ -25,8 +25,8 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "postinstall": "pnpm run build",
     "lint": "eslint --max-warnings 0 .",
+    "lint:ci": "pnpm run build && pnpm run lint",
     "format": "prettier --write .",
     "format:ci": "prettier --check .",
     "test": "vitest",
@@ -34,7 +34,7 @@
     "eslint:inspect": "eslint --inspect-config",
     "publish": "pnpm publish --no-git-checks",
     "pkg-pr-new": "pkg-pr-new publish --compact --comment=update --pnpm",
-    "check": "pnpm run lint && pnpm run format:ci && pnpm run test:run"
+    "check": "pnpm run lint:ci && pnpm run format:ci && pnpm run test:run"
   },
   "peerDependencies": {
     "eslint": "^8.57.0 || ^9.0.0"
