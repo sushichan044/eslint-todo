@@ -1,8 +1,5 @@
-import type { ESLint } from "eslint";
-
 import path from "pathe";
 
-import type { Options } from "../options";
 import type { ESLintRuleId, TodoModuleHandler } from "./types";
 
 import { isNonEmptyString } from "../utils/string";
@@ -47,8 +44,28 @@ export const TodoModuleV1Handler: TodoModuleHandler<TodoModuleV1> = {
   },
 
   buildTodoFromLintResults(lintResult, options) {
-    const todoByRuleId = aggregateESLintResultsByRule(lintResult, options);
-    return removeDuplicateFilesFromTodoModuleV1(todoByRuleId);
+    return lintResult.reduce((todoMod, result) => {
+      const relativeFilePath = path.relative(options.cwd, result.filePath);
+
+      for (const message of result.messages) {
+        if (!isNonEmptyString(message.ruleId)) {
+          continue;
+        }
+
+        todoMod[message.ruleId] ??= {
+          autoFix: false,
+          files: [],
+        };
+
+        if (Object.hasOwn(todoMod, message.ruleId)) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          todoMod[message.ruleId]!.files.push(relativeFilePath);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          todoMod[message.ruleId]!.autoFix = message.fix != null;
+        }
+      }
+      return todoMod;
+    }, TodoModuleV1Handler.getDefaultTodo());
   },
 
   getDefaultTodo() {
@@ -60,49 +77,4 @@ export const TodoModuleV1Handler: TodoModuleHandler<TodoModuleV1> = {
   },
 
   upgradeToNextVersion: () => false,
-};
-
-const aggregateESLintResultsByRule = (
-  results: ESLint.LintResult[],
-  options: Options,
-): TodoModuleV1 => {
-  return results.reduce((todoMod, result) => {
-    const relativeFilePath = path.relative(options.cwd, result.filePath);
-
-    for (const message of result.messages) {
-      if (!isNonEmptyString(message.ruleId)) {
-        continue;
-      }
-
-      todoMod[message.ruleId] ??= {
-        autoFix: false,
-        files: [],
-      };
-
-      if (Object.hasOwn(todoMod, message.ruleId)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        todoMod[message.ruleId]!.files.push(relativeFilePath);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        todoMod[message.ruleId]!.autoFix = message.fix != null;
-      }
-    }
-    return todoMod;
-  }, TodoModuleV1Handler.getDefaultTodo());
-};
-
-/**
- * Format the ESLint todo object.
- * @param todo
- * @returns
- */
-export const removeDuplicateFilesFromTodoModuleV1 = (
-  todo: TodoModuleV1,
-): TodoModuleV1 => {
-  return Object.entries(todo).reduce((acc, [ruleId, entry]) => {
-    acc[ruleId] = {
-      ...entry,
-      files: [...new Set(entry.files)],
-    };
-    return acc;
-  }, TodoModuleV1Handler.getDefaultTodo());
 };
