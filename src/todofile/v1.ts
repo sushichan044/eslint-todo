@@ -1,5 +1,5 @@
 import { isEmpty } from "es-toolkit/compat";
-import path from "pathe";
+import { relative } from "pathe";
 
 import type { ESLintRuleId, TodoModuleHandler } from "./types";
 import type { TodoModuleV2 } from "./v2";
@@ -51,7 +51,7 @@ export const TodoModuleV1Handler: TodoModuleHandler<
 
   buildTodoFromLintResults(lintResult, options) {
     return lintResult.reduce((todoMod, result) => {
-      const relativeFilePath = path.relative(options.cwd, result.filePath);
+      const relativeFilePath = relative(options.cwd, result.filePath);
 
       for (const message of result.messages) {
         if (!isNonEmptyString(message.ruleId)) {

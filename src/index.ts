@@ -1,7 +1,7 @@
 import { ESLint } from "eslint";
 import { existsSync } from "fs";
 import { writeFile } from "fs/promises";
-import path from "pathe";
+import { resolve } from "pathe";
 
 import type { Options, UserOptions } from "./options";
 import type { LatestSupportedModuleHandler } from "./todofile";
@@ -57,7 +57,7 @@ export class ESLintTodoCore {
    */
   async lint(): Promise<ESLint.LintResult[]> {
     const result = await this.#eslint.lintFiles(
-      path.resolve(this.#options.cwd, "**/*"),
+      resolve(this.#options.cwd, "**/*"),
     );
     return result;
   }

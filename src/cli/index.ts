@@ -1,6 +1,6 @@
 import { defineCommand, runMain } from "citty";
 import { createConsola } from "consola";
-import path from "pathe";
+import { relative } from "pathe";
 
 import type { UserOptions } from "../options";
 
@@ -47,7 +47,7 @@ const cli = defineCommand({
       todoFile: args["todo-file"],
     };
     const eslintTodoCore = new ESLintTodoCore(options);
-    const todoFilePathFromCli = path.relative(
+    const todoFilePathFromCli = relative(
       cliCwd,
       eslintTodoCore.getTodoFilePath().absolute,
     );

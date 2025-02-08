@@ -1,4 +1,4 @@
-import path from "pathe";
+import { relative, resolve } from "pathe";
 
 import type { Options } from "../options";
 
@@ -13,11 +13,11 @@ export type TodoFilePath = {
 export const resolveTodoFilePath = (options: Options): TodoFilePath => {
   const { cwd, todoFile } = options;
 
-  const absolute = path.resolve(cwd, todoFile);
-  const relative = path.relative(cwd, absolute);
+  const absolutePath = resolve(cwd, todoFile);
+  const relativePath = relative(cwd, absolutePath);
 
   return {
-    absolute,
-    relative,
+    absolute: absolutePath,
+    relative: relativePath,
   };
 };

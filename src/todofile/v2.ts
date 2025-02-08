@@ -1,4 +1,4 @@
-import path from "pathe";
+import { relative } from "pathe";
 import * as v from "valibot";
 
 import type { ESLintRuleId, TodoModuleHandler } from "./types";
@@ -64,7 +64,7 @@ export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
 
   buildTodoFromLintResults(lintResult, options) {
     return lintResult.reduce((todoMod, result) => {
-      const relativeFilePath = path.relative(options.cwd, result.filePath);
+      const relativeFilePath = relative(options.cwd, result.filePath);
 
       for (const message of result.messages) {
         if (!isNonEmptyString(message.ruleId)) {
