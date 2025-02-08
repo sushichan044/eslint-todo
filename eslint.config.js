@@ -2,7 +2,7 @@
 import ts from "@virtual-live-lab/eslint-config/presets/ts";
 import tseslint from "typescript-eslint";
 
-import { eslintConfigTodo } from "./dist/eslint.mjs";
+import eslintConfigTodo from "./dist/eslint.mjs";
 
 export default tseslint.config(
   {
