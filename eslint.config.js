@@ -1,13 +1,22 @@
 // @ts-check
 import ts from "@virtual-live-lab/eslint-config/presets/ts";
+import { composer } from "eslint-flat-config-utils";
 import tseslint from "typescript-eslint";
 
 import eslintConfigTodo from "./dist/eslint/index.mjs";
 
-export default tseslint.config(
-  {
-    extends: [...ts],
+export default composer(
+  // @ts-expect-error 型が合わない
+  ...tseslint.config({
+    extends: ts,
     name: "@repo/eslint-config/base",
+  }),
+)
+  .override("@repo/eslint-config/base", {
+    plugins: {
+      // @ts-expect-error 型が合わない
+      "@typescript-eslint": tseslint.plugin,
+    },
     rules: {
       "@typescript-eslint/no-restricted-imports": [
         "error",
@@ -23,9 +32,5 @@ export default tseslint.config(
       ],
       "no-restricted-imports": "off",
     },
-  },
-  {
-    extends: [...(await eslintConfigTodo())],
-    name: "@repo/eslint-config/todo",
-  },
-);
+  })
+  .append(eslintConfigTodo());
