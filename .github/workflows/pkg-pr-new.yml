@@ -40,3 +40,6 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Publish
+        run: pnpm run pkg-pr-new
