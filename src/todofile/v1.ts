@@ -79,7 +79,7 @@ export const TodoModuleV1Handler: TodoModuleHandler<
   },
 
   isVersion(todo): todo is TodoModuleV1 {
-    return !Object.hasOwn(todo, "meta");
+    return todo["meta"] == null;
   },
 
   upgradeToNextVersion: (todo) => {
