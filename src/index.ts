@@ -1,6 +1,6 @@
 import { ESLint } from "eslint";
-import { existsSync } from "fs";
-import { writeFile } from "fs/promises";
+import { existsSync } from "node:fs";
+import { writeFile } from "node:fs/promises";
 import { resolve } from "pathe";
 
 import type { Options, UserOptions } from "./options";

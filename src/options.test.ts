@@ -1,3 +1,4 @@
+import { cwd } from "node:process";
 import { describe, expect, it } from "vitest";
 
 import type { Options } from "./options";
@@ -8,7 +9,7 @@ describe("optionsWithDefault", () => {
   it("should return default options when no user options are provided", () => {
     const result = optionsWithDefault();
     const expected: Options = {
-      cwd: process.cwd(),
+      cwd: cwd(),
       todoFile: ".eslint-todo.js",
     };
     expect(result).toStrictEqual(expected);
@@ -20,7 +21,7 @@ describe("optionsWithDefault", () => {
     };
     const result = optionsWithDefault(userOptions);
     const expected: Options = {
-      cwd: process.cwd(),
+      cwd: cwd(),
       todoFile: "custom-todo.js",
     };
     expect(result).toStrictEqual(expected);
