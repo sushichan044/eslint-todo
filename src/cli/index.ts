@@ -49,13 +49,13 @@ const cli = defineCommand({
     const eslintTodoCore = new ESLintTodoCore(options);
     const todoFilePathFromCli = relative(
       cliCwd,
-      eslintTodoCore.getTodoFilePath().absolute,
+      eslintTodoCore.getTodoModulePath().absolute,
     );
 
     if (!args.correct) {
       // Generate ESLint todo file
       try {
-        await eslintTodoCore.resetTodoFile();
+        await eslintTodoCore.resetTodoModule();
       } catch (error) {
         consola.error(error);
         return;
@@ -67,7 +67,7 @@ const cli = defineCommand({
 
       consola.start("Generating ESLint todo file ...");
       const todo = eslintTodoCore.getESLintTodo(lintResults);
-      await eslintTodoCore.writeTodoFile(todo);
+      await eslintTodoCore.writeTodoModule(todo);
       consola.success(`ESLint todo file generated at ${todoFilePathFromCli}!`);
       return;
     }

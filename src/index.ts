@@ -44,7 +44,7 @@ export class ESLintTodoCore {
     );
   }
 
-  getTodoFilePath(): TodoFilePath {
+  getTodoModulePath(): TodoFilePath {
     return this.#todoFilePath;
   }
 
@@ -67,7 +67,7 @@ export class ESLintTodoCore {
     return result;
   }
 
-  async resetTodoFile(): Promise<void> {
+  async resetTodoModule(): Promise<void> {
     if (!existsSync(this.#todoFilePath.absolute)) {
       return;
     }
@@ -78,7 +78,7 @@ export class ESLintTodoCore {
     );
   }
 
-  async writeTodoFile(todo: TodoModuleLike): Promise<void> {
+  async writeTodoModule(todo: TodoModuleLike): Promise<void> {
     const todoModule = generateESLintTodoModule(todo);
     await writeFile(this.#todoFilePath.absolute, todoModule);
   }
