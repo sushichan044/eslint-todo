@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "citty": "0.1.6",
+    "comlink": "4.4.2",
     "consola": "3.4.0",
     "defu": "6.1.4",
     "es-toolkit": "1.32.0",
