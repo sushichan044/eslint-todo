@@ -1,4 +1,5 @@
-name: Publish Preview Package
+name: Publish preview package
+
 on:
   pull_request:
     branches:

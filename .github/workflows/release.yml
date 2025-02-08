@@ -1,11 +1,20 @@
 name: Publish package to npm
+
 on:
   release:
-    types: [published]
+    types:
+      - published
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 defaults:
   run:
     shell: bash
+
+permissions:
+  contents: read
 
 jobs:
   build-and-publish:
