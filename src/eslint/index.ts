@@ -6,7 +6,7 @@ import type { UserOptions } from "../options";
 import type { SupportedModules } from "../todofile";
 
 import { optionsWithDefault } from "../options";
-import { importDefaultWithCache } from "../utils/import";
+import { importDefault } from "../utils/import";
 import { resolveTodoFilePath } from "../utils/path";
 import { buildESLintFlatConfig } from "./build";
 
@@ -20,7 +20,7 @@ const eslintConfigTodo = async (
     return [];
   }
 
-  const todoModule = await importDefaultWithCache<SupportedModules>(
+  const todoModule = await importDefault<SupportedModules>(
     todoFilePath.absolute,
   );
 
