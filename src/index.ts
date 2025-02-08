@@ -17,9 +17,10 @@ import { resolveTodoFilePath } from "./utils/path";
  * ESLintTodo API Entrypoint.
  */
 export class ESLintTodoCore {
-  readonly #eslint: ESLint;
-  // used for auto-fixing (future feature)
-  readonly #eslintWithAutoFix: ESLint;
+  // @ts-expect-error Initialize in this.initializeESLint()
+  #eslint: ESLint;
+  // @ts-expect-error Initialize in this.initializeESLint()
+  #eslintWithAutoFix: ESLint; // for auto-fixing (future feature)
   readonly #options: Options;
   readonly #todoFilePath: TodoFilePath;
 
@@ -27,11 +28,7 @@ export class ESLintTodoCore {
     this.#options = optionsWithDefault(userOptions);
     this.#todoFilePath = resolveTodoFilePath(this.#options);
 
-    this.#eslint = new ESLint({ cwd: this.#options.cwd });
-    this.#eslintWithAutoFix = new ESLint({
-      cwd: this.#options.cwd,
-      fix: true,
-    });
+    this.initializeESLint();
   }
 
   /**
@@ -49,6 +46,14 @@ export class ESLintTodoCore {
 
   getTodoFilePath(): TodoFilePath {
     return this.#todoFilePath;
+  }
+
+  initializeESLint(): void {
+    this.#eslint = new ESLint({ cwd: this.#options.cwd });
+    this.#eslintWithAutoFix = new ESLint({
+      cwd: this.#options.cwd,
+      fix: true,
+    });
   }
 
   /**
