@@ -19,9 +19,9 @@ export const generateESLintTodoModule = (
     "export default {};",
   ].join("\n");
 
-  const mod = parseModule(js);
+  const mod = parseModule<{ default: unknown }>(js);
 
-  mod.exports["default"] = eslintTodo;
+  mod.exports.default = eslintTodo;
 
   const { code: jsCode } = generateCode(mod, {
     format: { objectCurlySpacing: true, tabWidth: 2 },
