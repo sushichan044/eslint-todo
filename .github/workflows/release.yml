@@ -1,4 +1,4 @@
-name: Publish package to GitHub Packages
+name: Publish package to npm
 on:
   release:
     types: [published]
@@ -21,13 +21,10 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
 
-      # Setup .npmrc file to publish to GitHub Packages
-      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+      - name: Setup Node.js and pnpm
+        uses: ./.github/composite/setup
         with:
-          node-version-file: 'package.json'
           registry-url: 'https://registry.npmjs.org'
-
-      - run: pnpm install --frozen-lockfile
 
       - run: pnpm run build
 
