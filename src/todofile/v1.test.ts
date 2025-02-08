@@ -90,4 +90,92 @@ describe("TodoModuleV1Handler", () => {
       expect(isV1).toBe(false);
     });
   });
+
+  describe("upgradeToNextVersion", () => {
+    it("can upgrade empty todo to v2 module", () => {
+      const todoModuleV1 = {} satisfies TodoModuleV1;
+      const todoModuleV2 =
+        TodoModuleV1Handler.upgradeToNextVersion(todoModuleV1);
+
+      expect(todoModuleV2).toStrictEqual({
+        meta: {
+          version: 2,
+        },
+        todo: {},
+      });
+    });
+
+    it("can upgrade non-empty todo to v2 module", () => {
+      const todoModuleV1 = {
+        "no-console": {
+          autoFix: false,
+          files: ["file1.js"],
+        },
+        "no-unused-vars": {
+          autoFix: false,
+          files: ["file2.js"],
+        },
+      } satisfies TodoModuleV1;
+
+      const todoModuleV2 =
+        TodoModuleV1Handler.upgradeToNextVersion(todoModuleV1);
+
+      expect(todoModuleV2).toStrictEqual({
+        meta: {
+          version: 2,
+        },
+        todo: {
+          "no-console": {
+            autoFix: false,
+            violations: {
+              "file1.js": 1,
+            },
+          },
+          "no-unused-vars": {
+            autoFix: false,
+            violations: {
+              "file2.js": 1,
+            },
+          },
+        },
+      });
+    });
+
+    it("can upgrade todo with duplicate files to v2 module", () => {
+      const todoModuleV1 = {
+        "no-console": {
+          autoFix: false,
+          files: ["file1.js", "file1.js"],
+        },
+        "no-unused-vars": {
+          autoFix: false,
+          files: ["file2.js", "file2.js", "file3.js"],
+        },
+      } satisfies TodoModuleV1;
+
+      const todoModuleV2 =
+        TodoModuleV1Handler.upgradeToNextVersion(todoModuleV1);
+
+      expect(todoModuleV2).toStrictEqual({
+        meta: {
+          version: 2,
+        },
+        todo: {
+          "no-console": {
+            autoFix: false,
+            violations: {
+              "file1.js": 2,
+            },
+          },
+          "no-unused-vars": {
+            autoFix: false,
+            violations: {
+              "file2.js": 2,
+              "file3.js": 1,
+            },
+          },
+        },
+      });
+    });
+  });
 });

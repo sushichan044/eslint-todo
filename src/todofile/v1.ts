@@ -1,8 +1,11 @@
+import { isEmpty } from "es-toolkit/compat";
 import path from "pathe";
 
 import type { ESLintRuleId, TodoModuleHandler } from "./types";
+import type { TodoModuleV2 } from "./v2";
 
 import { isNonEmptyString } from "../utils/string";
+import { TodoModuleV2Handler } from "./v2";
 
 type ESLintTodoEntryV1 = {
   /**
@@ -30,7 +33,10 @@ type ESLintTodoEntryV1 = {
  */
 export type TodoModuleV1 = Record<ESLintRuleId, ESLintTodoEntryV1>;
 
-export const TodoModuleV1Handler: TodoModuleHandler<TodoModuleV1> = {
+export const TodoModuleV1Handler: TodoModuleHandler<
+  TodoModuleV1,
+  TodoModuleV2
+> = {
   version: 1,
 
   buildDisableConfigsForESLint: (todo) => {
@@ -76,5 +82,24 @@ export const TodoModuleV1Handler: TodoModuleHandler<TodoModuleV1> = {
     return !Object.hasOwn(todo, "meta");
   },
 
-  upgradeToNextVersion: () => false,
+  upgradeToNextVersion: (todo) => {
+    if (isEmpty(todo)) {
+      return TodoModuleV2Handler.getDefaultTodo();
+    }
+
+    return Object.entries(todo).reduce((todoV2, [ruleId, entry]) => {
+      todoV2.todo[ruleId] = {
+        autoFix: entry.autoFix,
+        violations: entry.files.reduce(
+          (violations, file) => {
+            violations[file] ??= 0;
+            violations[file]++;
+            return violations;
+          },
+          {} as Record<string, number>,
+        ),
+      };
+      return todoV2;
+    }, TodoModuleV2Handler.getDefaultTodo());
+  },
 };
