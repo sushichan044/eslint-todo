@@ -48,7 +48,7 @@ export const TodoModuleV1Handler: TodoModuleHandler<TodoModuleV1> = {
 
   buildTodoFromLintResults(lintResult, options) {
     const todoByRuleId = aggregateESLintResultsByRule(lintResult, options);
-    return removeDuplicateFilesFromTodo(todoByRuleId);
+    return removeDuplicateFilesFromTodoModuleV1(todoByRuleId);
   },
 
   getDefaultTodo() {
@@ -95,7 +95,9 @@ const aggregateESLintResultsByRule = (
  * @param todo
  * @returns
  */
-const removeDuplicateFilesFromTodo = (todo: TodoModuleV1): TodoModuleV1 => {
+export const removeDuplicateFilesFromTodoModuleV1 = (
+  todo: TodoModuleV1,
+): TodoModuleV1 => {
   return Object.entries(todo).reduce((acc, [ruleId, entry]) => {
     acc[ruleId] = {
       ...entry,
