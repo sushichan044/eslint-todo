@@ -8,7 +8,7 @@ import type { LatestSupportedModuleHandler } from "./todofile";
 import type { GetCurrentTodoModule, TodoModuleLike } from "./todofile/types";
 import type { TodoFilePath } from "./utils/path";
 
-import { generateESLintTodoModule } from "./codegen";
+import { generateTodoModuleCode } from "./codegen";
 import { optionsWithDefault } from "./options";
 import { LATEST_MODULE_HANDLER } from "./todofile";
 import { importDefault } from "./utils/import";
@@ -87,12 +87,12 @@ export class ESLintTodoCore {
 
     await writeFile(
       this.#todoFilePath.absolute,
-      generateESLintTodoModule(LATEST_MODULE_HANDLER.getDefaultTodo()),
+      generateTodoModuleCode(LATEST_MODULE_HANDLER.getDefaultTodo()),
     );
   }
 
   async writeTodoModule(todo: TodoModuleLike): Promise<void> {
-    const todoModule = generateESLintTodoModule(todo);
+    const todoModule = generateTodoModuleCode(todo);
     await writeFile(this.#todoFilePath.absolute, todoModule);
   }
 }

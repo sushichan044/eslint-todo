@@ -4,7 +4,7 @@ import type { TodoModuleLike } from "./todofile/types";
 import type { TodoModuleV1 } from "./todofile/v1";
 import type { TodoModuleV2 } from "./todofile/v2";
 
-import { generateESLintTodoModule } from "./codegen";
+import { generateTodoModuleCode } from "./codegen";
 
 describe("generateESLintTodoModule", () => {
   it("can generate a TodoModule v1 JavaScript module", () => {
@@ -19,7 +19,7 @@ describe("generateESLintTodoModule", () => {
       },
     };
 
-    const result = generateESLintTodoModule(eslintTodo);
+    const result = generateTodoModuleCode(eslintTodo);
 
     expect(result).toMatchInlineSnapshot(`
       "/* eslint-disable */
@@ -57,7 +57,7 @@ describe("generateESLintTodoModule", () => {
       },
     };
 
-    const result = generateESLintTodoModule(eslintTodo);
+    const result = generateTodoModuleCode(eslintTodo);
 
     expect(result).toMatchInlineSnapshot(`
       "/* eslint-disable */
@@ -87,7 +87,7 @@ describe("generateESLintTodoModule", () => {
   it("should generate an empty JavaScript module if the module is empty", () => {
     const eslintTodo: TodoModuleLike = {};
 
-    const result = generateESLintTodoModule(eslintTodo);
+    const result = generateTodoModuleCode(eslintTodo);
 
     expect(result).toMatchInlineSnapshot(`
       "/* eslint-disable */
