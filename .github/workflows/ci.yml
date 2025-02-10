@@ -32,11 +32,17 @@ jobs:
       - name: Setup Node.js and pnpm
         uses: ./.github/composite/setup
 
+      - name: Build
+        run: pnpm run build
+
       - name: Run ESLint
-        run: pnpm run lint:ci
+        run: pnpm run lint
 
       - name: Run Prettier
         run: pnpm run format:ci
+
+      - name: Run typecheck
+        run: pnpm run typecheck
 
       - name: Run Vitest
         run: pnpm run test
