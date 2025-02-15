@@ -55,10 +55,6 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     return await importDefault<TodoModuleLike>(this.#todoFilePath.absolute);
   }
 
-  /**
-   * Build ESLint configs to enable / disable rules in the todo object.
-   * @returns {Linter.Config[]} ESLint configs
-   */
   buildESLintConfig(
     todoModule: SupportedModules,
     severity: RuleSeverity,
@@ -66,10 +62,6 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     return buildESLintConfigForModule(todoModule, severity) ?? [];
   }
 
-  /**
-   * Get ESLintTodo object.
-   * @param lintResults LintResults from ESLint
-   */
   getESLintTodo(
     lintResults: ESLint.LintResult[],
   ): GetCurrentTodoModule<LatestSupportedModuleHandler> {
@@ -91,10 +83,6 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     });
   }
 
-  /**
-   * Run ESLint and collect the LintResults.
-   * @returns LintResults from ESLint
-   */
   async lint(): Promise<ESLint.LintResult[]> {
     const result = await this.#eslint.lintFiles(
       resolve(this.#options.cwd, "**/*"),
