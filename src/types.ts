@@ -1,11 +1,23 @@
-import type { ESLint } from "eslint";
+import type { ESLint, Linter } from "eslint";
 
-import type { LatestSupportedModuleHandler } from "./todofile";
+import type {
+  LatestSupportedModuleHandler,
+  SupportedModules,
+} from "./todofile";
 import type { TodoFilePath } from "./todofile/path";
-import type { GetCurrentTodoModule, TodoModuleLike } from "./todofile/types";
+import type {
+  GetCurrentTodoModule,
+  RuleSeverity,
+  TodoModuleLike,
+} from "./todofile/types";
 import type { PromisifyAllMethods } from "./utils/types";
 
 interface ESLintTodoCoreLike {
+  buildESLintConfig(
+    todoModule: SupportedModules,
+    severity: RuleSeverity,
+  ): Linter.Config[];
+
   getESLintTodo(
     lintResults: ESLint.LintResult[],
   ): GetCurrentTodoModule<LatestSupportedModuleHandler>;

@@ -4,6 +4,8 @@ import nodeEndpoint from "comlink/dist/esm/node-adapter.mjs";
 import { parentPort } from "node:worker_threads";
 
 import type { UserOptions } from "../options";
+import type { SupportedModules } from "../todofile";
+import type { RuleSeverity } from "../todofile/types";
 import type { IESLintTodoCoreLike } from "../types";
 
 import { ESLintTodoCore } from "../index";
@@ -16,6 +18,13 @@ export class RemoteESLintTodoCore implements IESLintTodoCoreLike {
 
   constructor(userOptions: UserOptions) {
     this.#todoCore = new ESLintTodoCore(userOptions);
+  }
+
+  buildESLintConfig(
+    todoModule: SupportedModules,
+    severity: RuleSeverity,
+  ): ReturnType<ESLintTodoCore["buildESLintConfig"]> {
+    return this.#todoCore.buildESLintConfig(todoModule, severity);
   }
 
   getESLintTodo(

@@ -1,15 +1,25 @@
+import type { Linter } from "eslint";
+
 import { ESLint } from "eslint";
 import { existsSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { resolve } from "pathe";
 
 import type { Options, UserOptions } from "./options";
-import type { LatestSupportedModuleHandler } from "./todofile";
+import type {
+  LatestSupportedModuleHandler,
+  SupportedModules,
+} from "./todofile";
 import type { TodoFilePath } from "./todofile/path";
-import type { GetCurrentTodoModule, TodoModuleLike } from "./todofile/types";
+import type {
+  GetCurrentTodoModule,
+  RuleSeverity,
+  TodoModuleLike,
+} from "./todofile/types";
 import type { IESLintTodoCoreLike } from "./types";
 
 import { generateTodoModuleCode } from "./codegen";
+import { buildESLintConfigForModule } from "./eslint/build";
 import { optionsWithDefault } from "./options";
 import { LATEST_MODULE_HANDLER } from "./todofile";
 import { resolveTodoModulePath } from "./todofile/path";
@@ -43,6 +53,17 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     // So, this.lint() will run with cached todo file, even if the file is updated after this._DO_NOT_USE_DIRECTLY_unsafeReadTodoModule().
     // To avoid this behavior, just use `RemoteESLintTodoCore.readTodoModule()` in the remote worker.
     return await importDefault<TodoModuleLike>(this.#todoFilePath.absolute);
+  }
+
+  /**
+   * Build ESLint configs to enable / disable rules in the todo object.
+   * @returns {Linter.Config[]} ESLint configs
+   */
+  buildESLintConfig(
+    todoModule: SupportedModules,
+    severity: RuleSeverity,
+  ): Linter.Config[] {
+    return buildESLintConfigForModule(todoModule, severity) ?? [];
   }
 
   /**
