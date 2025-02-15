@@ -29,7 +29,7 @@ describe("TodoModuleV2Handler", () => {
       expect(configs).toStrictEqual([
         {
           files: ["file1.js"],
-          name: "@sushichan044/eslint-todo/todo/no-console",
+          name: "@sushichan044/eslint-todo/todo/off/no-console",
           rules: {
             "no-console": "off",
           },

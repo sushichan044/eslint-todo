@@ -42,7 +42,7 @@ export const TodoModuleV1Handler: TodoModuleHandler<
   buildDisableConfigsForESLint: (todo) => {
     return Object.entries(todo).map(([ruleId, entry]) => ({
       files: entry.files.map(escapeGlobCharacters),
-      name: `@sushichan044/eslint-todo/todo/${ruleId}`,
+      name: `@sushichan044/eslint-todo/todo/off/${ruleId}`,
       rules: {
         [ruleId]: "off",
       },
