@@ -27,17 +27,19 @@ const cli = defineCommand({
       type: "string",
       valueHint: "path",
     },
-    "debug": {
-      description: "Enable debug mode",
-      required: false,
-      type: "boolean",
-    },
     "todo-file": {
       alias: "f",
       description: "ESLint todo file name (default: .eslint-todo.js)",
       required: false,
       type: "string",
       valueHint: "filename",
+    },
+
+    // logging
+    "debug": {
+      description: "Enable debug mode",
+      required: false,
+      type: "boolean",
     },
     "trace": {
       description: "Enable trace mode",
