@@ -8,9 +8,9 @@ import type { TodoModuleV2 } from "../todofile/v2";
 
 import { TodoModuleV1Handler } from "../todofile/v1";
 import { TodoModuleV2Handler } from "../todofile/v2";
-import { buildESLintFlatConfig } from "./build";
+import { buildESLintConfigForModule } from "./build";
 
-describe("buildESLintFlatConfig", () => {
+describe("buildESLintConfigForModule", () => {
   const todoModuleV1 = {
     "no-console": {
       autoFix: false,
@@ -35,46 +35,40 @@ describe("buildESLintFlatConfig", () => {
   const expectedConfig = [
     {
       files: ["file1.js"],
-      name: "@sushichan044/eslint-todo/todo/off/no-console",
+      name: "@sushichan044/eslint-todo/off/no-console",
       rules: {
         "no-console": "off",
       },
     },
   ] satisfies Linter.Config[];
 
-  const spyV1Builder = vi.spyOn(
-    TodoModuleV1Handler,
-    "buildDisableConfigsForESLint",
-  );
-  const spyV2Builder = vi.spyOn(
-    TodoModuleV2Handler,
-    "buildDisableConfigsForESLint",
-  );
+  const spyV1Builder = vi.spyOn(TodoModuleV1Handler, "buildConfigsForESLint");
+  const spyV2Builder = vi.spyOn(TodoModuleV2Handler, "buildConfigsForESLint");
 
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
   it("should return ESLint configs for V1 todo module", () => {
-    const result = buildESLintFlatConfig(todoModuleV1);
+    const result = buildESLintConfigForModule(todoModuleV1, "off");
 
-    expect(spyV1Builder).toHaveBeenCalledWith(todoModuleV1);
+    expect(spyV1Builder).toHaveBeenCalledWith(todoModuleV1, "off");
     expect(result).toStrictEqual(expectedConfig);
   });
 
   it("should return ESLint configs for empty object as v1 todo module", () => {
     const todoModuleEmpty = {} satisfies TodoModuleV1;
 
-    const result = buildESLintFlatConfig(todoModuleEmpty);
+    const result = buildESLintConfigForModule(todoModuleEmpty, "off");
 
-    expect(spyV1Builder).toHaveBeenCalledWith(todoModuleEmpty);
+    expect(spyV1Builder).toHaveBeenCalledWith(todoModuleEmpty, "off");
     expect(result).toStrictEqual([]);
   });
 
   it("should return ESLint configs for V2 todo module", () => {
-    const result = buildESLintFlatConfig(todoModuleV2);
+    const result = buildESLintConfigForModule(todoModuleV2, "off");
 
-    expect(spyV2Builder).toHaveBeenCalledWith(todoModuleV2);
+    expect(spyV2Builder).toHaveBeenCalledWith(todoModuleV2, "off");
     expect(result).toStrictEqual(expectedConfig);
   });
 
@@ -86,7 +80,7 @@ describe("buildESLintFlatConfig", () => {
     } satisfies TodoModuleLike;
 
     // @ts-expect-error type is not correct because we are passing unsupported object.
-    const result = buildESLintFlatConfig(unknownTodoModule);
+    const result = buildESLintConfigForModule(unknownTodoModule);
 
     expect(spyV1Builder).not.toHaveBeenCalled();
     expect(spyV2Builder).not.toHaveBeenCalled();

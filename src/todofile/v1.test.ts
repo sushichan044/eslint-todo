@@ -6,7 +6,7 @@ import type { TodoModuleV2 } from "./v2";
 import { TodoModuleV1Handler } from "./v1";
 
 describe("TodoModuleV1Handler", () => {
-  describe("buildDisableConfigsForESLint", () => {
+  describe("buildConfigsForESLint", () => {
     it("should build ESLint configs for v1 module", () => {
       const todoModuleV1 = {
         "no-console": {
@@ -15,12 +15,15 @@ describe("TodoModuleV1Handler", () => {
         },
       } satisfies TodoModuleV1;
 
-      const configs =
-        TodoModuleV1Handler.buildDisableConfigsForESLint(todoModuleV1);
+      const configs = TodoModuleV1Handler.buildConfigsForESLint(
+        todoModuleV1,
+        "off",
+      );
+
       expect(configs).toStrictEqual([
         {
           files: ["file1.js"],
-          name: "@sushichan044/eslint-todo/todo/off/no-console",
+          name: "@sushichan044/eslint-todo/off/no-console",
           rules: {
             "no-console": "off",
           },
@@ -36,12 +39,15 @@ describe("TodoModuleV1Handler", () => {
         },
       } satisfies TodoModuleV1;
 
-      const configs =
-        TodoModuleV1Handler.buildDisableConfigsForESLint(todoModuleV1);
+      const configs = TodoModuleV1Handler.buildConfigsForESLint(
+        todoModuleV1,
+        "off",
+      );
+
       expect(configs).toStrictEqual([
         {
           files: [String.raw`file\*.js`, String.raw`pages/\[id\].tsx`],
-          name: "@sushichan044/eslint-todo/todo/off/no-console",
+          name: "@sushichan044/eslint-todo/off/no-console",
           rules: {
             "no-console": "off",
           },
@@ -52,8 +58,10 @@ describe("TodoModuleV1Handler", () => {
     it("should generate empty array for empty module", () => {
       const todoModuleV1 = {} satisfies TodoModuleV1;
 
-      const configs =
-        TodoModuleV1Handler.buildDisableConfigsForESLint(todoModuleV1);
+      const configs = TodoModuleV1Handler.buildConfigsForESLint(
+        todoModuleV1,
+        "off",
+      );
       expect(configs).toStrictEqual([]);
     });
 
@@ -65,14 +73,55 @@ describe("TodoModuleV1Handler", () => {
         },
       } satisfies TodoModuleV1;
 
-      const configs =
-        TodoModuleV1Handler.buildDisableConfigsForESLint(todoModuleV1);
+      const configs = TodoModuleV1Handler.buildConfigsForESLint(
+        todoModuleV1,
+        "off",
+      );
+
       expect(configs).toStrictEqual([
         {
           files: ["file1.js", "file1.js"],
-          name: "@sushichan044/eslint-todo/todo/off/no-console",
+          name: "@sushichan044/eslint-todo/off/no-console",
           rules: {
             "no-console": "off",
+          },
+        },
+      ]);
+    });
+
+    it("should build configs with off / error severity", () => {
+      const todoModuleV1 = {
+        "no-console": {
+          autoFix: false,
+          files: ["file1.js"],
+        },
+      } satisfies TodoModuleV1;
+
+      const disabledConfigs = TodoModuleV1Handler.buildConfigsForESLint(
+        todoModuleV1,
+        "off",
+      );
+      const errorConfigs = TodoModuleV1Handler.buildConfigsForESLint(
+        todoModuleV1,
+        "error",
+      );
+
+      expect(disabledConfigs).toStrictEqual([
+        {
+          files: ["file1.js"],
+          name: "@sushichan044/eslint-todo/off/no-console",
+          rules: {
+            "no-console": "off",
+          },
+        },
+      ]);
+
+      expect(errorConfigs).toStrictEqual([
+        {
+          files: ["file1.js"],
+          name: "@sushichan044/eslint-todo/error/no-console",
+          rules: {
+            "no-console": "error",
           },
         },
       ]);

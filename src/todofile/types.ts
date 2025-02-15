@@ -9,15 +9,17 @@ export type GetCurrentTodoModule<T extends TodoModuleHandler<TodoModuleLike>> =
 
 export type ESLintRuleId = string;
 
+export type RuleSeverity = Extract<Linter.RuleSeverity, "error" | "off">;
+
 export interface TodoModuleHandler<
   CURRENT extends TodoModuleLike,
   NEXT extends TodoModuleLike = TodoModuleLike,
 > {
   /**
-   * Build ESLint configs to disable todo rules.
+   * Build ESLint configs to enable / disable rules in the todo object.
    * @param todo Todo object
    */
-  buildDisableConfigsForESLint(todo: CURRENT): Linter.Config[];
+  buildConfigsForESLint(todo: CURRENT, severity: RuleSeverity): Linter.Config[];
   /**
    * Build a todo object from the lint results.
    * @param lintResult Lint results from ESLint

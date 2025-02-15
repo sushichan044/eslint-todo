@@ -8,7 +8,7 @@ import type { SupportedModules } from "../todofile";
 import { optionsWithDefault } from "../options";
 import { resolveTodoModulePath } from "../todofile/path";
 import { importDefault } from "../utils/import";
-import { buildESLintFlatConfig } from "./build";
+import { buildESLintConfigForModule } from "./build";
 
 const eslintConfigTodo = async (
   userOptions: UserOptions = {},
@@ -34,7 +34,7 @@ const eslintConfigTodo = async (
     },
   ];
   configs.push(
-    ...(buildESLintFlatConfig(todoModule) ?? [
+    ...(buildESLintConfigForModule(todoModule, "off") ?? [
       {
         files: [todoFilePath.relative],
         name: "@sushichan044/eslint-todo/warning/YOU_ARE_USING_INVALID_TODO_FILE",

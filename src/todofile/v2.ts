@@ -52,12 +52,12 @@ const todoModuleMetaIsV2 = v.strictObject({
 export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
   version: 2,
 
-  buildDisableConfigsForESLint: ({ todo }) => {
+  buildConfigsForESLint: ({ todo }, severity) => {
     return Object.entries(todo).map(([ruleId, entry]) => ({
       files: Object.keys(entry.violations).map(escapeGlobCharacters),
-      name: `@sushichan044/eslint-todo/todo/off/${ruleId}`,
+      name: `@sushichan044/eslint-todo/${severity}/${ruleId}`,
       rules: {
-        [ruleId]: "off",
+        [ruleId]: severity,
       },
     }));
   },
