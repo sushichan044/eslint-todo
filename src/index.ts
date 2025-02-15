@@ -7,6 +7,7 @@ import type { Options, UserOptions } from "./options";
 import type { LatestSupportedModuleHandler } from "./todofile";
 import type { TodoFilePath } from "./todofile/path";
 import type { GetCurrentTodoModule, TodoModuleLike } from "./todofile/types";
+import type { IESLintTodoCoreLike } from "./types";
 
 import { generateTodoModuleCode } from "./codegen";
 import { optionsWithDefault } from "./options";
@@ -17,7 +18,7 @@ import { importDefault } from "./utils/import";
 /**
  * ESLintTodo API Entrypoint.
  */
-export class ESLintTodoCore {
+export class ESLintTodoCore implements IESLintTodoCoreLike {
   // @ts-expect-error Initialize in this.initializeESLint()
   #eslint: ESLint;
   // @ts-expect-error Initialize in this.initializeESLint()

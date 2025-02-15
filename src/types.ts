@@ -6,8 +6,6 @@ import type { GetCurrentTodoModule, TodoModuleLike } from "./todofile/types";
 import type { PromisifyAllMethods } from "./utils/types";
 
 interface ESLintTodoCoreLike {
-  fixViolations(limit: OperationLimit): Promise<void>;
-
   getESLintTodo(
     lintResults: ESLint.LintResult[],
   ): GetCurrentTodoModule<LatestSupportedModuleHandler>;
@@ -16,7 +14,11 @@ interface ESLintTodoCoreLike {
 
   initializeESLint(): void;
 
-  lint(code: string, filePath: string): Promise<ESLint.LintResult[]>;
+  /**
+   * Run ESLint and collect the LintResults.
+   * @returns LintResults from ESLint
+   */
+  lint(): Promise<ESLint.LintResult[]>;
 
   resetTodoModule(): Promise<void>;
 
