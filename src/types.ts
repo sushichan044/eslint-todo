@@ -1,19 +1,9 @@
 import type { ESLint } from "eslint";
 
-import type { OperationLimit } from "./operation/types";
 import type { LatestSupportedModuleHandler } from "./todofile";
 import type { TodoFilePath } from "./todofile/path";
 import type { GetCurrentTodoModule, TodoModuleLike } from "./todofile/types";
-
-export type MaybePromise<T> = Promise<T> | T;
-
-type PromisifyAllMethods<T> = {
-  [K in keyof T]: T[K] extends (...args: infer A) => infer R
-    ? R extends PromiseLike<unknown>
-      ? (...args: A) => R
-      : (...args: A) => MaybePromise<R>
-    : T[K];
-};
+import type { PromisifyAllMethods } from "./utils/types";
 
 interface ESLintTodoCoreLike {
   fixViolations(limit: OperationLimit): Promise<void>;
