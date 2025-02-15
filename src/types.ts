@@ -12,6 +12,8 @@ import type {
 } from "./todofile/types";
 import type { PromisifyAllMethods } from "./utils/types";
 
+export type ESLintInitializeOptions = Pick<ESLint.Options, "overrideConfig">;
+
 interface ESLintTodoCoreLike {
   /**
    * Build ESLint configs to enable / disable rules in the todo object.
@@ -38,7 +40,7 @@ interface ESLintTodoCoreLike {
   /**
    * Initialize ESLint instance.
    */
-  initializeESLint(): void;
+  initializeESLint(options?: ESLintInitializeOptions): void;
 
   /**
    * Run ESLint and collect the LintResults.

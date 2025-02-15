@@ -16,7 +16,7 @@ import type {
   RuleSeverity,
   TodoModuleLike,
 } from "./todofile/types";
-import type { IESLintTodoCoreLike } from "./types";
+import type { ESLintInitializeOptions, IESLintTodoCoreLike } from "./types";
 
 import { generateTodoModuleCode } from "./codegen";
 import { buildESLintConfigForModule } from "./eslint/build";
@@ -75,11 +75,14 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     return this.#todoFilePath;
   }
 
-  initializeESLint(): void {
-    this.#eslint = new ESLint({ cwd: this.#options.cwd });
+  initializeESLint(options: ESLintInitializeOptions = {}): void {
+    const { overrideConfig } = options;
+
+    this.#eslint = new ESLint({ cwd: this.#options.cwd, overrideConfig });
     this.#eslintWithAutoFix = new ESLint({
       cwd: this.#options.cwd,
       fix: true,
+      overrideConfig,
     });
   }
 
