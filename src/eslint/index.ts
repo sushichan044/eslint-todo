@@ -1,46 +1,52 @@
 import type { Linter } from "eslint";
 
-import { existsSync } from "node:fs";
-
 import type { UserOptions } from "../options";
-import type { SupportedModules } from "../todofile";
 
-import { optionsWithDefault } from "../options";
-import { resolveTodoModulePath } from "../todofile/path";
-import { importDefault } from "../utils/import";
+import { ESLintTodoCore } from "../index";
+import { TodoModuleV1Handler } from "../todofile/v1";
+import { TodoModuleV2Handler } from "../todofile/v2";
 import { buildESLintConfigForModule } from "./build";
 
 const eslintConfigTodo = async (
   userOptions: UserOptions = {},
 ): Promise<Linter.Config[]> => {
-  const options = optionsWithDefault(userOptions);
-  const todoFilePath = resolveTodoModulePath(options);
+  const core = new ESLintTodoCore(userOptions);
 
-  if (!existsSync(todoFilePath.absolute)) {
-    return [];
-  }
-
-  const todoModule = await importDefault<SupportedModules>(
-    todoFilePath.absolute,
-  );
+  const todoModulePath = core.getTodoModulePath();
+  const module = await (async () => {
+    try {
+      return await core._DO_NOT_USE_DIRECTLY_unsafeReadTodoModule();
+    } catch {
+      return null;
+    }
+  })();
 
   const configs: Linter.Config[] = [
     {
-      files: [todoFilePath.relative],
+      files: [todoModulePath.relative],
       linterOptions: {
         reportUnusedDisableDirectives: false,
       },
       name: "@sushichan044/eslint-todo/setup",
     },
   ];
-  configs.push(
-    ...(buildESLintConfigForModule(todoModule, "off") ?? [
-      {
-        files: [todoFilePath.relative],
-        name: "@sushichan044/eslint-todo/warning/YOU_ARE_USING_INVALID_TODO_FILE",
-      },
-    ]),
-  );
+
+  if (
+    module == null ||
+    (!TodoModuleV1Handler.isVersion(module) &&
+      !TodoModuleV2Handler.isVersion(module))
+  ) {
+    configs.push({
+      files: [todoModulePath.relative],
+      name: "@sushichan044/eslint-todo/warning/YOU_ARE_USING_INVALID_TODO_FILE",
+    });
+    return configs;
+  }
+
+  const builtConfigs = buildESLintConfigForModule(module, "off");
+  if (builtConfigs != null) {
+    configs.push(...builtConfigs);
+  }
 
   return configs;
 };
