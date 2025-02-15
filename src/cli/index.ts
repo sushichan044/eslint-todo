@@ -6,8 +6,9 @@ import type { UserOptions } from "../options";
 
 import { version as pkgVersion } from "../../package.json";
 import { ESLintTodoCore } from "../index";
-import { launchRemoteESLintTodoCore } from "../remote/client";
-import { TodoModuleV1Handler } from "../todofile/v1";
+import { genAction } from "./action/gen";
+import { updateAction } from "./action/update";
+import { runAction } from "./run";
 
 const consola = createConsola({ formatOptions: { date: false } });
 
@@ -71,12 +72,10 @@ const cli = defineCommand({
       cwd: args.cwd,
       todoFile: args["todo-file"],
     };
-
     // initialize local ESLintTodoCore
     const eslintTodoCore = new ESLintTodoCore(options);
-    // initialize remote ESLintTodoCore
-    const remoteService = launchRemoteESLintTodoCore();
-    const remoteCore = await new remoteService.RemoteESLintTodoCore(options);
+
+    await runAction(updateAction, { consola, options });
 
     // start processing
     const todoFilePathFromCli = relative(
@@ -84,40 +83,10 @@ const cli = defineCommand({
       eslintTodoCore.getTodoModulePath().absolute,
     );
 
-    const currentModule = await remoteCore.readTodoModule();
-    if (TodoModuleV1Handler.isVersion(currentModule)) {
-      consola.start(
-        "Detected old version of todo file. Automatically upgrading ...",
-      );
-      const upgradedModule =
-        TodoModuleV1Handler.upgradeToNextVersion(currentModule);
-
-      if (upgradedModule !== false) {
-        await eslintTodoCore.writeTodoModule(upgradedModule);
-        consola.success("Upgrade finished!");
-      }
-    }
-
     if (!args.correct) {
-      // Generate ESLint todo file
-      try {
-        await eslintTodoCore.resetTodoModule();
-      } catch (error) {
-        consola.error(error);
-        return;
-      }
-
-      consola.start("Running ESLint ...");
-      const lintResults = await eslintTodoCore.lint();
-      consola.success("ESLint finished!");
-
-      consola.start("Generating ESLint todo file ...");
-      const todo = eslintTodoCore.getESLintTodo(lintResults);
-      await eslintTodoCore.writeTodoModule(todo);
+      await runAction(genAction, { consola, options });
       consola.success(`ESLint todo file generated at ${todoFilePathFromCli}!`);
     }
-
-    await remoteService.terminate();
   },
 });
 
