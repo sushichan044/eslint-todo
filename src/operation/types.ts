@@ -1,10 +1,10 @@
 type OperationFileLimit = {
-  limit: number;
+  count: number;
   type: "file";
 };
 
 type OperationViolationLimit = {
-  limit: number;
+  count: number;
   type: "violation";
 };
 
@@ -12,3 +12,17 @@ type OperationViolationLimit = {
  * Operation limit with ESLintTodo.
  */
 export type OperationLimit = OperationFileLimit | OperationViolationLimit;
+
+export type OperationOptions = {
+  /**
+   * Only handle auto-fixable violations.
+   *
+   * @default true
+   */
+  autoFixableOnly?: boolean;
+
+  /**
+   * Limit the number of operations.
+   */
+  limit: OperationLimit;
+};

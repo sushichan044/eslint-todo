@@ -6,8 +6,8 @@ import type { UserOptions } from "../options";
 import type { SupportedModules } from "../todofile";
 
 import { optionsWithDefault } from "../options";
+import { resolveTodoModulePath } from "../todofile/path";
 import { importDefault } from "../utils/import";
-import { resolveTodoModulePath } from "../utils/path";
 import { buildESLintFlatConfig } from "./build";
 
 const eslintConfigTodo = async (

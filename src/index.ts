@@ -5,14 +5,14 @@ import { resolve } from "pathe";
 
 import type { Options, UserOptions } from "./options";
 import type { LatestSupportedModuleHandler } from "./todofile";
+import type { TodoFilePath } from "./todofile/path";
 import type { GetCurrentTodoModule, TodoModuleLike } from "./todofile/types";
-import type { TodoFilePath } from "./utils/path";
 
 import { generateTodoModuleCode } from "./codegen";
 import { optionsWithDefault } from "./options";
 import { LATEST_MODULE_HANDLER } from "./todofile";
+import { resolveTodoModulePath } from "./todofile/path";
 import { importDefault } from "./utils/import";
-import { resolveTodoModulePath } from "./utils/path";
 
 /**
  * ESLintTodo API Entrypoint.
