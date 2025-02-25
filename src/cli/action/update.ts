@@ -1,8 +1,7 @@
-import type { CLIAction } from "../types";
-
 import { TodoModuleV1Handler } from "../../todofile/v1";
+import { defineAction } from "./index";
 
-export const updateAction: CLIAction = async (core, consola) => {
+export const updateAction = defineAction(async (core, consola) => {
   const currentModule = await core.readTodoModule();
   if (!TodoModuleV1Handler.isVersion(currentModule)) {
     return;
@@ -20,4 +19,4 @@ export const updateAction: CLIAction = async (core, consola) => {
 
   await core.writeTodoModule(nextModule);
   consola.success("Upgrade finished!");
-};
+});

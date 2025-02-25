@@ -6,9 +6,9 @@ import type { UserOptions } from "../options";
 
 import { version as pkgVersion } from "../../package.json";
 import { ESLintTodoCore } from "../index";
+import { runAction } from "./action";
 import { genAction } from "./action/gen";
 import { updateAction } from "./action/update";
-import { runAction } from "./run";
 
 const consola = createConsola({ formatOptions: { date: false } });
 
@@ -76,14 +76,13 @@ const cli = defineCommand({
     };
     // initialize local ESLintTodoCore
     const eslintTodoCore = new ESLintTodoCore(options);
-
-    await runAction(updateAction, { consola, options });
-
     // start processing
     const todoFilePathFromCli = relative(
       cliCwd,
       eslintTodoCore.getTodoModulePath().absolute,
     );
+
+    await runAction(updateAction, { consola, options });
 
     if (!args.correct) {
       await runAction(genAction, { consola, options });

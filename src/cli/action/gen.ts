@@ -1,6 +1,6 @@
-import type { CLIAction } from "../types";
+import { defineAction } from "./index";
 
-export const genAction: CLIAction = async (core, consola) => {
+export const genAction = defineAction(async (core, consola) => {
   await core.resetTodoModule();
 
   consola.start("Running ESLint ...");
@@ -10,4 +10,4 @@ export const genAction: CLIAction = async (core, consola) => {
   consola.start("Generating ESLint todo file ...");
   const todo = await core.getESLintTodo(lintResults);
   await core.writeTodoModule(todo);
-};
+});
