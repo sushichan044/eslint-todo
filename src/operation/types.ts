@@ -1,9 +1,9 @@
-type OperationFileLimit = {
+export type OperationFileLimit = {
   count: number;
   type: "file";
 };
 
-type OperationViolationLimit = {
+export type OperationViolationLimit = {
   count: number;
   type: "violation";
 };
@@ -20,9 +20,4 @@ export type OperationOptions = {
    * @default true
    */
   autoFixableOnly?: boolean;
-
-  /**
-   * Limit the number of operations.
-   */
-  limit: OperationLimit;
 };
