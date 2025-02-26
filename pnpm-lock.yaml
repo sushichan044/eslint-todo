@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       citty:
-        specifier: github:unjs/citty#2c1ab57a61bfc4df00393919b70927cd132b680e
-        version: https://codeload.github.com/unjs/citty/tar.gz/2c1ab57a61bfc4df00393919b70927cd132b680e
+        specifier: 0.1.6
+        version: 0.1.6
       comlink:
         specifier: 4.4.2
         version: 4.4.2
@@ -1156,10 +1156,6 @@ packages:
 
   citty@0.1.6:
     resolution: {integrity: sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==}
-
-  citty@https://codeload.github.com/unjs/citty/tar.gz/2c1ab57a61bfc4df00393919b70927cd132b680e:
-    resolution: {tarball: https://codeload.github.com/unjs/citty/tar.gz/2c1ab57a61bfc4df00393919b70927cd132b680e}
-    version: 0.1.6
 
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
@@ -4147,10 +4143,6 @@ snapshots:
       readdirp: 4.1.1
 
   citty@0.1.6:
-    dependencies:
-      consola: 3.4.0
-
-  citty@https://codeload.github.com/unjs/citty/tar.gz/2c1ab57a61bfc4df00393919b70927cd132b680e:
     dependencies:
       consola: 3.4.0
 

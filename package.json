@@ -41,7 +41,7 @@
     "eslint": "^8.57.0 || ^9.0.0"
   },
   "dependencies": {
-    "citty": "github:unjs/citty#2c1ab57a61bfc4df00393919b70927cd132b680e",
+    "citty": "0.1.6",
     "comlink": "4.4.2",
     "consola": "3.4.0",
     "defu": "6.1.4",
