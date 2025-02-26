@@ -36,8 +36,25 @@ runs:
           ${{ runner.os }}-pnpm-store-
 
     - name: Install Dependencies
+      id: pnpm-install
       shell: bash
       run: pnpm install --frozen-lockfile
+      continue-on-error: true
+
+    - name: Archive pnpm store on failure
+      if: steps.pnpm-install.outcome == 'failure'
+      shell: bash
+      run: |
+        mkdir -p /home/runner/tmp
+        tar -czf /home/runner/tmp/pnpm-store-failure.tar.gz /home/runner/setup-pnpm/node_modules/.bin/store/v10/tmp/
+        echo "artifact_path=/home/runner/tmp/pnpm-store-failure.tar.gz" >> $GITHUB_ENV
+
+    - name: Upload pnpm store artifact
+      if: steps.pnpm-install.outcome == 'failure'
+      uses: actions/upload-artifact@v4
+      with:
+        name: pnpm-store-failure
+        path: ${{ env.artifact_path }}
 
     - name: Save pnpm cache if main branch
       if: github.ref_name == 'main'
