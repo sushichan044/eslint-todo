@@ -7,9 +7,14 @@ import type { RemoteESLintTodoCore } from "../../remote/core";
 
 import { launchRemoteESLintTodoCore } from "../../remote/client";
 
-type CLIAction<ReturnValue = unknown> = (
-  core: Remote<RemoteESLintTodoCore>,
-  consola: ConsolaInstance,
+type ActionAPI = {
+  core: Remote<RemoteESLintTodoCore>;
+  logger: ConsolaInstance;
+};
+
+type CLIAction<InputValue = unknown, ReturnValue = unknown> = (
+  api: ActionAPI,
+  input: InputValue,
 ) => MaybePromise<ReturnValue>;
 
 type RunActionOptions = {
@@ -17,20 +22,28 @@ type RunActionOptions = {
   options: UserOptions;
 };
 
-export const defineAction = <RETURN>(action: CLIAction<RETURN>) => action;
+export const defineAction = <Input = unknown, Return = unknown>(
+  action: CLIAction<Input, Return>,
+) => action;
 
-export const runAction = async <T>(
-  action: CLIAction<T>,
+export const runAction = async <Input = unknown, Return = unknown>(
+  action: CLIAction<Input, Return>,
   options: RunActionOptions,
-): Promise<T> => {
+  input: Input = {} as Input,
+): Promise<Return> => {
+  const { consola, options: coreOptions } = options;
+
   // initialize remote ESLintTodoCore
   const remoteService = launchRemoteESLintTodoCore();
-  const remoteCore = await new remoteService.RemoteESLintTodoCore(
-    options.options,
-  );
+  const remoteCore = await new remoteService.RemoteESLintTodoCore(coreOptions);
+
+  const actionApi = {
+    core: remoteCore,
+    logger: consola,
+  } satisfies ActionAPI;
 
   try {
-    return await action(remoteCore, options.consola);
+    return await action(actionApi, input);
   } finally {
     await remoteService.terminate();
   }

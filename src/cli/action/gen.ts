@@ -1,13 +1,13 @@
 import { defineAction } from "./index";
 
-export const genAction = defineAction(async (core, consola) => {
+export const genAction = defineAction(async ({ core, logger }) => {
   await core.resetTodoModule();
 
-  consola.start("Running ESLint ...");
+  logger.start("Running ESLint ...");
   const lintResults = await core.lint();
-  consola.success("ESLint finished!");
+  logger.success("ESLint finished!");
 
-  consola.start("Generating ESLint todo file ...");
+  logger.start("Generating ESLint todo file ...");
   const todo = await core.getESLintTodo(lintResults);
   await core.writeTodoModule(todo);
 });
