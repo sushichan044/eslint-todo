@@ -59,16 +59,6 @@ const cli = defineCommand({
     version: pkgVersion,
   },
   async run({ args }) {
-    if (args.debug === true) {
-      consola.level = 4;
-    } else if (args.trace === true) {
-      consola.level = 5;
-    } else if (args.verbose === true) {
-      consola.level = +999;
-    }
-
-    consola.info(`eslint-todo CLI ${pkgVersion}`);
-
     const cliCwd = process.cwd();
     const options: UserOptions = {
       cwd: args.cwd,
@@ -87,6 +77,17 @@ const cli = defineCommand({
     if (!args.correct) {
       await runAction(genAction, { consola, options });
       consola.success(`ESLint todo file generated at ${todoFilePathFromCli}!`);
+    }
+  },
+  setup({ args }) {
+    consola.info(`eslint-todo CLI ${pkgVersion}`);
+
+    if (args.debug === true) {
+      consola.level = 4;
+    } else if (args.trace === true) {
+      consola.level = 5;
+    } else if (args.verbose === true) {
+      consola.level = +999;
     }
   },
 });
