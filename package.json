@@ -25,6 +25,7 @@
   ],
   "scripts": {
     "build": "unbuild",
+    "dev": "unbuild --stub",
     "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write .",
     "format:ci": "prettier --check .",
