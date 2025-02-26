@@ -4,6 +4,7 @@ import type { MaybePromise } from "valibot";
 
 import type { UserOptions } from "../../options";
 import type { RemoteESLintTodoCore } from "../../remote/core";
+import type { IsNever } from "../../utils/types";
 
 import { launchRemoteESLintTodoCore } from "../../remote/client";
 
@@ -12,25 +13,40 @@ type ActionAPI = {
   logger: ConsolaInstance;
 };
 
-type CLIAction<InputValue = unknown, ReturnValue = unknown> = (
-  api: ActionAPI,
-  input: InputValue,
-) => MaybePromise<ReturnValue>;
+type CLIAction<Input = unknown, Return = unknown> =
+  IsNever<Input> extends true
+    ? (api: ActionAPI) => MaybePromise<Return>
+    : (api: ActionAPI, input: Input) => MaybePromise<Return>;
 
 type RunActionOptions = {
   consola: ConsolaInstance;
   options: UserOptions;
 };
 
-export const defineAction = <Input = unknown, Return = unknown>(
+export const defineAction = <Input = never, Return = unknown>(
   action: CLIAction<Input, Return>,
 ) => action;
 
-export const runAction = async <Input = unknown, Return = unknown>(
+const NO_INPUT = Symbol("NO_INPUT");
+
+// action with no input
+export async function runAction<Return = unknown>(
+  action: CLIAction<never, Return>,
+  options: RunActionOptions,
+): Promise<Return>;
+
+// action with input
+export async function runAction<Input, Return = unknown>(
   action: CLIAction<Input, Return>,
   options: RunActionOptions,
-  input: Input = {} as Input,
-): Promise<Return> => {
+  input: Input,
+): Promise<Return>;
+
+export async function runAction<Input, Return = unknown>(
+  action: CLIAction<Input, Return>,
+  options: RunActionOptions,
+  input: Input | typeof NO_INPUT = NO_INPUT,
+): Promise<Return> {
   const { consola, options: coreOptions } = options;
 
   // initialize remote ESLintTodoCore
@@ -43,8 +59,12 @@ export const runAction = async <Input = unknown, Return = unknown>(
   } satisfies ActionAPI;
 
   try {
+    if (input === NO_INPUT) {
+      // run action with no input
+      return await (action as CLIAction<never, Return>)(actionApi);
+    }
     return await action(actionApi, input);
   } finally {
     await remoteService.terminate();
   }
-};
+}
