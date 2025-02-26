@@ -2,11 +2,15 @@ import { defineCommand, runMain } from "citty";
 import { createConsola } from "consola";
 import { relative } from "pathe";
 
+import type { OperationLimit } from "../operation/types";
 import type { UserOptions } from "../options";
 
 import { version as pkgVersion } from "../../package.json";
 import { ESLintTodoCore } from "../index";
+import { isNonEmptyString } from "../utils/string";
 import { runAction } from "./action";
+import { deleteRuleAction } from "./action/deleteRule";
+import { selectRulesToFixAction } from "./action/fix";
 import { genAction } from "./action/gen";
 import { updateAction } from "./action/update";
 
@@ -14,13 +18,7 @@ const consola = createConsola({ formatOptions: { date: false } });
 
 const cli = defineCommand({
   args: {
-    "correct": {
-      default: false,
-      description: "Enable correct mode",
-      required: false,
-      type: "boolean",
-      valueHint: "boolean",
-    },
+    // general options
     "cwd": {
       description: "Current working directory (default: .)",
       required: false,
@@ -33,6 +31,40 @@ const cli = defineCommand({
       required: false,
       type: "string",
       valueHint: "filename",
+    },
+
+    // mode toggle
+    "correct": {
+      default: false,
+      description: "Enable correct mode",
+      required: false,
+      type: "boolean",
+      valueHint: "boolean",
+    },
+
+    // operation options
+    "auto-fixable-only": {
+      default: true,
+      description: "Only handle auto-fixable violations. (default: true)",
+      required: false,
+      type: "boolean",
+      valueHint: "boolean",
+    },
+    "file-limit": {
+      default: "100",
+      description:
+        "Limit the number of files to fix. Only works with --correct. (default: 100)",
+      required: false,
+      type: "string",
+      valueHint: "number",
+    },
+    "violation-limit": {
+      default: "100",
+      description:
+        "Limit the number of violations to fix. Only works with --correct. (default: 100)",
+      required: false,
+      type: "string",
+      valueHint: "number",
     },
 
     // logging
@@ -77,7 +109,49 @@ const cli = defineCommand({
     if (!args.correct) {
       await runAction(genAction, { consola, options });
       consola.success(`ESLint todo file generated at ${todoFilePathFromCli}!`);
+      return;
     }
+
+    const limit: OperationLimit = (() => {
+      if (isNonEmptyString(args["violation-limit"])) {
+        return {
+          count: Number(args["violation-limit"]),
+          type: "violation",
+        };
+      }
+      if (isNonEmptyString(args["file-limit"])) {
+        return {
+          count: Number(args["file-limit"]),
+          type: "file",
+        };
+      }
+      throw new Error("Either file-limit or violation-limit must be provided.");
+    })();
+
+    const autoFixableOnly = args["auto-fixable-only"];
+
+    const selection = await runAction(
+      selectRulesToFixAction,
+      { consola, options },
+      { limit, options: { autoFixableOnly } },
+    );
+
+    if (!selection.success) {
+      consola.warn(
+        "Couldn't find any rule to fix. Increase the limit and retry.",
+      );
+      return;
+    }
+
+    await runAction(
+      deleteRuleAction,
+      { consola, options },
+      { ruleId: selection.ruleId },
+    );
+
+    consola.success(
+      `Rule ${selection.ruleId} deleted from the todo file at ${todoFilePathFromCli}! Run eslint --fix to apply the changes.`,
+    );
   },
   setup({ args }) {
     consola.info(`eslint-todo CLI ${pkgVersion}`);
