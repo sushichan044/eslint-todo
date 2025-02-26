@@ -7,3 +7,5 @@ export type PromisifyAllMethods<T> = {
       : (...args: A) => MaybePromise<R>
     : T[K];
 };
+
+export type IsNever<T> = T[] extends never[] ? true : false;
