@@ -1,0 +1,33 @@
+import type { SelectionResult } from "../../operation/selectRule";
+import type { OperationLimit, OperationOptions } from "../../operation/types";
+
+import { selectRuleBasedOnLimit } from "../../operation/selectRule";
+import { LATEST_MODULE_HANDLER } from "../../todofile";
+import { defineAction } from "./index";
+
+type Input = {
+  limit: OperationLimit;
+  options?: OperationOptions;
+};
+
+export const selectRulesToFixAction = defineAction<Input, SelectionResult>(
+  async ({ core, logger }, input) => {
+    const {
+      limit,
+      options = {
+        autoFixableOnly: true,
+      },
+    } = input;
+
+    const currentModule = await core.readTodoModule();
+    if (!LATEST_MODULE_HANDLER.isVersion(currentModule)) {
+      throw new Error(
+        "This action requires the latest version of the todo file.",
+      );
+    }
+
+    logger.start("Refining ESLint todo file ...");
+
+    return selectRuleBasedOnLimit(currentModule, limit, options);
+  },
+);

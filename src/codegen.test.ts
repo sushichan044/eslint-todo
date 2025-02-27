@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import type { TodoModuleLike } from "./todofile/types";
+// TODO: ここでは本当に TodoModuleV1Handler が必要
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { TodoModuleV1 } from "./todofile/v1";
 import type { TodoModuleV2 } from "./todofile/v2";
 
