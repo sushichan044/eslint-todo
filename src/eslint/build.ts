@@ -3,6 +3,8 @@ import type { Linter } from "eslint";
 import type { SupportedModules } from "../todofile";
 import type { RuleSeverity } from "../todofile/types";
 
+// TODO: ここでは本当に TodoModuleV1Handler が必要
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TodoModuleV1Handler } from "../todofile/v1";
 import { TodoModuleV2Handler } from "../todofile/v2";
 

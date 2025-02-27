@@ -3,9 +3,13 @@ import type { Linter } from "eslint";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { TodoModuleLike } from "../todofile/types";
+// TODO: ここでは本当に TodoModuleV1Handler が必要
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { TodoModuleV1 } from "../todofile/v1";
 import type { TodoModuleV2 } from "../todofile/v2";
 
+// TODO: ここでは本当に TodoModuleV1Handler が必要
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TodoModuleV1Handler } from "../todofile/v1";
 import { TodoModuleV2Handler } from "../todofile/v2";
 import { buildESLintConfigForModule } from "./build";
