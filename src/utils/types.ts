@@ -1,6 +1,6 @@
 export type MaybePromise<T> = Promise<T> | T;
 
-export type PromisifyAllMethods<T> = {
+export type MaybePromisifyAllMethods<T> = {
   [K in keyof T]: T[K] extends (...args: infer A) => infer R
     ? R extends PromiseLike<unknown>
       ? (...args: A) => R

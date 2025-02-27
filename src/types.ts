@@ -3,7 +3,7 @@ import type { ESLint, Linter } from "eslint";
 import type { LatestModule, SupportedModules } from "./todofile";
 import type { TodoFilePath } from "./todofile/path";
 import type { RuleSeverity, TodoModuleLike } from "./todofile/types";
-import type { PromisifyAllMethods } from "./utils/types";
+import type { MaybePromisifyAllMethods } from "./utils/types";
 
 export type ESLintInitializeOptions = Pick<ESLint.Options, "overrideConfig">;
 
@@ -47,4 +47,4 @@ interface ESLintTodoCoreLike {
   writeTodoModule(todo: TodoModuleLike): Promise<void>;
 }
 
-export type IESLintTodoCoreLike = PromisifyAllMethods<ESLintTodoCoreLike>;
+export type IESLintTodoCoreLike = MaybePromisifyAllMethods<ESLintTodoCoreLike>;
