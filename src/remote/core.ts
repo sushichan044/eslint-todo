@@ -27,10 +27,10 @@ export class RemoteESLintTodoCore implements IESLintTodoCoreLike {
     return this.#todoCore.buildESLintConfig(todoModule, severity);
   }
 
-  getESLintTodo(
-    ...params: Parameters<ESLintTodoCore["getESLintTodo"]>
-  ): ReturnType<ESLintTodoCore["getESLintTodo"]> {
-    return this.#todoCore.getESLintTodo(...params);
+  buildTodoFromLintResults(
+    ...params: Parameters<ESLintTodoCore["buildTodoFromLintResults"]>
+  ): ReturnType<ESLintTodoCore["buildTodoFromLintResults"]> {
+    return this.#todoCore.buildTodoFromLintResults(...params);
   }
 
   getTodoModulePath(

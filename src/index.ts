@@ -55,7 +55,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     return buildESLintConfigForModule(todoModule, severity) ?? [];
   }
 
-  getESLintTodo(lintResults: ESLint.LintResult[]): LatestModule {
+  buildTodoFromLintResults(lintResults: ESLint.LintResult[]): LatestModule {
     return LATEST_MODULE_HANDLER.buildTodoFromLintResults(
       lintResults,
       this.#options,

@@ -8,6 +8,6 @@ export const genAction = defineAction(async ({ core, logger }) => {
   logger.success("ESLint finished!");
 
   logger.start("Generating ESLint todo file ...");
-  const todo = await core.getESLintTodo(lintResults);
+  const todo = await core.buildTodoFromLintResults(lintResults);
   await core.writeTodoModule(todo);
 });

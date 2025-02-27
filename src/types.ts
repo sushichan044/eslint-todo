@@ -18,10 +18,10 @@ interface ESLintTodoCoreLike {
   ): Linter.Config[];
 
   /**
-   * Get ESLintTodo object.
+   * Build a todo object from the lint results.
    * @param lintResults LintResults from ESLint
    */
-  getESLintTodo(lintResults: ESLint.LintResult[]): LatestModule;
+  buildTodoFromLintResults(lintResults: ESLint.LintResult[]): LatestModule;
 
   /**
    * Get the path of current todo module.
