@@ -7,8 +7,8 @@ import { version as pkgVersion } from "../../package.json";
 import { ESLintTodoCore } from "../index";
 import { runAction } from "./action";
 import { deleteRuleAction } from "./action/deleteRule";
-import { selectRulesToFixAction } from "./action/fix";
 import { genAction } from "./action/gen";
+import { selectRulesToFixAction } from "./action/selectRule";
 import { updateAction } from "./action/update";
 import { resolveCLIContext } from "./context";
 
