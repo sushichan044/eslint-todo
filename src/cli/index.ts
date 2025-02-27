@@ -1,5 +1,6 @@
 import { defineCommand, runMain } from "citty";
 import { createConsola } from "consola";
+import { colorize } from "consola/utils";
 
 import type { UserOptions } from "../options";
 
@@ -138,7 +139,7 @@ const cli = defineCommand({
       );
 
       consola.success(
-        `Rule ${selection.ruleId} deleted from the todo file and now ESLint will detect the violations.`,
+        `Rule ${colorize("magenta", selection.ruleId)} deleted from the todo file and now ESLint will detect the violations.`,
       );
       return;
     }
