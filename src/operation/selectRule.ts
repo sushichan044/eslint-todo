@@ -32,7 +32,7 @@ export const selectRuleBasedOnLimit = (
   }
 };
 
-const selectRuleBasedOnFilesLimit = (
+export const selectRuleBasedOnFilesLimit = (
   todoModule: TodoModuleV2,
   limit: OperationFileLimit,
   options: OperationOptions = {},
@@ -49,7 +49,7 @@ const selectRuleBasedOnFilesLimit = (
     }
 
     const totalFiles = Object.keys(entry.violations).length;
-    if (totalFiles > maxFiles && totalFiles < limitCount) {
+    if (totalFiles > maxFiles && totalFiles <= limitCount) {
       maxFiles = totalFiles;
       selectedRule = ruleId;
     }
@@ -67,11 +67,11 @@ const selectRuleBasedOnFilesLimit = (
  * @param limit - The upper limit for the number of violations.
  * @returns The rule ID with the most violations that can be auto-fixed and is below the limit, or null if no such rule exists.
  */
-function selectRuleBasedOnViolationsLimit(
+export const selectRuleBasedOnViolationsLimit = (
   todoModule: TodoModuleV2,
   limit: OperationViolationLimit,
   options: OperationOptions = {},
-): SelectionResult {
+): SelectionResult => {
   const { count: limitCount } = limit;
   const { autoFixableOnly = true } = options;
 
@@ -87,7 +87,7 @@ function selectRuleBasedOnViolationsLimit(
       (sum, count) => sum + count,
       0,
     );
-    if (totalViolations > maxViolations && totalViolations < limitCount) {
+    if (totalViolations > maxViolations && totalViolations <= limitCount) {
       maxViolations = totalViolations;
       selectedRule = ruleId;
     }
@@ -96,4 +96,4 @@ function selectRuleBasedOnViolationsLimit(
   return selectedRule != null
     ? { ruleId: selectedRule, success: true }
     : { success: false };
-}
+};
