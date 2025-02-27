@@ -1,6 +1,7 @@
 import type { TodoModuleV2 } from "../todofile/v2";
 import type {
   OperationFileLimit,
+  OperationLimit,
   OperationOptions,
   OperationViolationLimit,
 } from "./types";
@@ -16,7 +17,7 @@ export type SelectionResult =
 
 export const selectRuleBasedOnLimit = (
   todoModule: TodoModuleV2,
-  limit: OperationFileLimit | OperationViolationLimit,
+  limit: OperationLimit,
   options: OperationOptions = {},
 ) => {
   switch (limit.type) {
