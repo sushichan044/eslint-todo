@@ -3,16 +3,24 @@
 > [!WARNING]
 > This tool only supports ESLint Flat Config with ES Module.
 >
-> If you want to use this tool to migrate to ESLint Flat Config, create the Flat Config first and then run `eslint-todo`.
+> If you want to use this tool to supress ESLint errors when migrating to ESLint Flat Config,
+> you first need to create Flat Config and then use this tool. Maybe utilities like [@eslint/compat](https://github.com/eslint/rewrite/tree/main/packages/compat) can help you.
 
 Simple tool to temporarily disable existing ESLint violations like `.rubocop_todo.yml` in RuboCop.
 
-This allows existing offending files to be excluded from the check on a rule-by-rule basis, which may be helpful when making destructive changes to ESLint settings.
+This allows existing offending files to be excluded from scanning on a rule-by-rule basis, which is useful when making destructive changes to ESLint settings.
+
+It also has a utility that reduces the number of ignored rules at a pace that works for your team.
+
+## Features
+
+- Temporarily disable ESLint rules for specific files having existing violations with one command.
+- Assistive feature to gradually eliminate ignored errors.
 
 ## Installation
 
 ```bash
-pnpm install @sushichan044/eslint-todo
+pnpm install -D @sushichan044/eslint-todo
 ```
 
 ## Getting Started
@@ -23,8 +31,8 @@ pnpm install @sushichan044/eslint-todo
     + import { eslintConfigTodo } from '@sushichan044/eslint-todo/eslint';
 
     export default [
-      // your existing,
-    + await eslintConfigTodo(),
+      // your existing configs,
+    + await eslintConfigTodo()
     ]
     ```
 
@@ -37,12 +45,48 @@ pnpm install @sushichan044/eslint-todo
     pnpm exec eslint-todo
     ```
 
-3. Add `.eslint-todo.js` to your ignore files like `.prettierignore`.
+3. Ignore `.eslint-todo.js` with some tools like Prettier as it is auto-generated module.
 
     ```diff
-    // .prettierignore
+    // example: .prettierignore
     + .eslint-todo.js
     ```
+
+## Usage
+
+### Generate ESLint Todo file
+
+```bash
+eslint-todo
+```
+
+### Reduce ignored errors
+
+Add `--correct` flag to launch eslint-todo with error reduction mode.
+
+In this mode, eslint-todo searches the todo file with the limit from CLI and removes one matching rule from the todo file.
+This allows ESLint to detect that rule as a violation again. For safety, only auto-fixable rules are searched by default.
+
+You can use `--limit`, `--limit-type`, `--no-auto-fixable-only` options to control the behavior.
+
+Default options are: <br>
+Select one rule that has a total of 100 or fewer violations from auto-fixable rules.
+
+```bash
+eslint-todo --correct --limit 100 --limit-type violation
+```
+
+Select one rule that has a total of 10 or fewer files with violations from auto-fixable rules:
+
+```bash
+eslint-todo --correct --limit 10 --limit-type file
+```
+
+Select one rule that has a total of 100 or fewer violations from all rules including non-auto-fixable rules:
+
+```bash
+eslint-todo --correct --limit 100 --limit-type violation --no-auto-fixable-only
+```
 
 ## Configuration (CLI)
 
@@ -50,7 +94,7 @@ pnpm install @sushichan044/eslint-todo
 
 default: `process.cwd()`
 
-You can specify the directory where `.eslint-todo.js` will be generated.
+You can pass `--cwd` to specify the directory where `.eslint-todo.js` will be generated.
 
 > [!WARNING]
 > You should place `eslint.config.js` on the specified directory.
@@ -59,27 +103,11 @@ You can specify the directory where `.eslint-todo.js` will be generated.
 
 default: `.eslint-todo.js`
 
-You can specify the name of the ESLint Todo file.
+You can pass `--todo-file` to specify the name of the ESLint Todo file.
 
-## What is ESLint Todo File?
+### logging mode
 
-ESLint Todo file is like [this](./.eslint-todo.js).
+> [!CAUTION]
+> This feature is not working properly yet.
 
-This object is used to disable ESLint rules for specific files.
-
-> [!NOTE]
-> In the future, a feature to correct only auto-fixable violations will be added.
-
-```javascript
-/* eslint-disable */
-/**
- * Auto generated file by eslint-todo. DO NOT EDIT MANUALLY.
- */
-
-export default {
-  "no-undef": {
-    autoFix: false,
-    files: ["bin/eslint-todo.mjs"],
-  },
-};
-```
+You can pass `--debug`, `--trace`, `--verbose` to see the debug logs.
