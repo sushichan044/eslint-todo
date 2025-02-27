@@ -1,5 +1,4 @@
-import { klona } from "klona/json";
-
+import { deleteRule } from "../../operation/deleteRule";
 import { LATEST_MODULE_HANDLER } from "../../todofile";
 import { defineAction } from "./index";
 
@@ -18,13 +17,9 @@ export const deleteRuleAction = defineAction<Input>(
       );
     }
 
-    const newModule = klona(currentModule);
-
     logger.info(`Deleting rule ${ruleId} from the todo file ...`);
 
-    if (Object.hasOwn(newModule.todo, ruleId)) {
-      delete newModule.todo[ruleId];
-    }
+    const newModule = deleteRule(currentModule, ruleId);
 
     await core.writeTodoModule(newModule);
   },
