@@ -1,18 +1,16 @@
 import { defineCommand, runMain } from "citty";
 import { createConsola } from "consola";
-import { relative } from "pathe";
 
-import type { OperationLimit } from "../operation/types";
 import type { UserOptions } from "../options";
 
 import { version as pkgVersion } from "../../package.json";
 import { ESLintTodoCore } from "../index";
-import { isNonEmptyString } from "../utils/string";
 import { runAction } from "./action";
 import { deleteRuleAction } from "./action/deleteRule";
 import { selectRulesToFixAction } from "./action/fix";
 import { genAction } from "./action/gen";
 import { updateAction } from "./action/update";
+import { resolveCLIContext } from "./context";
 
 const consola = createConsola({ formatOptions: { date: false } });
 
@@ -36,10 +34,9 @@ const cli = defineCommand({
     // mode toggle
     "correct": {
       default: false,
-      description: "Enable correct mode",
+      description: "Launch the correct mode (default: false)",
       required: false,
       type: "boolean",
-      valueHint: "boolean",
     },
 
     // operation options
@@ -98,60 +95,55 @@ const cli = defineCommand({
     };
     // initialize local ESLintTodoCore
     const eslintTodoCore = new ESLintTodoCore(options);
-    // start processing
-    const todoFilePathFromCli = relative(
-      cliCwd,
-      eslintTodoCore.getTodoModulePath().absolute,
-    );
+
+    const ctx = resolveCLIContext({
+      cwd: cliCwd,
+      mode: {
+        correct: args.correct,
+      },
+      operation: {
+        autoFixableOnly: args["auto-fixable-only"],
+        fileLimit: args["file-limit"],
+        violationLimit: args["violation-limit"],
+      },
+      todoFileAbsolutePath: eslintTodoCore.getTodoModulePath().absolute,
+    });
 
     await runAction(updateAction, { consola, options });
 
-    if (!args.correct) {
+    if (ctx.mode === "generate") {
       await runAction(genAction, { consola, options });
-      consola.success(`ESLint todo file generated at ${todoFilePathFromCli}!`);
+      consola.success(`ESLint todo file generated at ${ctx.todoFilePath}!`);
       return;
     }
 
-    const limit: OperationLimit = (() => {
-      if (isNonEmptyString(args["violation-limit"])) {
-        return {
-          count: Number(args["violation-limit"]),
-          type: "violation",
-        };
+    if (ctx.mode === "correct") {
+      const selection = await runAction(
+        selectRulesToFixAction,
+        { consola, options },
+        ctx.operation,
+      );
+
+      if (!selection.success) {
+        consola.warn(
+          "Couldn't find any rule to fix. Increase the limit and retry.",
+        );
+        return;
       }
-      if (isNonEmptyString(args["file-limit"])) {
-        return {
-          count: Number(args["file-limit"]),
-          type: "file",
-        };
-      }
-      throw new Error("Either file-limit or violation-limit must be provided.");
-    })();
 
-    const autoFixableOnly = args["auto-fixable-only"];
+      await runAction(
+        deleteRuleAction,
+        { consola, options },
+        { ruleId: selection.ruleId },
+      );
 
-    const selection = await runAction(
-      selectRulesToFixAction,
-      { consola, options },
-      { limit, options: { autoFixableOnly } },
-    );
-
-    if (!selection.success) {
-      consola.warn(
-        "Couldn't find any rule to fix. Increase the limit and retry.",
+      consola.success(
+        `Rule ${selection.ruleId} deleted from the todo file at ${ctx.todoFilePath}! Run eslint --fix to apply the changes.`,
       );
       return;
     }
 
-    await runAction(
-      deleteRuleAction,
-      { consola, options },
-      { ruleId: selection.ruleId },
-    );
-
-    consola.success(
-      `Rule ${selection.ruleId} deleted from the todo file at ${todoFilePathFromCli}! Run eslint --fix to apply the changes.`,
-    );
+    throw new Error(`Unknown mode: ${JSON.stringify(ctx.mode)}`);
   },
   setup({ args }) {
     consola.info(`eslint-todo CLI ${pkgVersion}`);
