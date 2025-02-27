@@ -138,7 +138,7 @@ const cli = defineCommand({
       );
 
       consola.success(
-        `Rule ${selection.ruleId} deleted from the todo file at ${ctx.todoFilePath}! Run eslint --fix to apply the changes.`,
+        `Rule ${selection.ruleId} deleted from the todo file and now ESLint will detect the violations.`,
       );
       return;
     }
