@@ -47,21 +47,21 @@ const cli = defineCommand({
       type: "boolean",
       valueHint: "boolean",
     },
-    "file-limit": {
+    "limit": {
       default: "100",
       description:
-        "Limit the number of files to fix. Only works with --correct. (default: 100)",
+        "Limit the number of violations or files to fix. Only works with --correct. (default: 100)",
       required: false,
       type: "string",
       valueHint: "number",
     },
-    "violation-limit": {
-      default: "100",
+    "limit-type": {
+      default: "violation",
       description:
-        "Limit the number of violations to fix. Only works with --correct. (default: 100)",
+        "Type of limit to apply. Only works with --correct. (default: violation)",
       required: false,
       type: "string",
-      valueHint: "number",
+      valueHint: "violation | file",
     },
 
     // logging
@@ -103,8 +103,8 @@ const cli = defineCommand({
       },
       operation: {
         autoFixableOnly: args["auto-fixable-only"],
-        fileLimit: args["file-limit"],
-        violationLimit: args["violation-limit"],
+        limit: args.limit,
+        limitType: args["limit-type"],
       },
       todoFileAbsolutePath: eslintTodoCore.getTodoModulePath().absolute,
     });

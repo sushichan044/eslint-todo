@@ -1,9 +1,9 @@
 import { relative } from "pathe";
+import * as v from "valibot";
 
 import type { OperationLimit, OperationOptions } from "../operation/types";
 
 import { safeTryNumber } from "../utils/number";
-import { isNonEmptyString } from "../utils/string";
 
 type CLIContext = {
   mode: "correct" | "generate";
@@ -39,8 +39,8 @@ export const resolveCLIContext = (input: Input): CLIContext => {
 
 type CLIOperationInput = {
   autoFixableOnly: boolean;
-  fileLimit: string;
-  violationLimit: string;
+  limit: string;
+  limitType: string;
 };
 
 type CLIOperation = {
@@ -48,32 +48,23 @@ type CLIOperation = {
   options: OperationOptions;
 };
 
+const limitTypeSchema = v.union([v.literal("violation"), v.literal("file")]);
+
 export const resolveCLIOperation = (input: CLIOperationInput): CLIOperation => {
-  const limit: OperationLimit = (() => {
-    if (isNonEmptyString(input.violationLimit)) {
-      const limit = safeTryNumber(input.violationLimit);
-      if (limit === null) {
-        throw new Error("violation-limit must be a number");
-      }
+  const parsedLimitType = v.safeParse(limitTypeSchema, input.limitType);
+  if (!parsedLimitType.success) {
+    throw new Error("limit-type must be either 'violation' or 'file'");
+  }
 
-      return {
-        count: limit,
-        type: "violation",
-      };
-    }
-    if (isNonEmptyString(input.fileLimit)) {
-      const limit = safeTryNumber(input.fileLimit);
-      if (limit === null) {
-        throw new Error("file-limit must be a number");
-      }
+  const limitCount = safeTryNumber(input.limit);
+  if (limitCount === null) {
+    throw new Error("limit must be a number");
+  }
 
-      return {
-        count: limit,
-        type: "file",
-      };
-    }
-    throw new Error("Either file-limit or violation-limit must be provided.");
-  })();
+  const limit = {
+    count: limitCount,
+    type: parsedLimitType.output,
+  };
 
   return {
     limit,
