@@ -6,16 +6,9 @@ import { writeFile } from "node:fs/promises";
 import { resolve } from "pathe";
 
 import type { Options, UserOptions } from "./options";
-import type {
-  LatestSupportedModuleHandler,
-  SupportedModules,
-} from "./todofile";
+import type { LatestModule, SupportedModules } from "./todofile";
 import type { TodoFilePath } from "./todofile/path";
-import type {
-  GetCurrentTodoModule,
-  RuleSeverity,
-  TodoModuleLike,
-} from "./todofile/types";
+import type { RuleSeverity, TodoModuleLike } from "./todofile/types";
 import type { ESLintInitializeOptions, IESLintTodoCoreLike } from "./types";
 
 import { generateTodoModuleCode } from "./codegen";
@@ -62,9 +55,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     return buildESLintConfigForModule(todoModule, severity) ?? [];
   }
 
-  getESLintTodo(
-    lintResults: ESLint.LintResult[],
-  ): GetCurrentTodoModule<LatestSupportedModuleHandler> {
+  getESLintTodo(lintResults: ESLint.LintResult[]): LatestModule {
     return LATEST_MODULE_HANDLER.buildTodoFromLintResults(
       lintResults,
       this.#options,

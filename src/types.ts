@@ -1,15 +1,8 @@
 import type { ESLint, Linter } from "eslint";
 
-import type {
-  LatestSupportedModuleHandler,
-  SupportedModules,
-} from "./todofile";
+import type { LatestModule, SupportedModules } from "./todofile";
 import type { TodoFilePath } from "./todofile/path";
-import type {
-  GetCurrentTodoModule,
-  RuleSeverity,
-  TodoModuleLike,
-} from "./todofile/types";
+import type { RuleSeverity, TodoModuleLike } from "./todofile/types";
 import type { PromisifyAllMethods } from "./utils/types";
 
 export type ESLintInitializeOptions = Pick<ESLint.Options, "overrideConfig">;
@@ -28,9 +21,7 @@ interface ESLintTodoCoreLike {
    * Get ESLintTodo object.
    * @param lintResults LintResults from ESLint
    */
-  getESLintTodo(
-    lintResults: ESLint.LintResult[],
-  ): GetCurrentTodoModule<LatestSupportedModuleHandler>;
+  getESLintTodo(lintResults: ESLint.LintResult[]): LatestModule;
 
   /**
    * Get the path of current todo module.

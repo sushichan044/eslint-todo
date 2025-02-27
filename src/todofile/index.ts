@@ -9,12 +9,11 @@ type SupportedTodoModulesArray = [
   TodoModuleV2,
   TodoModuleV1,
 ];
+export type SupportedModules = SupportedTodoModulesArray[number];
+
+export type LatestModule = SupportedTodoModulesArray[0];
 
 export const LATEST_MODULE_HANDLER =
-  TodoModuleV2Handler satisfies LatestSupportedModuleHandler;
+  TodoModuleV2Handler satisfies LatestModuleHandler;
 
-export type LatestSupportedModuleHandler = TodoModuleHandler<
-  SupportedTodoModulesArray[0]
->;
-
-export type SupportedModules = SupportedTodoModulesArray[number];
+export type LatestModuleHandler = TodoModuleHandler<LatestModule>;
