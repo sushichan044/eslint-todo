@@ -6,9 +6,33 @@ import type {
   OperationViolationLimit,
 } from "./types";
 
+type PartialRuleSelection = {
+  /**
+   * The rule ID that was selected.
+   */
+  ruleId: string;
+  type: "partial";
+  /**
+   * The selected violations for the rule.
+   */
+  violations: {
+    [file: string]: number;
+  };
+};
+
+type FullRuleSelection = {
+  /**
+   * The rule ID that was selected.
+   */
+  ruleId: string;
+  type: "full";
+};
+
+export type RuleSelection = FullRuleSelection | PartialRuleSelection;
+
 export type SelectionResult =
   | {
-      ruleId: string;
+      selection: RuleSelection;
       success: true;
     }
   | {
@@ -19,7 +43,7 @@ export const selectRuleBasedOnLimit = (
   todoModule: TodoModuleV2,
   limit: OperationLimit,
   options: OperationOptions = {},
-) => {
+): SelectionResult => {
   switch (limit.type) {
     case "file":
       return selectRuleBasedOnFilesLimit(todoModule, limit, options);
@@ -55,9 +79,17 @@ export const selectRuleBasedOnFilesLimit = (
     }
   }
 
-  return selectedRule != null
-    ? { ruleId: selectedRule, success: true }
-    : { success: false };
+  if (selectedRule == null) {
+    return { success: false };
+  }
+
+  return {
+    selection: {
+      ruleId: selectedRule,
+      type: "full",
+    },
+    success: true,
+  };
 };
 
 /**
@@ -93,7 +125,15 @@ export const selectRuleBasedOnViolationsLimit = (
     }
   }
 
-  return selectedRule != null
-    ? { ruleId: selectedRule, success: true }
-    : { success: false };
+  if (selectedRule == null) {
+    return { success: false };
+  }
+
+  return {
+    selection: {
+      ruleId: selectedRule,
+      type: "full",
+    },
+    success: true,
+  };
 };
