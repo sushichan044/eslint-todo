@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.schemastore.org/renovate.json",
+  "extends": ["config:best-practices"],
+  "schedule": ["before 10:00am on Monday"],
+  "timezone": "Asia/Tokyo",
+  "prHourlyLimit": 0,
+  "automerge": false,
+  "rangeStrategy": "bump",
+  "branchConcurrentLimit": 0,
+  "enabledManagers": ["github-actions", "npm"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "groupName": "environment",
+      "matchPackageNames": ["pkg-pr-new", "unbuild", "node", "pnpm"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "groupName": "peerDependencies",
+      "matchDepTypes": ["peerDependencies"],
+      "matchDatasources": ["npm"],
+      "enabled": false
+    },
+    {
+      "groupName": "GitHub Actions",
+      "matchDatasources": ["github-actions"]
+    }
+  ]
+}
