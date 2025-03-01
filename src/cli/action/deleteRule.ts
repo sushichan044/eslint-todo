@@ -1,26 +1,20 @@
+import type { RuleSelection } from "../../operation/selectRule";
+
 import { deleteRule } from "../../operation/deleteRule";
 import { LATEST_MODULE_HANDLER } from "../../todofile";
 import { defineAction } from "./index";
 
-type Input = {
-  ruleId: string;
-};
+type Input = RuleSelection;
 
-export const deleteRuleAction = defineAction<Input>(
-  async ({ core, logger }, input) => {
-    const { ruleId } = input;
+export const deleteRuleAction = defineAction<Input>(async ({ core }, input) => {
+  const currentModule = await core.readTodoModule();
+  if (!LATEST_MODULE_HANDLER.isVersion(currentModule)) {
+    throw new Error(
+      "This action requires the latest version of the todo file.",
+    );
+  }
 
-    const currentModule = await core.readTodoModule();
-    if (!LATEST_MODULE_HANDLER.isVersion(currentModule)) {
-      throw new Error(
-        "This action requires the latest version of the todo file.",
-      );
-    }
+  const newModule = deleteRule(currentModule, input);
 
-    logger.info(`Deleting rule ${ruleId} from the todo file ...`);
-
-    const newModule = deleteRule(currentModule, ruleId);
-
-    await core.writeTodoModule(newModule);
-  },
-);
+  await core.writeTodoModule(newModule);
+});

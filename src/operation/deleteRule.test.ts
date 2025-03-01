@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { TodoModuleV2 } from "../todofile/v2";
+import type { RuleSelection } from "./selectRule";
 
 import { deleteRule } from "./deleteRule";
 
@@ -25,8 +26,12 @@ describe("deleteRule", () => {
         },
       },
     };
+    const ruleSelection = {
+      ruleId: "no-console",
+      type: "full",
+    } satisfies RuleSelection;
 
-    const newModule = deleteRule(currentModule, "no-console");
+    const newModule = deleteRule(currentModule, ruleSelection);
 
     expect(newModule).toStrictEqual({
       meta: {
@@ -57,8 +62,12 @@ describe("deleteRule", () => {
         },
       },
     };
+    const ruleSelection = {
+      ruleId: "no-unused-vars",
+      type: "full",
+    } satisfies RuleSelection;
 
-    const newModule = deleteRule(currentModule, "no-unused-vars");
+    const newModule = deleteRule(currentModule, ruleSelection);
 
     expect(newModule).toStrictEqual(currentModule);
   });
