@@ -172,6 +172,117 @@ describe("selectRuleBasedOnFilesLimit", () => {
         );
         expect(result).toStrictEqual(expected);
       });
+
+      it("should return success: false if todo is empty", () => {
+        const todoModule = createTodoModuleV2({});
+        const limit: OperationFileLimit = { count: 1, type: "file" };
+        const expected: SelectionResult = { success: false };
+
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+    });
+
+    describe("partial selection behavior", () => {
+      const operationOptions = operationOptionsWithDefault({
+        allowPartialSelection: true,
+      });
+
+      it("should return full selection unless all rules exceeds the limit", () => {
+        const todoModule = createTodoModuleV2({
+          rule1: {
+            autoFix: true,
+            violations: {
+              "file1.js": 3,
+              "file2.js": 1,
+              "file3.js": 2,
+              "file4.js": 3,
+              "file5.js": 1,
+              "file6.js": 2,
+            },
+          },
+          rule2: {
+            autoFix: true,
+            violations: {
+              "file1.js": 1,
+              "file2.js": 2,
+              "file3.js": 3,
+            },
+          },
+        });
+        const limit: OperationFileLimit = { count: 3, type: "file" };
+        const expected: SelectionResult = {
+          selection: {
+            ruleId: "rule2",
+            type: "full",
+          },
+          success: true,
+        };
+
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+
+      it("should return partial of the first rule with the most violated files gt the limit", () => {
+        const todoModule = createTodoModuleV2({
+          rule1: {
+            autoFix: true,
+            violations: {
+              "file1.js": 3,
+              "file2.js": 3,
+              "file3.js": 4,
+            },
+          },
+          rule2: {
+            autoFix: true,
+            violations: {
+              "file4.js": 1,
+              "file5.js": 1,
+              "file6.js": 1,
+            },
+          },
+        });
+        const limit: OperationFileLimit = { count: 2, type: "file" };
+        const expected: SelectionResult = {
+          selection: {
+            ruleId: "rule1",
+            type: "partial",
+            violations: {
+              "file1.js": 3,
+              "file2.js": 3,
+            },
+          },
+          success: true,
+        };
+
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+
+      it("should return success: false if todo is empty", () => {
+        const todoModule = createTodoModuleV2({});
+        const limit: OperationFileLimit = { count: 1, type: "file" };
+        const expected: SelectionResult = { success: false };
+
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
     });
   });
 
@@ -271,6 +382,131 @@ describe("selectRuleBasedOnFilesLimit", () => {
         );
         expect(result).toStrictEqual(expected);
       });
+
+      it("should return success: false if todo is empty", () => {
+        const todoModule = createTodoModuleV2({});
+        const limit: OperationFileLimit = { count: 1, type: "file" };
+        const expected: SelectionResult = { success: false };
+
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+    });
+
+    describe("partial selection behavior", () => {
+      const operationOptions = operationOptionsWithDefault({
+        allowPartialSelection: true,
+        autoFixableOnly: false,
+      });
+
+      it("should return full selection unless all rules exceeds the limit", () => {
+        const todoModule = createTodoModuleV2({
+          rule1: {
+            autoFix: false,
+            violations: {
+              "file1.js": 3,
+              "file2.js": 1,
+              "file3.js": 2,
+              "file4.js": 3,
+              "file5.js": 1,
+              "file6.js": 2,
+            },
+          },
+          rule2: {
+            autoFix: false,
+            violations: {
+              "file1.js": 1,
+              "file2.js": 2,
+              "file3.js": 3,
+            },
+          },
+        });
+        const limit: OperationFileLimit = { count: 3, type: "file" };
+        const expected: SelectionResult = {
+          selection: {
+            ruleId: "rule2",
+            type: "full",
+          },
+          success: true,
+        };
+
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+
+      it("should return partial of the first rule with the most violated files gt the limit", () => {
+        const todoModule = createTodoModuleV2({
+          rule1: {
+            autoFix: false,
+            violations: {
+              "file1.js": 3,
+              "file2.js": 3,
+              "file3.js": 4,
+            },
+          },
+          rule2: {
+            autoFix: false,
+            violations: {
+              "file4.js": 1,
+              "file5.js": 1,
+              "file6.js": 1,
+            },
+          },
+        });
+        const limit: OperationFileLimit = { count: 2, type: "file" };
+        const expected: SelectionResult = {
+          selection: {
+            ruleId: "rule1",
+            type: "partial",
+            violations: {
+              "file1.js": 3,
+              "file2.js": 3,
+            },
+          },
+          success: true,
+        };
+
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+
+      it("should return success: false if todo is empty", () => {
+        const todoModule = createTodoModuleV2({});
+        const limit: OperationFileLimit = { count: 1, type: "file" };
+        const expected: SelectionResult = { success: false };
+
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+    });
+  });
+
+  describe("when invalid input is provided", () => {
+    const operationOptions = operationOptionsWithDefault();
+
+    it("should throw an error if limit count is lte 0", () => {
+      const todoModule = createTodoModuleV2({});
+      const limit: OperationFileLimit = { count: 0, type: "file" };
+
+      expect(() =>
+        selectRuleBasedOnFilesLimit(todoModule, limit, operationOptions),
+      ).toThrowError("The file limit must be greater than 0");
     });
   });
 });
@@ -384,6 +620,117 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         );
         expect(result).toStrictEqual(expected);
       });
+
+      it("should return success: false if todo is empty", () => {
+        const todoModule = createTodoModuleV2({});
+        const limit: OperationViolationLimit = { count: 1, type: "violation" };
+        const expected: SelectionResult = { success: false };
+
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+    });
+
+    describe("partial selection behavior", () => {
+      const operationOptions = operationOptionsWithDefault({
+        allowPartialSelection: true,
+      });
+
+      it("should return full selection unless all rules exceeds the limit", () => {
+        const todoModule = createTodoModuleV2({
+          rule1: {
+            autoFix: true,
+            violations: {
+              "file1.js": 3,
+              "file2.js": 1,
+              "file3.js": 2,
+              "file4.js": 3,
+              "file5.js": 1,
+              "file6.js": 2,
+            },
+          },
+          rule2: {
+            autoFix: true,
+            violations: {
+              "file1.js": 1,
+              "file2.js": 1,
+              "file3.js": 1,
+            },
+          },
+        });
+        const limit: OperationViolationLimit = { count: 3, type: "violation" };
+        const expected: SelectionResult = {
+          selection: {
+            ruleId: "rule2",
+            type: "full",
+          },
+          success: true,
+        };
+
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+
+      it("should return partial of the first rule with the most violations gt the limit", () => {
+        const todoModule = createTodoModuleV2({
+          rule1: {
+            autoFix: true,
+            violations: {
+              "file1.js": 1,
+              "file2.js": 2,
+              "file3.js": 3,
+            },
+          },
+          rule2: {
+            autoFix: true,
+            violations: {
+              "file1.js": 3,
+              "file2.js": 1,
+              "file3.js": 2,
+            },
+          },
+        });
+        const limit: OperationViolationLimit = { count: 4, type: "violation" };
+        const expected: SelectionResult = {
+          selection: {
+            ruleId: "rule1",
+            type: "partial",
+            violations: {
+              "file1.js": 1,
+              "file2.js": 2,
+            },
+          },
+          success: true,
+        };
+
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+
+      it("should return success: false if todo is empty", () => {
+        const todoModule = createTodoModuleV2({});
+        const limit: OperationViolationLimit = { count: 1, type: "violation" };
+        const expected: SelectionResult = { success: false };
+
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
     });
   });
 
@@ -393,7 +740,7 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         autoFixableOnly: false,
       });
 
-      it("should return the rule with the most violations below the limit", () => {
+      it("should return the rule with the most violations lte the limit", () => {
         const todoModule = createTodoModuleV2({
           rule1: {
             autoFix: true,
@@ -476,6 +823,131 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         );
         expect(result).toStrictEqual(expected);
       });
+
+      it("should return success: false if todo is empty", () => {
+        const todoModule = createTodoModuleV2({});
+        const limit: OperationViolationLimit = { count: 1, type: "violation" };
+        const expected: SelectionResult = { success: false };
+
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+    });
+
+    describe("partial selection behavior", () => {
+      const operationOptions = operationOptionsWithDefault({
+        allowPartialSelection: true,
+        autoFixableOnly: false,
+      });
+
+      it("should return full selection unless all rules exceeds the limit", () => {
+        const todoModule = createTodoModuleV2({
+          rule1: {
+            autoFix: false,
+            violations: {
+              "file1.js": 3,
+              "file2.js": 1,
+              "file3.js": 2,
+              "file4.js": 3,
+              "file5.js": 1,
+              "file6.js": 2,
+            },
+          },
+          rule2: {
+            autoFix: false,
+            violations: {
+              "file1.js": 1,
+              "file2.js": 1,
+              "file3.js": 1,
+            },
+          },
+        });
+        const limit: OperationViolationLimit = { count: 3, type: "violation" };
+        const expected: SelectionResult = {
+          selection: {
+            ruleId: "rule2",
+            type: "full",
+          },
+          success: true,
+        };
+
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+
+      it("should return partial of the first rule with the most violations gt the limit", () => {
+        const todoModule = createTodoModuleV2({
+          rule1: {
+            autoFix: false,
+            violations: {
+              "file1.js": 1,
+              "file2.js": 2,
+              "file3.js": 3,
+            },
+          },
+          rule2: {
+            autoFix: false,
+            violations: {
+              "file1.js": 3,
+              "file2.js": 1,
+              "file3.js": 2,
+            },
+          },
+        });
+        const limit: OperationViolationLimit = { count: 4, type: "violation" };
+        const expected: SelectionResult = {
+          selection: {
+            ruleId: "rule1",
+            type: "partial",
+            violations: {
+              "file1.js": 1,
+              "file2.js": 2,
+            },
+          },
+          success: true,
+        };
+
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+
+      it("should return success: false if todo is empty", () => {
+        const todoModule = createTodoModuleV2({});
+        const limit: OperationViolationLimit = { count: 1, type: "violation" };
+        const expected: SelectionResult = { success: false };
+
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+    });
+  });
+
+  describe("when invalid input is provided", () => {
+    const operationOptions = operationOptionsWithDefault();
+
+    it("should throw an error if limit count is lte 0", () => {
+      const todoModule = createTodoModuleV2({});
+      const limit: OperationViolationLimit = { count: 0, type: "violation" };
+
+      expect(() =>
+        selectRuleBasedOnViolationsLimit(todoModule, limit, operationOptions),
+      ).toThrowError("The violation limit must be greater than 0");
     });
   });
 });

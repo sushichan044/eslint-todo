@@ -5,6 +5,7 @@ import type {
   OperationViolationLimit,
 } from "./types";
 
+import { isNonEmptyString } from "../utils/string";
 import {
   type OperationOptions,
   operationOptionsWithDefault,
@@ -78,32 +79,75 @@ export const selectRuleBasedOnFilesLimit = (
   const { count: limitCount } = limit;
   const { allowPartialSelection, autoFixableOnly } = options;
 
-  let selectedRule: string | null = null;
-  let maxFiles = 0;
+  if (limitCount <= 0) {
+    throw new Error("The file limit must be greater than 0.");
+  }
+
+  let fullSelectableRule: string | null = null;
+  let selectedTargetCount = 0;
+  let partialSelectableRule: string | null = null;
 
   for (const [ruleId, entry] of Object.entries(todoModule.todo)) {
     if (autoFixableOnly && !entry.autoFix) {
       continue;
     }
 
-    const totalFiles = Object.keys(entry.violations).length;
-    if (totalFiles > maxFiles && totalFiles <= limitCount) {
-      maxFiles = totalFiles;
-      selectedRule = ruleId;
+    const violatedFiles = Object.keys(entry.violations).length;
+
+    if (violatedFiles > limitCount) {
+      if (allowPartialSelection && partialSelectableRule == null) {
+        // do partial selection only once since no need to compare with other rules exceeding the limit
+        partialSelectableRule = ruleId;
+      }
+      continue;
+    }
+
+    // update FullSelection rule if it has more violations
+    if (violatedFiles > selectedTargetCount) {
+      fullSelectableRule = ruleId;
+      selectedTargetCount = violatedFiles;
     }
   }
 
-  if (selectedRule == null) {
-    return { success: false };
+  if (fullSelectableRule != null) {
+    return {
+      selection: {
+        ruleId: fullSelectableRule,
+        type: "full",
+      },
+      success: true,
+    };
   }
 
-  return {
-    selection: {
-      ruleId: selectedRule,
-      type: "full",
-    },
-    success: true,
-  };
+  if (
+    allowPartialSelection &&
+    isKeyOfTodo(todoModule.todo, partialSelectableRule)
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const rule = todoModule.todo[partialSelectableRule]!;
+
+    const selectedPaths = Object.keys(rule.violations).slice(0, limitCount);
+
+    const selectedViolations = selectedPaths.reduce(
+      (acc, file) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        acc[file] = rule.violations[file]!;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    return {
+      selection: {
+        ruleId: partialSelectableRule,
+        type: "partial",
+        violations: selectedViolations,
+      },
+      success: true,
+    };
+  }
+
+  return { success: false };
 };
 
 /**
@@ -121,35 +165,86 @@ export const selectRuleBasedOnViolationsLimit = (
   options: OperationOptions,
 ): SelectionResult => {
   const { count: limitCount } = limit;
-  const { autoFixableOnly } = options;
+  const { allowPartialSelection, autoFixableOnly } = options;
 
-  let selectedRule: string | null = null;
-  let maxViolations = 0;
+  if (limitCount <= 0) {
+    throw new Error("The violation limit must be greater than 0.");
+  }
+
+  let fullSelectableRule: string | null = null;
+  let selectedTargetCount = 0;
+  let partialSelectableRule: string | null = null;
 
   for (const [ruleId, entry] of Object.entries(todoModule.todo)) {
     if (autoFixableOnly && !entry.autoFix) {
       continue;
     }
 
-    const totalViolations = Object.values(entry.violations).reduce(
+    const totalViolationCount = Object.values(entry.violations).reduce(
       (sum, count) => sum + count,
       0,
     );
-    if (totalViolations > maxViolations && totalViolations <= limitCount) {
-      maxViolations = totalViolations;
-      selectedRule = ruleId;
+
+    if (totalViolationCount > limitCount) {
+      if (allowPartialSelection && partialSelectableRule == null) {
+        // do partial selection only once since no need to compare with other rules exceeding the limit
+        partialSelectableRule = ruleId;
+      }
+      continue;
+    }
+
+    // update FullSelection rule if it has more violations
+    if (totalViolationCount > selectedTargetCount) {
+      fullSelectableRule = ruleId;
+      selectedTargetCount = totalViolationCount;
     }
   }
 
-  if (selectedRule == null) {
-    return { success: false };
+  if (fullSelectableRule != null) {
+    return {
+      selection: {
+        ruleId: fullSelectableRule,
+        type: "full",
+      },
+      success: true,
+    };
   }
 
-  return {
-    selection: {
-      ruleId: selectedRule,
-      type: "full",
-    },
-    success: true,
-  };
+  if (
+    allowPartialSelection &&
+    isKeyOfTodo(todoModule.todo, partialSelectableRule)
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const rule = todoModule.todo[partialSelectableRule]!;
+
+    let selectedCount = 0;
+    const selectedViolations: Record<string, number> = {};
+
+    for (const [file, count] of Object.entries(rule.violations)) {
+      if (selectedCount + count > limitCount) {
+        break;
+      }
+
+      selectedCount += count;
+      selectedViolations[file] = count;
+    }
+
+    return {
+      selection: {
+        ruleId: partialSelectableRule,
+        type: "partial",
+        violations: selectedViolations,
+      },
+      success: true,
+    };
+  }
+
+  return { success: false };
+};
+
+const isKeyOfTodo = (
+  todoModule: TodoModuleV2["todo"],
+  ruleId: string | null,
+): ruleId is keyof TodoModuleV2["todo"] => {
+  return isNonEmptyString(ruleId) && Object.hasOwn(todoModule, ruleId);
 };
