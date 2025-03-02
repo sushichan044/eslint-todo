@@ -18,6 +18,9 @@ export type Options = {
 
 export type UserOptions = Partial<Options>;
 
+/**
+ * @package
+ */
 export const optionsWithDefault = (options: UserOptions = {}): Options => {
   return defu(options, getDefaultOptions());
 };

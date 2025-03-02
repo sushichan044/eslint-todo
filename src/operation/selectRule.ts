@@ -67,6 +67,9 @@ export const selectRuleBasedOnLimit = (
   }
 };
 
+/**
+ * @package
+ */
 export const selectRuleBasedOnFilesLimit = (
   todoModule: TodoModuleV2,
   limit: OperationFileLimit,
@@ -109,6 +112,8 @@ export const selectRuleBasedOnFilesLimit = (
  * @param todoModule - The TodoModuleV2 object.
  * @param limit - The upper limit for the number of violations.
  * @returns The rule ID with the most violations that can be auto-fixed and is below the limit, or null if no such rule exists.
+ *
+ * @package
  */
 export const selectRuleBasedOnViolationsLimit = (
   todoModule: TodoModuleV2,

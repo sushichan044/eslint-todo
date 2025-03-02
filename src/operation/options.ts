@@ -18,6 +18,9 @@ export type OperationOptions = {
 
 export type UserOperationOptions = Partial<OperationOptions>;
 
+/**
+ * @package
+ */
 export const operationOptionsWithDefault = (
   options: UserOperationOptions = {},
 ): OperationOptions => {
