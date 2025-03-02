@@ -39,6 +39,7 @@ export const resolveCLIContext = (input: Input): CLIContext => {
 };
 
 type CLIOperationInput = {
+  allowPartialSelection: boolean;
   autoFixableOnly: boolean;
   limit: string;
   limitType: string;
@@ -70,6 +71,7 @@ export const resolveCLIOperation = (input: CLIOperationInput): CLIOperation => {
   return {
     limit,
     options: {
+      allowPartialSelection: input.allowPartialSelection,
       autoFixableOnly: input.autoFixableOnly,
     },
   };
