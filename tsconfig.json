@@ -2,6 +2,11 @@
   "extends": "@virtual-live-lab/tsconfig/base",
   "compilerOptions": {
     "module": "ESNext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "plugins": [
+      {
+        "name": "eslint-plugin-import-access"
+      }
+    ]
   }
 }

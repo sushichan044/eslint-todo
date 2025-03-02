@@ -1,5 +1,6 @@
+import type { UserOperationOptions } from "../../operation/options";
 import type { SelectionResult } from "../../operation/selectRule";
-import type { OperationLimit, OperationOptions } from "../../operation/types";
+import type { OperationLimit } from "../../operation/types";
 
 import { selectRuleBasedOnLimit } from "../../operation/selectRule";
 import { LATEST_MODULE_HANDLER } from "../../todofile";
@@ -7,17 +8,12 @@ import { defineAction } from "./index";
 
 type Input = {
   limit: OperationLimit;
-  options?: OperationOptions;
+  options?: UserOperationOptions;
 };
 
 export const selectRulesToFixAction = defineAction<Input, SelectionResult>(
   async ({ core, logger }, input) => {
-    const {
-      limit,
-      options = {
-        autoFixableOnly: true,
-      },
-    } = input;
+    const { limit, options } = input;
 
     const currentModule = await core.readTodoModule();
     if (!LATEST_MODULE_HANDLER.isVersion(currentModule)) {
