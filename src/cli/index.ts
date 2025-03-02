@@ -17,6 +17,14 @@ const consola = createConsola({ formatOptions: { date: false } });
 
 const cli = defineCommand({
   args: {
+    // IMPORTANT:
+    // do not set default values for boolean options!
+    // CLI flag name is unexpected behavior when default value is set.
+    //
+    // example: `auto-fixable-only` with `default: true` results in
+    // $ eslint-todo --no-auto-fixable-only
+    // because the default value is true, the flag is negated.
+
     // general options
     "cwd": {
       description: "Current working directory (default: .)",
