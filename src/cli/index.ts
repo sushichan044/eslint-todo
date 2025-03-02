@@ -41,6 +41,13 @@ const cli = defineCommand({
     },
 
     // operation options
+    "allow-partial-selection": {
+      description:
+        "Allow partial selection of violations. Only works with --correct. (default: false)",
+      required: false,
+      type: "boolean",
+      valueHint: "boolean",
+    },
     "auto-fixable-only": {
       default: true,
       description: "Only handle auto-fixable violations. (default: true)",
@@ -103,6 +110,7 @@ const cli = defineCommand({
         correct: args.correct,
       },
       operation: {
+        allowPartialSelection: args["allow-partial-selection"],
         autoFixableOnly: args["auto-fixable-only"],
         limit: args.limit,
         limitType: args["limit-type"],

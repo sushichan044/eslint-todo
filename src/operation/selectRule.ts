@@ -229,6 +229,22 @@ export const selectRuleBasedOnViolationsLimit = (
       selectedViolations[file] = count;
     }
 
+    // todo: {
+    //   rule1: {
+    //     autoFix: true,
+    //     violations: {
+    //       "file1.js": 3,
+    //     },
+    //   },
+    // }
+    // { limit: 2 }
+    //
+    // when this kind of situation occurs, no partial selection could be made
+    // so we should return { success: false }
+    if (Object.keys(selectedViolations).length === 0) {
+      return { success: false };
+    }
+
     return {
       selection: {
         ruleId: partialSelectableRule,
