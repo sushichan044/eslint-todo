@@ -5,13 +5,17 @@ import type { RuleSelection } from "./selectRule";
 
 import { deleteRule } from "./deleteRule";
 
+const createTodoModuleV2 = (todo: TodoModuleV2["todo"]): TodoModuleV2 => ({
+  meta: {
+    version: 2,
+  },
+  todo,
+});
+
 describe("deleteRule", () => {
-  it("should delete the specified rule from the todo module", () => {
-    const currentModule: TodoModuleV2 = {
-      meta: {
-        version: 2,
-      },
-      todo: {
+  describe("full selection", () => {
+    it("should delete the specified rule from the todo module", () => {
+      const currentModule = createTodoModuleV2({
         "no-console": {
           autoFix: false,
           violations: {
@@ -24,51 +28,41 @@ describe("deleteRule", () => {
             "src/index.js": 3,
           },
         },
-      },
-    };
-    const ruleSelection = {
-      ruleId: "no-console",
-      type: "full",
-    } satisfies RuleSelection;
-
-    const newModule = deleteRule(currentModule, ruleSelection);
-
-    expect(newModule).toStrictEqual({
-      meta: {
-        version: 2,
-      },
-      todo: {
+      });
+      const ruleSelection: RuleSelection = {
+        ruleId: "no-console",
+        type: "full",
+      };
+      const expected = createTodoModuleV2({
         "no-unused-vars": {
           autoFix: false,
           violations: {
             "src/index.js": 3,
           },
         },
-      },
+      });
+
+      const newModule = deleteRule(currentModule, ruleSelection);
+      expect(newModule).toStrictEqual(expected);
     });
-  });
 
-  it("should not modify the todo module if the rule does not exist", () => {
-    const currentModule: TodoModuleV2 = {
-      meta: {
-        version: 2,
-      },
-      todo: {
+    it("should not modify the todo module if the rule does not exist", () => {
+      const currentModule = createTodoModuleV2({
         "no-console": {
           autoFix: false,
           violations: {
             "src/index.js": 1,
           },
         },
-      },
-    };
-    const ruleSelection = {
-      ruleId: "no-unused-vars",
-      type: "full",
-    } satisfies RuleSelection;
+      });
+      const ruleSelection: RuleSelection = {
+        ruleId: "no-unused-vars",
+        type: "full",
+      };
 
-    const newModule = deleteRule(currentModule, ruleSelection);
+      const newModule = deleteRule(currentModule, ruleSelection);
 
-    expect(newModule).toStrictEqual(currentModule);
+      expect(newModule).toStrictEqual(currentModule);
+    });
   });
 });
