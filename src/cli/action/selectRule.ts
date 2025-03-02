@@ -13,12 +13,7 @@ type Input = {
 
 export const selectRulesToFixAction = defineAction<Input, SelectionResult>(
   async ({ core, logger }, input) => {
-    const {
-      limit,
-      options = {
-        autoFixableOnly: true,
-      },
-    } = input;
+    const { limit, options } = input;
 
     const currentModule = await core.readTodoModule();
     if (!LATEST_MODULE_HANDLER.isVersion(currentModule)) {
