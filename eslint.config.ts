@@ -1,9 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./eslint-typegen.d.ts" />
 
+import type { ESLint } from "eslint";
+
 import ts from "@virtual-live-lab/eslint-config/presets/ts";
 import vitest from "@vitest/eslint-plugin";
 import { composer } from "eslint-flat-config-utils";
+import importAccess from "eslint-plugin-import-access/flat-config";
 import typegen from "eslint-typegen";
 import tseslint from "typescript-eslint";
 
@@ -52,6 +55,16 @@ export default typegen(
       rules: {
         ...vitest.configs.recommended.rules,
         "vitest/consistent-test-filename": "error",
+      },
+    })
+    .append({
+      files: ["**/*.ts"],
+      plugins: {
+        // Plugin の型が typescript-eslint ベースなので合わない
+        "import-access": importAccess as ESLint.Plugin,
+      },
+      rules: {
+        "import-access/jsdoc": "error",
       },
     }),
 );
