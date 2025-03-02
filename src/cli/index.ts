@@ -49,7 +49,6 @@ const cli = defineCommand({
       valueHint: "boolean",
     },
     "auto-fixable-only": {
-      default: true,
       description: "Only handle auto-fixable violations. (default: true)",
       required: false,
       type: "boolean",
