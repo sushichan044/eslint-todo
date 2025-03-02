@@ -719,6 +719,26 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         expect(result).toStrictEqual(expected);
       });
 
+      it("should return success: false if no available partial", () => {
+        const todoModule = createTodoModuleV2({
+          rule1: {
+            autoFix: true,
+            violations: {
+              "file1.js": 3,
+            },
+          },
+        });
+        const limit: OperationViolationLimit = { count: 2, type: "violation" };
+        const expected: SelectionResult = { success: false };
+
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
         const limit: OperationViolationLimit = { count: 1, type: "violation" };
@@ -914,6 +934,26 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           },
           success: true,
         };
+
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
+        expect(result).toStrictEqual(expected);
+      });
+
+      it("should return success: false if no available partial", () => {
+        const todoModule = createTodoModuleV2({
+          rule1: {
+            autoFix: false,
+            violations: {
+              "file1.js": 3,
+            },
+          },
+        });
+        const limit: OperationViolationLimit = { count: 2, type: "violation" };
+        const expected: SelectionResult = { success: false };
 
         const result = selectRuleBasedOnViolationsLimit(
           todoModule,
