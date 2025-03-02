@@ -65,4 +65,48 @@ describe("deleteRule", () => {
       expect(newModule).toStrictEqual(currentModule);
     });
   });
+
+  describe("partial selection", () => {
+    it("should delete the specified violations from the rule", () => {
+      const currentModule: TodoModuleV2 = {
+        meta: {
+          version: 2,
+        },
+        todo: {
+          "no-console": {
+            autoFix: false,
+            violations: {
+              "src/baz.js": 1,
+              "src/foo.js": 2,
+              "src/index.js": 1,
+            },
+          },
+        },
+      };
+      const selection: RuleSelection = {
+        ruleId: "no-console",
+        type: "partial",
+        violations: {
+          "src/foo.js": 2,
+        },
+      };
+
+      const newModule = deleteRule(currentModule, selection);
+
+      expect(newModule).toStrictEqual({
+        meta: {
+          version: 2,
+        },
+        todo: {
+          "no-console": {
+            autoFix: false,
+            violations: {
+              "src/baz.js": 1,
+              "src/index.js": 1,
+            },
+          },
+        },
+      });
+    });
+  });
 });

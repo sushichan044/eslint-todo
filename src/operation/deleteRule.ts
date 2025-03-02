@@ -23,5 +23,30 @@ export const deleteRule = (
     return newModule;
   }
 
-  return newModule;
+  if (ruleSelection.type === "partial") {
+    if (!Object.hasOwn(newModule.todo, ruleSelection.ruleId)) {
+      return newModule;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const entry = newModule.todo[ruleSelection.ruleId]!;
+
+    for (const [file, count] of Object.entries(ruleSelection.violations)) {
+      if (!Object.hasOwn(entry.violations, file)) {
+        continue;
+      }
+
+      if (entry.violations[file] == null || entry.violations[file] !== count) {
+        continue;
+      }
+
+      delete entry.violations[file];
+    }
+    return newModule;
+  }
+
+  const _exhaustiveCheck = ruleSelection satisfies never;
+  throw new Error(
+    `Unknown rule selection type ${JSON.stringify(_exhaustiveCheck)}`,
+  );
 };
