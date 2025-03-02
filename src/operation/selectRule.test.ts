@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { TodoModuleV2 } from "../todofile/v2";
 import type { OperationFileLimit, OperationViolationLimit } from "./types";
 
+import { operationOptionsWithDefault } from "./options";
 import {
   selectRuleBasedOnFilesLimit,
   selectRuleBasedOnLimit,
@@ -11,12 +12,17 @@ import {
 
 describe("selectRuleBasedOnLimit", () => {
   const todoModule: TodoModuleV2 = { meta: { version: 2 }, todo: {} };
+  const operationOptions = operationOptionsWithDefault();
 
   it("should call selectRuleBasedOnFilesLimit when limit type is file", () => {
     const limit: OperationFileLimit = { count: 10, type: "file" };
 
     const subject = selectRuleBasedOnLimit(todoModule, limit);
-    const expected = selectRuleBasedOnFilesLimit(todoModule, limit);
+    const expected = selectRuleBasedOnFilesLimit(
+      todoModule,
+      limit,
+      operationOptions,
+    );
 
     expect(subject).toStrictEqual(expected);
   });
@@ -25,7 +31,11 @@ describe("selectRuleBasedOnLimit", () => {
     const limit: OperationViolationLimit = { count: 10, type: "violation" };
 
     const subject = selectRuleBasedOnLimit(todoModule, limit);
-    const expected = selectRuleBasedOnViolationsLimit(todoModule, limit);
+    const expected = selectRuleBasedOnViolationsLimit(
+      todoModule,
+      limit,
+      operationOptions,
+    );
 
     expect(subject).toStrictEqual(expected);
   });
@@ -42,6 +52,10 @@ describe("selectRuleBasedOnLimit", () => {
 
 describe("selectRuleBasedOnFilesLimit", () => {
   describe("When autoFixableOnly: true", () => {
+    const operationOptions = operationOptionsWithDefault({
+      autoFixableOnly: true,
+    });
+
     describe("Full Select", () => {
       it("should return the first rule that meets the criteria", () => {
         const todoModule: TodoModuleV2 = {
@@ -76,7 +90,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
         };
         const limit: OperationFileLimit = { count: 4, type: "file" };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, limit);
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
         expect(result).toStrictEqual({
           selection: {
             ruleId: "rule1",
@@ -102,7 +120,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
         };
         const limit: OperationFileLimit = { count: 2, type: "file" };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, limit);
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
         expect(result).toStrictEqual({ success: false });
       });
 
@@ -120,13 +142,21 @@ describe("selectRuleBasedOnFilesLimit", () => {
         };
         const limit: OperationFileLimit = { count: 1, type: "file" };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, limit);
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
         expect(result).toStrictEqual({ success: false });
       });
     });
   });
 
   describe("When autoFixableOnly: false", () => {
+    const operationOptions = operationOptionsWithDefault({
+      autoFixableOnly: false,
+    });
+
     describe("Full Select", () => {
       it("should return the first rule that meets the criteria", () => {
         const todoModule: TodoModuleV2 = {
@@ -161,9 +191,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
         };
         const limit: OperationFileLimit = { count: 4, type: "file" };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, limit, {
-          autoFixableOnly: false,
-        });
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
         expect(result).toStrictEqual({
           selection: { ruleId: "rule1", type: "full" },
           success: true,
@@ -186,9 +218,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
         };
         const limit: OperationFileLimit = { count: 2, type: "file" };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, limit, {
-          autoFixableOnly: false,
-        });
+        const result = selectRuleBasedOnFilesLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
         expect(result).toStrictEqual({ success: false });
       });
     });
@@ -197,6 +231,10 @@ describe("selectRuleBasedOnFilesLimit", () => {
 
 describe("selectRuleBasedOnViolationsLimit", () => {
   describe("When autoFixableOnly: true", () => {
+    const operationOptions = operationOptionsWithDefault({
+      autoFixableOnly: true,
+    });
+
     describe("Full Select", () => {
       it("should return the rule with the most violations below the limit", () => {
         const todoModule: TodoModuleV2 = {
@@ -223,7 +261,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         };
         const limit: OperationViolationLimit = { count: 5, type: "violation" };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, limit);
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
         expect(result).toStrictEqual({
           selection: {
             ruleId: "rule1",
@@ -248,7 +290,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         };
         const limit: OperationViolationLimit = { count: 5, type: "violation" };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, limit);
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
         expect(result).toEqual({ success: false });
       });
 
@@ -266,13 +312,21 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         };
         const limit: OperationViolationLimit = { count: 4, type: "violation" };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, limit);
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
         expect(result).toEqual({ success: false });
       });
     });
   });
 
   describe("When autoFixableOnly: false", () => {
+    const operationOptions = operationOptionsWithDefault({
+      autoFixableOnly: false,
+    });
+
     describe("Full Select", () => {
       it("should return the rule with the most violations below the limit", () => {
         const todoModule: TodoModuleV2 = {
@@ -299,9 +353,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         };
         const limit: OperationViolationLimit = { count: 5, type: "violation" };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, limit, {
-          autoFixableOnly: false,
-        });
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
         expect(result).toStrictEqual({
           selection: {
             ruleId: "rule1",
@@ -325,9 +381,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         };
         const limit: OperationViolationLimit = { count: 4, type: "violation" };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, limit, {
-          autoFixableOnly: false,
-        });
+        const result = selectRuleBasedOnViolationsLimit(
+          todoModule,
+          limit,
+          operationOptions,
+        );
         expect(result).toEqual({ success: false });
       });
     });

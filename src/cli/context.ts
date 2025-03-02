@@ -1,7 +1,8 @@
 import { relative } from "pathe";
 import * as v from "valibot";
 
-import type { OperationLimit, OperationOptions } from "../operation/types";
+import type { UserOperationOptions } from "../operation/options";
+import type { OperationLimit } from "../operation/types";
 
 import { safeTryNumber } from "../utils/number";
 
@@ -45,7 +46,7 @@ type CLIOperationInput = {
 
 type CLIOperation = {
   limit: OperationLimit;
-  options: OperationOptions;
+  options: UserOperationOptions;
 };
 
 const limitTypeSchema = v.union([v.literal("violation"), v.literal("file")]);

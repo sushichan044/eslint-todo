@@ -2,9 +2,14 @@ import type { TodoModuleV2 } from "../todofile/v2";
 import type {
   OperationFileLimit,
   OperationLimit,
-  OperationOptions,
   OperationViolationLimit,
 } from "./types";
+
+import {
+  type OperationOptions,
+  operationOptionsWithDefault,
+  type UserOperationOptions,
+} from "./options";
 
 type PartialRuleSelection = {
   /**
@@ -42,13 +47,19 @@ export type SelectionResult =
 export const selectRuleBasedOnLimit = (
   todoModule: TodoModuleV2,
   limit: OperationLimit,
-  options: OperationOptions = {},
+  options: UserOperationOptions = {},
 ): SelectionResult => {
+  const resolvedOptions = operationOptionsWithDefault(options);
+
   switch (limit.type) {
     case "file":
-      return selectRuleBasedOnFilesLimit(todoModule, limit, options);
+      return selectRuleBasedOnFilesLimit(todoModule, limit, resolvedOptions);
     case "violation":
-      return selectRuleBasedOnViolationsLimit(todoModule, limit, options);
+      return selectRuleBasedOnViolationsLimit(
+        todoModule,
+        limit,
+        resolvedOptions,
+      );
     default:
       // exhaustive check
       const l = limit satisfies never;
@@ -59,10 +70,10 @@ export const selectRuleBasedOnLimit = (
 export const selectRuleBasedOnFilesLimit = (
   todoModule: TodoModuleV2,
   limit: OperationFileLimit,
-  options: OperationOptions = {},
+  options: OperationOptions,
 ): SelectionResult => {
   const { count: limitCount } = limit;
-  const { autoFixableOnly = true } = options;
+  const { allowPartialSelection, autoFixableOnly } = options;
 
   let selectedRule: string | null = null;
   let maxFiles = 0;
@@ -102,10 +113,10 @@ export const selectRuleBasedOnFilesLimit = (
 export const selectRuleBasedOnViolationsLimit = (
   todoModule: TodoModuleV2,
   limit: OperationViolationLimit,
-  options: OperationOptions = {},
+  options: OperationOptions,
 ): SelectionResult => {
   const { count: limitCount } = limit;
-  const { autoFixableOnly = true } = options;
+  const { autoFixableOnly } = options;
 
   let selectedRule: string | null = null;
   let maxViolations = 0;
