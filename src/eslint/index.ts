@@ -25,11 +25,11 @@ const eslintConfigTodo = async (
 
   const configs: Linter.Config[] = [
     {
-      files: [todoModulePath.relative],
-      linterOptions: {
-        reportUnusedDisableDirectives: false,
-      },
       name: "@sushichan044/eslint-todo/setup",
+    },
+    {
+      ignores: [todoModulePath.relative],
+      name: "@sushichan044/eslint-todo/ignore",
     },
   ];
 
