@@ -25,11 +25,11 @@ const eslintConfigTodo = async (
 
   const configs: Linter.Config[] = [
     {
-      files: [todoModulePath.relative],
-      linterOptions: {
-        reportUnusedDisableDirectives: false,
-      },
       name: "@sushichan044/eslint-todo/setup",
+    },
+    {
+      ignores: [todoModulePath.relative],
+      name: "@sushichan044/eslint-todo/ignore",
     },
   ];
 
@@ -40,7 +40,7 @@ const eslintConfigTodo = async (
   ) {
     configs.push({
       files: [todoModulePath.relative],
-      name: "@sushichan044/eslint-todo/warning/YOU_ARE_USING_INVALID_TODO_FILE",
+      name: "@sushichan044/eslint-todo/warning/FILE_NOT_FOUND_OR_INVALID_TODO_FILE",
     });
     return configs;
   }
