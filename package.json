@@ -63,6 +63,7 @@
     "eslint": "9.21.0",
     "eslint-flat-config-utils": "2.0.1",
     "eslint-plugin-import-access": "2.2.2",
+    "eslint-plugin-unicorn": "57.0.0",
     "eslint-typegen": "2.0.0",
     "pkg-pr-new": "0.0.40",
     "pnpm": "10.5.2",
