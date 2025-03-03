@@ -4,9 +4,6 @@ import type { Options } from "../options";
 
 export type TodoModuleLike = Record<string, unknown>;
 
-export type GetCurrentTodoModule<T extends TodoModuleHandler<TodoModuleLike>> =
-  ReturnType<T["getDefaultTodo"]>;
-
 export type ESLintRuleId = string;
 
 export type RuleSeverity = Extract<Linter.RuleSeverity, "error" | "off">;

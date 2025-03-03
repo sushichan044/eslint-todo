@@ -52,7 +52,7 @@ type CLIOperation = {
 
 const limitTypeSchema = v.union([v.literal("violation"), v.literal("file")]);
 
-export const resolveCLIOperation = (input: CLIOperationInput): CLIOperation => {
+const resolveCLIOperation = (input: CLIOperationInput): CLIOperation => {
   const parsedLimitType = v.safeParse(limitTypeSchema, input.limitType);
   if (!parsedLimitType.success) {
     throw new Error("limit-type must be either 'violation' or 'file'");

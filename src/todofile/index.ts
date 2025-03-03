@@ -16,4 +16,4 @@ export type LatestModule = SupportedTodoModulesArray[0];
 export const LATEST_MODULE_HANDLER =
   TodoModuleV2Handler satisfies LatestModuleHandler;
 
-export type LatestModuleHandler = TodoModuleHandler<LatestModule>;
+type LatestModuleHandler = TodoModuleHandler<LatestModule>;

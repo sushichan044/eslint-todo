@@ -1,10 +1,9 @@
 import type { Remote } from "comlink";
 import type { ConsolaInstance } from "consola";
-import type { MaybePromise } from "valibot";
 
 import type { UserOptions } from "../../options";
 import type { RemoteESLintTodoCore } from "../../remote/core";
-import type { IsNever } from "../../utils/types";
+import type { IsNever, MaybePromise } from "../../utils/types";
 
 import { launchRemoteESLintTodoCore } from "../../remote/client";
 
