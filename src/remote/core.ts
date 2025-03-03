@@ -56,7 +56,9 @@ export class RemoteESLintTodoCore implements IESLintTodoCoreLike {
       ESLintTodoCore["_DO_NOT_USE_DIRECTLY_unsafeReadTodoModule"]
     >
   ): ReturnType<ESLintTodoCore["_DO_NOT_USE_DIRECTLY_unsafeReadTodoModule"]> {
-    return this.#todoCore._DO_NOT_USE_DIRECTLY_unsafeReadTodoModule(...parameters);
+    return this.#todoCore._DO_NOT_USE_DIRECTLY_unsafeReadTodoModule(
+      ...parameters,
+    );
   }
 
   async resetTodoModule(

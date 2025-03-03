@@ -3,16 +3,16 @@
  */
 export const escapeGlobCharacters = (glob: string): string => {
   return glob
-    .replaceAll('\\', "\\\\")
-    .replaceAll('*', String.raw`\*`)
-    .replaceAll('?', String.raw`\?`)
-    .replaceAll('[', String.raw`\[`)
-    .replaceAll(']', String.raw`\]`)
-    .replaceAll('{', String.raw`\{`)
-    .replaceAll('}', String.raw`\}`)
-    .replaceAll(')', String.raw`\)`)
-    .replaceAll('(', String.raw`\(`)
-    .replaceAll('!', String.raw`\!`);
+    .replaceAll("\\", "\\\\")
+    .replaceAll("*", String.raw`\*`)
+    .replaceAll("?", String.raw`\?`)
+    .replaceAll("[", String.raw`\[`)
+    .replaceAll("]", String.raw`\]`)
+    .replaceAll("{", String.raw`\{`)
+    .replaceAll("}", String.raw`\}`)
+    .replaceAll(")", String.raw`\)`)
+    .replaceAll("(", String.raw`\(`)
+    .replaceAll("!", String.raw`\!`);
 };
 
 /**

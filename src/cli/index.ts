@@ -185,22 +185,22 @@ const cli = defineCommand({
     consola.info(`eslint-todo CLI ${packageVersion}`);
 
     switch (true) {
-    case args.debug: {
-      consola.level = 4;
-    
-    break;
-    }
-    case args.trace: {
-      consola.level = 5;
-    
-    break;
-    }
-    case args.verbose: {
-      consola.level = +999;
-    
-    break;
-    }
-    // No default
+      case args.debug: {
+        consola.level = 4;
+
+        break;
+      }
+      case args.trace: {
+        consola.level = 5;
+
+        break;
+      }
+      case args.verbose: {
+        consola.level = +999;
+
+        break;
+      }
+      // No default
     }
   },
 });
