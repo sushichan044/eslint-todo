@@ -9,6 +9,7 @@ import { composer } from "eslint-flat-config-utils";
 import importAccess from "eslint-plugin-import-access/flat-config";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import typegen from "eslint-typegen";
+import globals from "globals";
 import tseslint from "typescript-eslint";
 
 import eslintConfigTodo from "./dist/eslint/index.mjs";
@@ -85,6 +86,9 @@ export default typegen(
     })
     .append({
       files: ["bin/eslint-todo.mjs"],
+      languageOptions: {
+        globals: globals.nodeBuiltin,
+      },
       rules: {
         "unicorn/filename-case": "off",
       },

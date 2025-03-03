@@ -9,14 +9,6 @@ export default {
   },
 
   todo: {
-    "no-undef": {
-      autoFix: false,
-
-      violations: {
-        "bin/eslint-todo.mjs": 1
-      }
-    },
-
     "unicorn/no-array-reduce": {
       autoFix: false,
 
