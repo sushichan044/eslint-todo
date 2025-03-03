@@ -19,8 +19,10 @@ npm install --save-dev eslint @sushichan044/eslint-todo
 Requires:
 
 - **ES Module**
-- ESLint: 8.57.0, 9.0.0 or later
-- **Flat Config**
+- ESLint: `^8.57.0 || ^9.0.0`
+  - **Flat Config**
+- Node.js: `>= 20.0.0`
+  - May work in Deno, but not tested.
 
 ## Getting Started
 
