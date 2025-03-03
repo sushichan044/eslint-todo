@@ -54,7 +54,7 @@ export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
 
   buildConfigsForESLint: ({ todo }, severity) => {
     return Object.entries(todo).map(([ruleId, entry]) => ({
-      files: Object.keys(entry.violations).map(escapeGlobCharacters),
+      files: Object.keys(entry.violations).map((f) => escapeGlobCharacters(f)),
       name: `@sushichan044/eslint-todo/${severity}/${ruleId}`,
       rules: {
         [ruleId]: severity,
@@ -63,7 +63,7 @@ export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
   },
 
   buildTodoFromLintResults(lintResult, options) {
-    return lintResult.reduce((todoMod, result) => {
+    return lintResult.reduce((todoModule, result) => {
       const relativeFilePath = relative(options.cwd, result.filePath);
 
       for (const message of result.messages) {
@@ -71,21 +71,21 @@ export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
           continue;
         }
 
-        todoMod.todo[message.ruleId] ??= {
+        todoModule.todo[message.ruleId] ??= {
           autoFix: false,
           violations: {},
         };
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        todoMod.todo[message.ruleId]!.violations[relativeFilePath] ??= 0;
+        todoModule.todo[message.ruleId]!.violations[relativeFilePath] ??= 0;
 
-        if (Object.hasOwn(todoMod.todo, message.ruleId)) {
+        if (Object.hasOwn(todoModule.todo, message.ruleId)) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          todoMod.todo[message.ruleId]!.violations[relativeFilePath]!++;
+          todoModule.todo[message.ruleId]!.violations[relativeFilePath]!++;
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          todoMod.todo[message.ruleId]!.autoFix = message.fix != null;
+          todoModule.todo[message.ruleId]!.autoFix = message.fix != null;
         }
       }
-      return todoMod;
+      return todoModule;
     }, TodoModuleV2Handler.getDefaultTodo());
   },
 

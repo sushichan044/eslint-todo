@@ -4,7 +4,7 @@ import { colorize } from "consola/utils";
 
 import type { UserOptions } from "../options";
 
-import { version as pkgVersion } from "../../package.json";
+import { version as packageVersion } from "../../package.json";
 import { ESLintTodoCore } from "../index";
 import { runAction } from "./action";
 import { deleteRuleAction } from "./action/deleteRule";
@@ -100,7 +100,7 @@ const cli = defineCommand({
     description:
       "Generate ESLint todo file and temporally suppress ESLint errors!",
     name: "@sushichan044/eslint-todo/cli",
-    version: pkgVersion,
+    version: packageVersion,
   },
   async run({ args }) {
     const cliCwd = process.cwd();
@@ -111,7 +111,7 @@ const cli = defineCommand({
     // initialize local ESLintTodoCore
     const eslintTodoCore = new ESLintTodoCore(options);
 
-    const ctx = resolveCLIContext({
+    const context = resolveCLIContext({
       cwd: cliCwd,
       mode: {
         correct: args.correct,
@@ -127,17 +127,17 @@ const cli = defineCommand({
 
     await runAction(updateAction, { consola, options });
 
-    if (ctx.mode === "generate") {
+    if (context.mode === "generate") {
       await runAction(genAction, { consola, options });
-      consola.success(`ESLint todo file generated at ${ctx.todoFilePath}!`);
+      consola.success(`ESLint todo file generated at ${context.todoFilePath}!`);
       return;
     }
 
-    if (ctx.mode === "correct") {
+    if (context.mode === "correct") {
       const result = await runAction(
         selectRulesToFixAction,
         { consola, options },
-        ctx.operation,
+        context.operation,
       );
 
       if (!result.success) {
@@ -179,17 +179,28 @@ const cli = defineCommand({
       );
     }
 
-    throw new Error(`Unknown mode: ${JSON.stringify(ctx.mode)}`);
+    throw new Error(`Unknown mode: ${JSON.stringify(context.mode)}`);
   },
   setup({ args }) {
-    consola.info(`eslint-todo CLI ${pkgVersion}`);
+    consola.info(`eslint-todo CLI ${packageVersion}`);
 
-    if (args.debug === true) {
+    switch (true) {
+    case args.debug: {
       consola.level = 4;
-    } else if (args.trace === true) {
+    
+    break;
+    }
+    case args.trace: {
       consola.level = 5;
-    } else if (args.verbose === true) {
+    
+    break;
+    }
+    case args.verbose: {
       consola.level = +999;
+    
+    break;
+    }
+    // No default
     }
   },
 });

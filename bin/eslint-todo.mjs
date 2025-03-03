@@ -2,7 +2,4 @@
 // @ts-check
 import { run } from "../dist/cli/index.mjs";
 
-run(process.argv).catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+await run(process.argv);

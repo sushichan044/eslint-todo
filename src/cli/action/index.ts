@@ -64,9 +64,9 @@ export async function runAction<Input, Return = unknown>(
       return await (action as CLIAction<never, Return>)(actionApi);
     }
     return await action(actionApi, input);
-  } catch (e) {
-    consola.error(e);
-    throw e;
+  } catch (error) {
+    consola.error(error);
+    throw error;
   } finally {
     await remoteService.terminate();
   }

@@ -28,47 +28,47 @@ export class RemoteESLintTodoCore implements IESLintTodoCoreLike {
   }
 
   buildTodoFromLintResults(
-    ...params: Parameters<ESLintTodoCore["buildTodoFromLintResults"]>
+    ...parameters: Parameters<ESLintTodoCore["buildTodoFromLintResults"]>
   ): ReturnType<ESLintTodoCore["buildTodoFromLintResults"]> {
-    return this.#todoCore.buildTodoFromLintResults(...params);
+    return this.#todoCore.buildTodoFromLintResults(...parameters);
   }
 
   getTodoModulePath(
-    ...params: Parameters<ESLintTodoCore["getTodoModulePath"]>
+    ...parameters: Parameters<ESLintTodoCore["getTodoModulePath"]>
   ): ReturnType<ESLintTodoCore["getTodoModulePath"]> {
-    return this.#todoCore.getTodoModulePath(...params);
+    return this.#todoCore.getTodoModulePath(...parameters);
   }
 
   initializeESLint(
-    ...params: Parameters<ESLintTodoCore["initializeESLint"]>
+    ...parameters: Parameters<ESLintTodoCore["initializeESLint"]>
   ): ReturnType<ESLintTodoCore["initializeESLint"]> {
-    return this.#todoCore.initializeESLint(...params);
+    return this.#todoCore.initializeESLint(...parameters);
   }
 
   async lint(
-    ...params: Parameters<ESLintTodoCore["lint"]>
+    ...parameters: Parameters<ESLintTodoCore["lint"]>
   ): ReturnType<ESLintTodoCore["lint"]> {
-    return this.#todoCore.lint(...params);
+    return this.#todoCore.lint(...parameters);
   }
 
   async readTodoModule(
-    ...params: Parameters<
+    ...parameters: Parameters<
       ESLintTodoCore["_DO_NOT_USE_DIRECTLY_unsafeReadTodoModule"]
     >
   ): ReturnType<ESLintTodoCore["_DO_NOT_USE_DIRECTLY_unsafeReadTodoModule"]> {
-    return this.#todoCore._DO_NOT_USE_DIRECTLY_unsafeReadTodoModule(...params);
+    return this.#todoCore._DO_NOT_USE_DIRECTLY_unsafeReadTodoModule(...parameters);
   }
 
   async resetTodoModule(
-    ...params: Parameters<ESLintTodoCore["resetTodoModule"]>
+    ...parameters: Parameters<ESLintTodoCore["resetTodoModule"]>
   ): ReturnType<ESLintTodoCore["resetTodoModule"]> {
-    return this.#todoCore.resetTodoModule(...params);
+    return this.#todoCore.resetTodoModule(...parameters);
   }
 
   async writeTodoModule(
-    ...params: Parameters<ESLintTodoCore["writeTodoModule"]>
+    ...parameters: Parameters<ESLintTodoCore["writeTodoModule"]>
   ): ReturnType<ESLintTodoCore["writeTodoModule"]> {
-    return this.#todoCore.writeTodoModule(...params);
+    return this.#todoCore.writeTodoModule(...parameters);
   }
 }
 

@@ -8,8 +8,8 @@ export default defineConfig({
       reportOnFailure: true,
     },
     reporters:
-      process.env["GITHUB_ACTIONS"] != null
-        ? ["default", "github-actions"]
-        : "default",
+      process.env["GITHUB_ACTIONS"] == null
+        ? "default"
+        : ["default", "github-actions"],
   },
 });
