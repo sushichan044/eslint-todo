@@ -14,20 +14,21 @@ export const deleteRule = (
   currentModule: TodoModuleV2,
   ruleSelection: RuleSelection,
 ): TodoModuleV2 => {
-  const newModule = klona(currentModule);
+  if (!Object.hasOwn(currentModule.todo, ruleSelection.ruleId)) {
+    return currentModule;
+  }
 
   if (ruleSelection.type === "full") {
-    if (Object.hasOwn(newModule.todo, ruleSelection.ruleId)) {
-      delete newModule.todo[ruleSelection.ruleId];
-    }
+    const newModule = klona(currentModule);
+    delete newModule.todo[ruleSelection.ruleId];
+
     return newModule;
   }
 
   if (ruleSelection.type === "partial") {
-    if (!Object.hasOwn(newModule.todo, ruleSelection.ruleId)) {
-      return newModule;
-    }
+    const newModule = klona(currentModule);
 
+    // todo[ruleSelection.ruleId] is guaranteed to exist as we checked it first in the function.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const entry = newModule.todo[ruleSelection.ruleId]!;
 
