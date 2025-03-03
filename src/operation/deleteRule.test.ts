@@ -5,13 +5,17 @@ import type { RuleSelection } from "./selectRule";
 
 import { deleteRule } from "./deleteRule";
 
+const createTodoModuleV2 = (todo: TodoModuleV2["todo"]): TodoModuleV2 => ({
+  meta: {
+    version: 2,
+  },
+  todo,
+});
+
 describe("deleteRule", () => {
-  it("should delete the specified rule from the todo module", () => {
-    const currentModule: TodoModuleV2 = {
-      meta: {
-        version: 2,
-      },
-      todo: {
+  describe("full selection", () => {
+    it("should delete the specified rule from the todo module", () => {
+      const currentModule = createTodoModuleV2({
         "no-console": {
           autoFix: false,
           violations: {
@@ -24,51 +28,141 @@ describe("deleteRule", () => {
             "src/index.js": 3,
           },
         },
-      },
-    };
-    const ruleSelection = {
-      ruleId: "no-console",
-      type: "full",
-    } satisfies RuleSelection;
-
-    const newModule = deleteRule(currentModule, ruleSelection);
-
-    expect(newModule).toStrictEqual({
-      meta: {
-        version: 2,
-      },
-      todo: {
+      });
+      const ruleSelection: RuleSelection = {
+        ruleId: "no-console",
+        type: "full",
+      };
+      const expected = createTodoModuleV2({
         "no-unused-vars": {
           autoFix: false,
           violations: {
             "src/index.js": 3,
           },
         },
-      },
+      });
+
+      const newModule = deleteRule(currentModule, ruleSelection);
+      expect(newModule).toStrictEqual(expected);
+    });
+
+    it("should not modify the todo module if the rule does not exist", () => {
+      const currentModule = createTodoModuleV2({
+        "no-console": {
+          autoFix: false,
+          violations: {
+            "src/index.js": 1,
+          },
+        },
+      });
+      const ruleSelection: RuleSelection = {
+        ruleId: "no-unused-vars",
+        type: "full",
+      };
+
+      const newModule = deleteRule(currentModule, ruleSelection);
+
+      expect(newModule).toStrictEqual(currentModule);
     });
   });
 
-  it("should not modify the todo module if the rule does not exist", () => {
-    const currentModule: TodoModuleV2 = {
-      meta: {
-        version: 2,
-      },
-      todo: {
+  describe("partial selection", () => {
+    it("should delete the specified violations from the rule", () => {
+      const currentModule = createTodoModuleV2({
         "no-console": {
           autoFix: false,
           violations: {
+            "src/baz.js": 1,
+            "src/foo.js": 2,
             "src/index.js": 1,
           },
         },
-      },
-    };
-    const ruleSelection = {
-      ruleId: "no-unused-vars",
-      type: "full",
-    } satisfies RuleSelection;
+      });
+      const selection: RuleSelection = {
+        ruleId: "no-console",
+        type: "partial",
+        violations: {
+          "src/foo.js": 2,
+        },
+      };
+      const expected = createTodoModuleV2({
+        "no-console": {
+          autoFix: false,
+          violations: {
+            "src/baz.js": 1,
+            "src/index.js": 1,
+          },
+        },
+      });
 
-    const newModule = deleteRule(currentModule, ruleSelection);
+      const newModule = deleteRule(currentModule, selection);
+      expect(newModule).toStrictEqual(expected);
+    });
 
-    expect(newModule).toStrictEqual(currentModule);
+    it("should not modify the todo module if the rule does not exist", () => {
+      const currentModule = createTodoModuleV2({
+        "no-console": {
+          autoFix: false,
+          violations: {
+            "src/foo.js": 2,
+            "src/index.js": 1,
+          },
+        },
+      });
+      const selection: RuleSelection = {
+        ruleId: "no-unused-vars",
+        type: "partial",
+        violations: {
+          "src/foo.js": 2,
+        },
+      };
+
+      const newModule = deleteRule(currentModule, selection);
+      expect(newModule).toStrictEqual(currentModule);
+    });
+
+    it("should not modify the todo module if the file does not exist", () => {
+      const currentModule = createTodoModuleV2({
+        "no-console": {
+          autoFix: false,
+          violations: {
+            "src/foo.js": 2,
+            "src/index.js": 1,
+          },
+        },
+      });
+      const selection: RuleSelection = {
+        ruleId: "no-console",
+        type: "partial",
+        violations: {
+          "src/bar.js": 2,
+        },
+      };
+
+      const newModule = deleteRule(currentModule, selection);
+      expect(newModule).toStrictEqual(currentModule);
+    });
+
+    it("should not modify the todo module if the violation count does not match", () => {
+      const currentModule = createTodoModuleV2({
+        "no-console": {
+          autoFix: false,
+          violations: {
+            "src/foo.js": 2,
+            "src/index.js": 1,
+          },
+        },
+      });
+      const selection: RuleSelection = {
+        ruleId: "no-console",
+        type: "partial",
+        violations: {
+          "src/foo.js": 3,
+        },
+      };
+
+      const newModule = deleteRule(currentModule, selection);
+      expect(newModule).toStrictEqual(currentModule);
+    });
   });
 });

@@ -163,10 +163,9 @@ const cli = defineCommand({
         const violationCount = Object.entries(
           result.selection.violations,
         ).reduce((sum, [, count]) => sum + count, 0);
-        const violationFiles = Object.keys(result.selection.violations).length;
 
         consola.success(
-          `${violationCount} violations in ${violationFiles} files of rule ${colorize(
+          `${violationCount} violations of rule ${colorize(
             "magenta",
             result.selection.ruleId,
           )} are deleted from the todo file and now ESLint will detect the violations.`,
