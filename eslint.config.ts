@@ -7,6 +7,7 @@ import ts from "@virtual-live-lab/eslint-config/presets/ts";
 import vitest from "@vitest/eslint-plugin";
 import { composer } from "eslint-flat-config-utils";
 import importAccess from "eslint-plugin-import-access/flat-config";
+import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import typegen from "eslint-typegen";
 import tseslint from "typescript-eslint";
 
@@ -46,7 +47,22 @@ export default typegen(
         },
       },
     )
-    .append(eslintConfigTodo())
+    .append(
+      // @ts-expect-error 型が合わない
+      tseslint.config({
+        extends: [eslintPluginUnicorn.configs.recommended],
+        name: "@repo/eslint-config/unicorn",
+        rules: {
+          "unicorn/filename-case": [
+            "error",
+            {
+              case: "camelCase",
+            },
+          ],
+          "unicorn/no-null": "off",
+        },
+      }),
+    )
     .append({
       files: ["**/*.test.ts", "**/*.spec.ts"],
       plugins: {
@@ -66,5 +82,12 @@ export default typegen(
       rules: {
         "import-access/jsdoc": "error",
       },
-    }),
+    })
+    .append({
+      files: ["bin/eslint-todo.mjs"],
+      rules: {
+        "unicorn/filename-case": "off",
+      },
+    })
+    .append(eslintConfigTodo()),
 );
