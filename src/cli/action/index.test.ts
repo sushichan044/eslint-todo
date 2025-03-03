@@ -53,7 +53,7 @@ describe("runAction", () => {
     });
 
     it("should call remoteService.terminate after action is resolved", async () => {
-      const action = vi.fn().mockResolvedValue(undefined);
+      const action = vi.fn().mockResolvedValue(null);
 
       await runAction(action, { consola, options: {} });
       expect(mockRemoteService.terminate).toHaveBeenCalledOnce();

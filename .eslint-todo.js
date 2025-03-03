@@ -9,11 +9,28 @@ export default {
   },
 
   todo: {
+    "unicorn/no-abusive-eslint-disable": {
+      autoFix: false,
+
+      violations: {
+        ".eslint-todo.js": 1
+      }
+    },
+
     "no-undef": {
       autoFix: false,
 
       violations: {
-        "bin/eslint-todo.mjs": 3
+        "bin/eslint-todo.mjs": 1
+      }
+    },
+
+    "unicorn/no-array-reduce": {
+      autoFix: false,
+
+      violations: {
+        "src/todofile/v1.ts": 3,
+        "src/todofile/v2.ts": 1
       }
     }
   }

@@ -41,7 +41,7 @@ export const TodoModuleV1Handler: TodoModuleHandler<
 
   buildConfigsForESLint: (todo, severity) => {
     return Object.entries(todo).map(([ruleId, entry]) => ({
-      files: entry.files.map(escapeGlobCharacters),
+      files: entry.files.map((f) => escapeGlobCharacters(f)),
       name: `@sushichan044/eslint-todo/${severity}/${ruleId}`,
       rules: {
         [ruleId]: severity,
@@ -50,7 +50,7 @@ export const TodoModuleV1Handler: TodoModuleHandler<
   },
 
   buildTodoFromLintResults(lintResult, options) {
-    return lintResult.reduce((todoMod, result) => {
+    return lintResult.reduce((todoModule, result) => {
       const relativeFilePath = relative(options.cwd, result.filePath);
 
       for (const message of result.messages) {
@@ -58,19 +58,19 @@ export const TodoModuleV1Handler: TodoModuleHandler<
           continue;
         }
 
-        todoMod[message.ruleId] ??= {
+        todoModule[message.ruleId] ??= {
           autoFix: false,
           files: [],
         };
 
-        if (Object.hasOwn(todoMod, message.ruleId)) {
+        if (Object.hasOwn(todoModule, message.ruleId)) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          todoMod[message.ruleId]!.files.push(relativeFilePath);
+          todoModule[message.ruleId]!.files.push(relativeFilePath);
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          todoMod[message.ruleId]!.autoFix = message.fix != null;
+          todoModule[message.ruleId]!.autoFix = message.fix != null;
         }
       }
-      return todoMod;
+      return todoModule;
     }, TodoModuleV1Handler.getDefaultTodo());
   },
 

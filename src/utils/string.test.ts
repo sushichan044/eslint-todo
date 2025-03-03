@@ -16,7 +16,7 @@ describe("isNonEmptyString", () => {
   });
 
   it("should return false for undefined", () => {
-    expect(isNonEmptyString(undefined)).toBe(false);
+    expect(isNonEmptyString()).toBe(false);
   });
 
   it("should return true for a string with spaces", () => {

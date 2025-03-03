@@ -17,11 +17,11 @@ export const generateTodoModuleCode = (eslintTodo: TodoModuleLike): string => {
     "export default {};",
   ].join("\n");
 
-  const mod = parseModule<{ default: unknown }>(js);
+  const module_ = parseModule<{ default: unknown }>(js);
 
-  mod.exports.default = eslintTodo;
+  module_.exports.default = eslintTodo;
 
-  const { code: jsCode } = generateCode(mod, {
+  const { code: jsCode } = generateCode(module_, {
     format: { objectCurlySpacing: true, tabWidth: 2 },
   });
 

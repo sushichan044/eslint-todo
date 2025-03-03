@@ -53,18 +53,21 @@ export const selectRuleBasedOnLimit = (
   const resolvedOptions = operationOptionsWithDefault(options);
 
   switch (limit.type) {
-    case "file":
+    case "file": {
       return selectRuleBasedOnFilesLimit(todoModule, limit, resolvedOptions);
-    case "violation":
+    }
+    case "violation": {
       return selectRuleBasedOnViolationsLimit(
         todoModule,
         limit,
         resolvedOptions,
       );
-    default:
+    }
+    default: {
       // exhaustive check
       const l = limit satisfies never;
       throw new Error(`Got unknown limit: ${JSON.stringify(l)}`);
+    }
   }
 };
 
@@ -128,14 +131,11 @@ export const selectRuleBasedOnFilesLimit = (
 
     const selectedPaths = Object.keys(rule.violations).slice(0, limitCount);
 
-    const selectedViolations = selectedPaths.reduce(
-      (acc, file) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        acc[file] = rule.violations[file]!;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+    const selectedViolations: Record<string, number> = {};
+    for (const file of selectedPaths) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      selectedViolations[file] = rule.violations[file]!;
+    }
 
     return {
       selection: {
