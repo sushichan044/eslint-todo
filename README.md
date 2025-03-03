@@ -1,33 +1,33 @@
 # @sushichan044/eslint-todo
 
-> [!WARNING]
+Simple tool to temporarily disable existing ESLint violations like `.rubocop_todo.yml` in RuboCop.
+
+It also has a utility that helps reducing ignored violations at your pace.
+
+> [!NOTE]
 > This tool only supports ESLint Flat Config with ES Module.
 >
 > If you want to use this tool to supress ESLint errors when migrating to ESLint Flat Config,
 > you first need to create Flat Config and then use this tool. Maybe utilities like [@eslint/compat](https://github.com/eslint/rewrite/tree/main/packages/compat) can help you.
 
-Simple tool to temporarily disable existing ESLint violations like `.rubocop_todo.yml` in RuboCop.
-
-This allows existing offending files to be excluded from scanning on a rule-by-rule basis, which is useful when making destructive changes to ESLint settings.
-
-It also has a utility that reduces the number of ignored rules at a pace that works for your team.
-
-## Features
-
-- Temporarily disable ESLint rules for specific files having existing violations with one command.
-- Assistive feature to gradually eliminate ignored errors.
-
 ## Installation
 
 ```bash
-pnpm install -D @sushichan044/eslint-todo
+npm install --save-dev eslint @sushichan044/eslint-todo
 ```
+
+Requires:
+
+- **ES Module**
+- ESLint: 8.57.0, 9.0.0 or later
+- **Flat Config**
 
 ## Getting Started
 
-1. Add `eslint-todo` config to your `eslint.config.js`.
+1. Add `eslint-todo` config **at the bottom of your configs**. Do not forget `await`.
 
     ``` diff
+    // example: eslint.config.js
     + import { eslintConfigTodo } from '@sushichan044/eslint-todo/eslint';
 
     export default [
@@ -36,16 +36,13 @@ pnpm install -D @sushichan044/eslint-todo
     ]
     ```
 
-2. Run `eslint-todo` to generate ESLint Todo file. By default, it will generate `.eslint-todo.js` file.
-
-    > [!NOTE]
-    > Run this command at the directory where your `eslint.config.js` is located.
+2. Run `eslint-todo` to generate ESLint Todo file at the directory where `eslint.config.js` is placed.
 
     ```bash
-    pnpm exec eslint-todo
+    npx eslint-todo
     ```
 
-3. Ignore `.eslint-todo.js` with some tools like Prettier as it is auto-generated module.
+3. Ignore generated `.eslint-todo.js` in some tools if  you needed.
 
     ```diff
     // example: .prettierignore
