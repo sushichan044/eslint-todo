@@ -9,14 +9,6 @@ export default {
   },
 
   todo: {
-    "unicorn/no-abusive-eslint-disable": {
-      autoFix: false,
-
-      violations: {
-        ".eslint-todo.js": 1
-      }
-    },
-
     "no-undef": {
       autoFix: false,
 
