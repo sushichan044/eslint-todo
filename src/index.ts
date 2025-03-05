@@ -12,10 +12,13 @@ import type { RuleSeverity, TodoModuleLike } from "./todofile/types";
 import type { ESLintInitializeOptions, IESLintTodoCoreLike } from "./types";
 
 import { generateTodoModuleCode } from "./codegen";
-import { buildESLintConfigForModule } from "./eslint/build";
 import { optionsWithDefault } from "./options";
 import { LATEST_MODULE_HANDLER } from "./todofile";
 import { resolveTodoModulePath } from "./todofile/path";
+// ここでは本当に TodoModuleV1Handler が必要
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { TodoModuleV1Handler } from "./todofile/v1";
+import { TodoModuleV2Handler } from "./todofile/v2";
 import { importDefault } from "./utils/import";
 
 /**
@@ -52,7 +55,19 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     todoModule: SupportedModules,
     severity: RuleSeverity,
   ): Linter.Config[] {
-    return buildESLintConfigForModule(todoModule, severity) ?? [];
+    if (TodoModuleV1Handler.isVersion(todoModule)) {
+      return TodoModuleV1Handler.buildConfigsForESLint(todoModule, severity);
+    }
+
+    if (TodoModuleV2Handler.isVersion(todoModule)) {
+      return TodoModuleV2Handler.buildConfigsForESLint(todoModule, severity);
+    }
+
+    // When new version is supported, typecheck will fail here.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _exhaustiveCheck = todoModule satisfies never;
+
+    return [];
   }
 
   buildTodoFromLintResults(lintResults: ESLint.LintResult[]): LatestModule {
