@@ -9,8 +9,14 @@ export type ESLintInitializeOptions = Pick<ESLint.Options, "overrideConfig">;
 
 interface ESLintTodoCoreLike {
   /**
-   * Build ESLint configs to enable / disable rules in the todo object.
-   * @returns ESLint configs
+   * Build ESLint configs for the todo file.
+   * @param todoModule
+   * Todo module object with supported version.
+   * @param severity
+   * Severity of the rule.
+   * @returns
+   * - ESLint configs to disable todo rules.
+   * - `null` if unsupported todo module passed.
    */
   buildESLintConfig(
     todoModule: SupportedModules,

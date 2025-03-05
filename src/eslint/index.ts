@@ -7,7 +7,6 @@ import { ESLintTodoCore } from "../index";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TodoModuleV1Handler } from "../todofile/v1";
 import { TodoModuleV2Handler } from "../todofile/v2";
-import { buildESLintConfigForModule } from "./build";
 
 const eslintConfigTodo = async (
   userOptions: UserOptions = {},
@@ -45,7 +44,7 @@ const eslintConfigTodo = async (
     return configs;
   }
 
-  const builtConfigs = buildESLintConfigForModule(module, "off");
+  const builtConfigs = core.buildESLintConfig(module, "off");
   if (builtConfigs != null) {
     configs.push(...builtConfigs);
   }
