@@ -63,7 +63,9 @@ export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
   },
 
   buildTodoFromLintResults(lintResult, options) {
-    return lintResult.reduce((todoModule, result) => {
+    const todoModule = TodoModuleV2Handler.getDefaultTodo();
+
+    for (const result of lintResult) {
       const relativeFilePath = relative(options.cwd, result.filePath);
 
       for (const message of result.messages) {
@@ -85,8 +87,9 @@ export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
           todoModule.todo[message.ruleId]!.autoFix = message.fix != null;
         }
       }
-      return todoModule;
-    }, TodoModuleV2Handler.getDefaultTodo());
+    }
+
+    return todoModule;
   },
 
   getDefaultTodo() {

@@ -1,4 +1,3 @@
-import { isEmpty } from "es-toolkit/compat";
 import { relative } from "pathe";
 
 import type { ESLintRuleId, TodoModuleHandler } from "./types";
@@ -50,7 +49,9 @@ export const TodoModuleV1Handler: TodoModuleHandler<
   },
 
   buildTodoFromLintResults(lintResult, options) {
-    return lintResult.reduce((todoModule, result) => {
+    const todoModule: TodoModuleV1 = {};
+
+    for (const result of lintResult) {
       const relativeFilePath = relative(options.cwd, result.filePath);
 
       for (const message of result.messages) {
@@ -70,8 +71,9 @@ export const TodoModuleV1Handler: TodoModuleHandler<
           todoModule[message.ruleId]!.autoFix = message.fix != null;
         }
       }
-      return todoModule;
-    }, TodoModuleV1Handler.getDefaultTodo());
+    }
+
+    return todoModule;
   },
 
   getDefaultTodo() {
@@ -83,23 +85,20 @@ export const TodoModuleV1Handler: TodoModuleHandler<
   },
 
   upgradeToNextVersion: (todo) => {
-    if (isEmpty(todo)) {
-      return TodoModuleV2Handler.getDefaultTodo();
+    const todoModuleV2 = TodoModuleV2Handler.getDefaultTodo();
+
+    for (const [ruleId, entry] of Object.entries(todo)) {
+      for (const file of entry.files) {
+        todoModuleV2.todo[ruleId] ??= {
+          autoFix: entry.autoFix,
+          violations: {},
+        };
+
+        todoModuleV2.todo[ruleId].violations[file] ??= 0;
+        todoModuleV2.todo[ruleId].violations[file]++;
+      }
     }
 
-    return Object.entries(todo).reduce((todoV2, [ruleId, entry]) => {
-      todoV2.todo[ruleId] = {
-        autoFix: entry.autoFix,
-        violations: entry.files.reduce(
-          (violations, file) => {
-            violations[file] ??= 0;
-            violations[file]++;
-            return violations;
-          },
-          {} as Record<string, number>,
-        ),
-      };
-      return todoV2;
-    }, TodoModuleV2Handler.getDefaultTodo());
+    return todoModuleV2;
   },
 };
