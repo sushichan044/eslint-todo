@@ -1,15 +1,11 @@
 {
   "name": "@sushichan044/eslint-todo",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/sushichan044/eslint-todo.git"
-  },
   "version": "0.0.3",
   "type": "module",
-  "bin": {
-    "eslint-todo": "bin/eslint-todo.mjs"
-  },
   "module": "./dist/index.mjs",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
@@ -20,9 +16,17 @@
       "types": "./dist/eslint/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "bin": {
+    "eslint-todo": "bin/eslint-todo.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sushichan044/eslint-todo.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "build": "unbuild",
     "dev": "unbuild --stub",
@@ -33,7 +37,6 @@
     "test": "vitest",
     "test:run": "vitest run",
     "eslint:inspect": "eslint --inspect-config",
-    "publish": "pnpm publish --no-git-checks",
     "pkg-pr-new": "pkg-pr-new publish --compact --comment=update --pnpm",
     "check": "pnpm run build && pnpm run lint && pnpm run format:ci && pnpm run typecheck && pnpm run test:run"
   },
@@ -69,6 +72,8 @@
     "pkg-pr-new": "0.0.40",
     "pnpm": "10.5.2",
     "prettier": "3.5.3",
+    "release-it": "18.1.2",
+    "release-it-pnpm": "4.6.4",
     "typescript": "5.7.3",
     "typescript-eslint": "8.25.0",
     "unbuild": "3.5.0",
