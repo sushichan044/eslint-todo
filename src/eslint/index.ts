@@ -44,12 +44,7 @@ const eslintConfigTodo = async (
     return configs;
   }
 
-  const builtConfigs = core.buildESLintConfig(module, "off");
-  if (builtConfigs != null) {
-    configs.push(...builtConfigs);
-  }
-
-  return configs;
+  return [...configs, ...core.buildESLintConfig(module, "off")];
 };
 
 /**
