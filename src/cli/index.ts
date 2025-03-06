@@ -47,6 +47,13 @@ const cli = defineCommand({
       required: false,
       type: "boolean",
     },
+    "list": {
+      alias: "l",
+      default: false,
+      description: "See violations in the todo file with table format",
+      required: false,
+      type: "boolean",
+    },
 
     // operation options
     "allow-partial-selection": {
@@ -115,6 +122,7 @@ const cli = defineCommand({
       cwd: cliCwd,
       mode: {
         correct: args.correct,
+        list: args.list,
       },
       operation: {
         allowPartialSelection: args["allow-partial-selection"],
