@@ -1,7 +1,7 @@
 import { klona } from "klona/json";
 
 import type { TodoModuleV2 } from "../todofile/v2";
-import type { RuleSelection } from "./selectRule";
+import type { RuleSelection } from "./select-rule";
 
 /**
  * Delete a rule from the todo module.

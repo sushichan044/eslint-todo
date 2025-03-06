@@ -57,7 +57,7 @@ export default typegen(
           "unicorn/filename-case": [
             "error",
             {
-              case: "camelCase",
+              case: "kebabCase",
             },
           ],
           "unicorn/no-null": "off",

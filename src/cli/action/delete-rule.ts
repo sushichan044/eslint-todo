@@ -1,6 +1,6 @@
-import type { RuleSelection } from "../../operation/selectRule";
+import type { RuleSelection } from "../../operation/select-rule";
 
-import { deleteRule } from "../../operation/deleteRule";
+import { deleteRule } from "../../operation/delete-rule";
 import { LATEST_MODULE_HANDLER } from "../../todofile";
 import { defineAction } from "./index";
 

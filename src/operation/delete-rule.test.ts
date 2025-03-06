@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import type { TodoModuleV2 } from "../todofile/v2";
-import type { RuleSelection } from "./selectRule";
+import type { RuleSelection } from "./select-rule";
 
-import { deleteRule } from "./deleteRule";
+import { deleteRule } from "./delete-rule";
 
 const createTodoModuleV2 = (todo: TodoModuleV2["todo"]): TodoModuleV2 => ({
   meta: {
