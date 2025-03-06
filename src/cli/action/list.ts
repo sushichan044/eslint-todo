@@ -20,10 +20,7 @@ export const listAction = defineAction(async ({ core, logger }) => {
     return;
   }
 
-  const tableData = [
-    ["Rule", "Files", "Violations", "AutoFixable"],
-    ...todoTable,
-  ];
+  const tableData = [["Rule", "Files", "Violations", "AutoFix"], ...todoTable];
 
   logger.log.raw(table(tableData));
 
