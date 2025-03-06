@@ -1,8 +1,8 @@
 import type { UserOperationOptions } from "../../operation/options";
-import type { SelectionResult } from "../../operation/selectRule";
+import type { SelectionResult } from "../../operation/select-rule";
 import type { OperationLimit } from "../../operation/types";
 
-import { selectRuleBasedOnLimit } from "../../operation/selectRule";
+import { selectRuleBasedOnLimit } from "../../operation/select-rule";
 import { LATEST_MODULE_HANDLER } from "../../todofile";
 import { defineAction } from "./index";
 

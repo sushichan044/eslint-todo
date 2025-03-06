@@ -7,9 +7,9 @@ import type { UserOptions } from "../options";
 import { version as packageVersion } from "../../package.json";
 import { ESLintTodoCore } from "../index";
 import { runAction } from "./action";
-import { deleteRuleAction } from "./action/deleteRule";
+import { deleteRuleAction } from "./action/delete-rule";
 import { genAction } from "./action/gen";
-import { selectRulesToFixAction } from "./action/selectRule";
+import { selectRulesToFixAction } from "./action/select-rule";
 import { updateAction } from "./action/update";
 import { resolveCLIContext } from "./context";
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { TodoModuleV2 } from "../todofile/v2";
-import type { SelectionResult } from "./selectRule";
+import type { SelectionResult } from "./select-rule";
 import type { OperationFileLimit, OperationViolationLimit } from "./types";
 
 import { operationOptionsWithDefault } from "./options";
@@ -9,7 +9,7 @@ import {
   selectRuleBasedOnFilesLimit,
   selectRuleBasedOnLimit,
   selectRuleBasedOnViolationsLimit,
-} from "./selectRule";
+} from "./select-rule";
 
 const createTodoModuleV2 = (todo: TodoModuleV2["todo"]): TodoModuleV2 => ({
   meta: { version: 2 },
