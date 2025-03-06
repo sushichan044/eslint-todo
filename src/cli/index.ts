@@ -9,6 +9,7 @@ import { ESLintTodoCore } from "../index";
 import { runAction } from "./action";
 import { deleteRuleAction } from "./action/delete-rule";
 import { genAction } from "./action/gen";
+import { listAction } from "./action/list";
 import { selectRulesToFixAction } from "./action/select-rule";
 import { updateAction } from "./action/update";
 import { resolveCLIContext } from "./context";
@@ -134,6 +135,11 @@ const cli = defineCommand({
     });
 
     await runAction(updateAction, { consola, options });
+
+    if (context.mode === "list") {
+      await runAction(listAction, { consola, options });
+      return;
+    }
 
     if (context.mode === "generate") {
       await runAction(genAction, { consola, options });
