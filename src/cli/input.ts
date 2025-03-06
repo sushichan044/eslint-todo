@@ -14,13 +14,14 @@ type Input = {
 
   mode: {
     correct: boolean;
+    list: boolean;
   };
   operation: CLIOperationInput;
   todoFileAbsolutePath: string;
 };
 
 type StructuredCLIInput = {
-  mode: "correct" | "generate";
+  mode: "correct" | "generate" | "list";
   operation: StructuredCLIOperation;
   /**
    * Path to the todo file relative to the current working directory
@@ -38,8 +39,18 @@ type StructuredCLIInput = {
 export const structureCLIInput = (input: Input): StructuredCLIInput => {
   const todoFilePath = relative(input.cwd, input.todoFileAbsolutePath);
 
+  const mode = (() => {
+    if (input.mode.correct) {
+      return "correct";
+    }
+    if (input.mode.list) {
+      return "list";
+    }
+    return "generate";
+  })();
+
   return {
-    mode: input.mode.correct ? "correct" : "generate",
+    mode,
     operation: resolveCLIOperation(input.operation),
     todoFilePath: todoFilePath,
   };
