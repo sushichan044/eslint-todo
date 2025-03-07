@@ -7,6 +7,8 @@ import type { MaybePromisifyAllMethods } from "./utils/types";
 
 export type ESLintInitializeOptions = Pick<ESLint.Options, "overrideConfig">;
 
+export type IESLintTodoCoreLike = MaybePromisifyAllMethods<ESLintTodoCoreLike>;
+
 interface ESLintTodoCoreLike {
   /**
    * Build ESLint configs for the todo file.
@@ -52,5 +54,3 @@ interface ESLintTodoCoreLike {
 
   writeTodoModule(todo: TodoModuleLike): Promise<void>;
 }
-
-export type IESLintTodoCoreLike = MaybePromisifyAllMethods<ESLintTodoCoreLike>;
