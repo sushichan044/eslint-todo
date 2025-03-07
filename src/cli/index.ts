@@ -17,7 +17,7 @@ import { deleteRuleAction } from "./action/delete-rule";
 import { genAction } from "./action/gen";
 import { selectRulesToFixAction } from "./action/select-rule";
 import { updateAction } from "./action/update";
-import { resolveCLIContext } from "./context";
+import { structureCLIInput } from "./input";
 
 const consola = createConsola({ formatOptions: { date: false } });
 
@@ -116,7 +116,7 @@ const cli = defineCommand({
     // initialize local ESLintTodoCore
     const eslintTodoCore = new ESLintTodoCore(options);
 
-    const context = resolveCLIContext({
+    const input = structureCLIInput({
       cwd: cliCwd,
       mode: {
         correct: args.correct,
@@ -132,17 +132,17 @@ const cli = defineCommand({
 
     await runAction(updateAction, { consola, options });
 
-    if (context.mode === "generate") {
+    if (input.mode === "generate") {
       await runAction(genAction, { consola, options });
-      consola.success(`ESLint todo file generated at ${context.todoFilePath}!`);
+      consola.success(`ESLint todo file generated at ${input.todoFilePath}!`);
       return;
     }
 
-    if (context.mode === "correct") {
+    if (input.mode === "correct") {
       const result = await runAction(
         selectRulesToFixAction,
         { consola, options },
-        context.operation,
+        input.operation,
       );
 
       if (!result.success) {
@@ -184,7 +184,7 @@ const cli = defineCommand({
       );
     }
 
-    throw new Error(`Unknown mode: ${JSON.stringify(context.mode)}`);
+    throw new Error(`Unknown mode: ${JSON.stringify(input.mode)}`);
   },
   setup({ args }) {
     consola.info(`eslint-todo CLI ${packageVersion}`);
