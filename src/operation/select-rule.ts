@@ -1,3 +1,4 @@
+import type { LatestTodoModule } from "../todofile";
 import type { TodoModuleV2 } from "../todofile/v2";
 import type {
   OperationFileLimit,
@@ -45,8 +46,14 @@ export type SelectionResult =
       success: false;
     };
 
+/**
+ * Selects a rule based on the given limit.
+ * @param todoModule - Latest todo module.
+ * @param limit - Limit to select the rule.
+ * @param options - Options for the operation.
+ */
 export const selectRuleBasedOnLimit = (
-  todoModule: TodoModuleV2,
+  todoModule: LatestTodoModule,
   limit: OperationLimit,
   options: UserOperationOptions = {},
 ): SelectionResult => {
@@ -75,7 +82,7 @@ export const selectRuleBasedOnLimit = (
  * @package
  */
 export const selectRuleBasedOnFilesLimit = (
-  todoModule: TodoModuleV2,
+  todoModule: LatestTodoModule,
   limit: OperationFileLimit,
   options: OperationOptions,
 ): SelectionResult => {
@@ -124,7 +131,7 @@ export const selectRuleBasedOnFilesLimit = (
 
   if (
     allowPartialSelection &&
-    isKeyOfTodo(todoModule.todo, partialSelectableRule)
+    isKeyOfTodoModuleV2(todoModule, partialSelectableRule)
   ) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const rule = todoModule.todo[partialSelectableRule]!;
@@ -151,16 +158,10 @@ export const selectRuleBasedOnFilesLimit = (
 };
 
 /**
- * Selects the rule with the most violations that can be auto-fixed and is below the specified limit.
- *
- * @param todoModule - The TodoModuleV2 object.
- * @param limit - The upper limit for the number of violations.
- * @returns The rule ID with the most violations that can be auto-fixed and is below the limit, or null if no such rule exists.
- *
  * @package
  */
 export const selectRuleBasedOnViolationsLimit = (
-  todoModule: TodoModuleV2,
+  todoModule: LatestTodoModule,
   limit: OperationViolationLimit,
   options: OperationOptions,
 ): SelectionResult => {
@@ -212,7 +213,7 @@ export const selectRuleBasedOnViolationsLimit = (
 
   if (
     allowPartialSelection &&
-    isKeyOfTodo(todoModule.todo, partialSelectableRule)
+    isKeyOfTodoModuleV2(todoModule, partialSelectableRule)
   ) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const rule = todoModule.todo[partialSelectableRule]!;
@@ -258,9 +259,9 @@ export const selectRuleBasedOnViolationsLimit = (
   return { success: false };
 };
 
-const isKeyOfTodo = (
-  todoModule: TodoModuleV2["todo"],
+const isKeyOfTodoModuleV2 = (
+  todoModule: TodoModuleV2,
   ruleId: string | null,
 ): ruleId is keyof TodoModuleV2["todo"] => {
-  return isNonEmptyString(ruleId) && Object.hasOwn(todoModule, ruleId);
+  return isNonEmptyString(ruleId) && Object.hasOwn(todoModule.todo, ruleId);
 };

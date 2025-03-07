@@ -3,7 +3,7 @@ import type { SelectionResult } from "../../operation/select-rule";
 import type { OperationLimit } from "../../operation/types";
 
 import { selectRuleBasedOnLimit } from "../../operation/select-rule";
-import { LATEST_MODULE_HANDLER } from "../../todofile";
+import { LATEST_TODO_MODULE_HANDLER } from "../../todofile";
 import { defineAction } from "./index";
 
 type Input = {
@@ -16,7 +16,7 @@ export const selectRulesToFixAction = defineAction<Input, SelectionResult>(
     const { limit, options } = input;
 
     const currentModule = await core.readTodoModule();
-    if (!LATEST_MODULE_HANDLER.isVersion(currentModule)) {
+    if (!LATEST_TODO_MODULE_HANDLER.isVersion(currentModule)) {
       throw new Error(
         "This action requires the latest version of the todo file.",
       );
