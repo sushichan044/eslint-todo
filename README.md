@@ -44,13 +44,6 @@ Requires:
     npx eslint-todo
     ```
 
-3. Ignore generated `.eslint-todo.js` in some tools if  you needed.
-
-    ```diff
-    // example: .prettierignore
-    + .eslint-todo.js
-    ```
-
 ## Usage
 
 ### Generate ESLint Todo file
