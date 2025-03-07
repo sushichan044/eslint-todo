@@ -3,7 +3,13 @@ import { relative, resolve } from "pathe";
 import type { Options } from "../options";
 
 export type TodoFilePath = {
+  /**
+   * todo file's absolute path.
+   */
   absolute: string;
+  /**
+   * todo file's relative path from directory you specified as `cwd`.
+   */
   relative: string;
 };
 
