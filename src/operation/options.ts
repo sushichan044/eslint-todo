@@ -28,7 +28,12 @@ export const operationOptionsWithDefault = (
 };
 
 const getDefaultOperationOptions = () =>
-  ({
-    allowPartialSelection: false,
-    autoFixableOnly: true,
-  }) as const satisfies OperationOptions;
+  ({ ...DEFAULT_OPERATION_OPTIONS }) as const satisfies OperationOptions;
+
+/**
+ * @private
+ */
+export const DEFAULT_OPERATION_OPTIONS = {
+  allowPartialSelection: false,
+  autoFixableOnly: true,
+} as const satisfies OperationOptions;

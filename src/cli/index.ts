@@ -6,6 +6,12 @@ import type { UserOptions } from "../options";
 
 import { version as packageVersion } from "../../package.json";
 import { ESLintTodoCore } from "../index";
+// needed for show default value in CLI
+// eslint-disable-next-line import-access/jsdoc
+import { DEFAULT_OPERATION_OPTIONS } from "../operation/options";
+// needed for show default value in CLI
+// eslint-disable-next-line import-access/jsdoc
+import { DEFAULT_OPTIONS } from "../options";
 import { runAction } from "./action";
 import { deleteRuleAction } from "./action/delete-rule";
 import { genAction } from "./action/gen";
@@ -34,7 +40,7 @@ const cli = defineCommand({
     },
     "todo-file": {
       alias: "f",
-      description: "ESLint todo file name (default: .eslint-todo.js)",
+      description: `ESLint todo file name (default: ${DEFAULT_OPTIONS.todoFile})`,
       required: false,
       type: "string",
       valueHint: "filename",
@@ -50,14 +56,13 @@ const cli = defineCommand({
 
     // operation options
     "allow-partial-selection": {
-      description:
-        "Allow partial selection of violations. Only works with --correct. (default: false)",
+      description: `Allow partial selection of violations. Only works with --correct. (default: ${DEFAULT_OPERATION_OPTIONS.allowPartialSelection})`,
       required: false,
       type: "boolean",
       valueHint: "boolean",
     },
     "auto-fixable-only": {
-      description: "Only handle auto-fixable violations. (default: true)",
+      description: `Only handle auto-fixable violations. (default: ${DEFAULT_OPERATION_OPTIONS.autoFixableOnly})`,
       required: false,
       type: "boolean",
       valueHint: "boolean",
