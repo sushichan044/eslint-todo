@@ -26,7 +26,12 @@ export const optionsWithDefault = (options: UserOptions = {}): Options => {
 };
 
 const getDefaultOptions = () =>
-  ({
-    cwd: cwd(),
-    todoFile: ".eslint-todo.js",
-  }) as const satisfies Options;
+  ({ ...DEFAULT_OPTIONS }) as const satisfies Options;
+
+/**
+ * @private
+ */
+export const DEFAULT_OPTIONS = {
+  cwd: cwd(),
+  todoFile: ".eslint-todo.js",
+} as const satisfies Options;
