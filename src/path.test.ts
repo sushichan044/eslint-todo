@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { Options } from "../options";
+import type { Options } from "./options";
 
 import { resolveTodoModulePath } from "./path";
 

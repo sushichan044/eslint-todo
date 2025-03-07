@@ -1,6 +1,6 @@
 import { relative, resolve } from "pathe";
 
-import type { Options } from "../options";
+import type { Options } from "./options";
 
 export type TodoFilePath = {
   /**

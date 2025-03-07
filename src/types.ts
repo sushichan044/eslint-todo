@@ -1,7 +1,7 @@
 import type { ESLint, Linter } from "eslint";
 
+import type { TodoFilePath } from "./path";
 import type { LatestTodoModule, SupportedTodoModules } from "./todofile";
-import type { TodoFilePath } from "./todofile/path";
 import type { RuleSeverity, TodoModuleLike } from "./todofile/types";
 import type { MaybePromisifyAllMethods } from "./utils/types";
 
