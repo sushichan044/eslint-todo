@@ -1,7 +1,7 @@
 import { relative } from "pathe";
 import * as v from "valibot";
 
-import type { ESLintRuleId, TodoModuleHandler } from "./types";
+import type { TodoModuleHandler } from "./types";
 
 import { escapeGlobCharacters, isNonEmptyString } from "../utils/string";
 
@@ -41,7 +41,7 @@ export type TodoModuleV2 = {
   meta: {
     version: 2;
   };
-  todo: Record<ESLintRuleId, ESLintTodoEntryV2>;
+  todo: Record<string, ESLintTodoEntryV2>;
 };
 
 // only for version checking.

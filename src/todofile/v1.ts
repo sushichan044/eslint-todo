@@ -1,6 +1,6 @@
 import { relative } from "pathe";
 
-import type { ESLintRuleId, TodoModuleHandler } from "./types";
+import type { TodoModuleHandler } from "./types";
 import type { TodoModuleV2 } from "./v2";
 
 import { escapeGlobCharacters, isNonEmptyString } from "../utils/string";
@@ -30,7 +30,7 @@ type ESLintTodoEntryV1 = {
  * }
  * ```
  */
-export type TodoModuleV1 = Record<ESLintRuleId, ESLintTodoEntryV1>;
+export type TodoModuleV1 = Record<string, ESLintTodoEntryV1>;
 
 export const TodoModuleV1Handler: TodoModuleHandler<
   TodoModuleV1,

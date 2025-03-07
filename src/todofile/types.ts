@@ -4,10 +4,16 @@ import type { Options } from "../options";
 
 export type TodoModuleLike = Record<string, unknown>;
 
-export type ESLintRuleId = string;
-
 export type RuleSeverity = Extract<Linter.RuleSeverity, "error" | "off">;
 
+/**
+ * Interface representing a handler for managing different versions of a todo module.
+ *
+ * @template CURRENT - The current version of the todo module.
+ * @template NEXT - The next version of the todo module, defaults to `TodoModuleLike`.
+ *
+ * @package
+ */
 export interface TodoModuleHandler<
   CURRENT extends TodoModuleLike,
   NEXT extends TodoModuleLike = TodoModuleLike,

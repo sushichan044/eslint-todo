@@ -22,6 +22,11 @@ type RunActionOptions = {
   options: UserOptions;
 };
 
+/**
+ * Define a CLI action.
+ *
+ * @package
+ */
 export const defineAction = <Input = never, Return = unknown>(
   action: CLIAction<Input, Return>,
 ) => action;

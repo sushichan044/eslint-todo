@@ -6,15 +6,15 @@ import { writeFile } from "node:fs/promises";
 import { resolve } from "pathe";
 
 import type { Options, UserOptions } from "./options";
+import type { TodoFilePath } from "./path";
 import type { LatestTodoModule, SupportedTodoModules } from "./todofile";
-import type { TodoFilePath } from "./todofile/path";
 import type { RuleSeverity, TodoModuleLike } from "./todofile/types";
 import type { ESLintInitializeOptions, IESLintTodoCoreLike } from "./types";
 
 import { generateTodoModuleCode } from "./codegen";
 import { optionsWithDefault } from "./options";
+import { resolveTodoModulePath } from "./path";
 import { LATEST_TODO_MODULE_HANDLER } from "./todofile";
-import { resolveTodoModulePath } from "./todofile/path";
 // ここでは本当に TodoModuleV1Handler が必要
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TodoModuleV1Handler } from "./todofile/v1";
