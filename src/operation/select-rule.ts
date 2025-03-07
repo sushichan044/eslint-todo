@@ -1,4 +1,4 @@
-import type { TodoModuleV2 } from "../todofile/v2";
+import type { LatestModule } from "../todofile";
 import type {
   OperationFileLimit,
   OperationLimit,
@@ -45,8 +45,14 @@ export type SelectionResult =
       success: false;
     };
 
+/**
+ * Selects a rule based on the given limit.
+ * @param todoModule - Latest todo module.
+ * @param limit - Limit to select the rule.
+ * @param options - Options for the operation.
+ */
 export const selectRuleBasedOnLimit = (
-  todoModule: TodoModuleV2,
+  todoModule: LatestModule,
   limit: OperationLimit,
   options: UserOperationOptions = {},
 ): SelectionResult => {
@@ -75,7 +81,7 @@ export const selectRuleBasedOnLimit = (
  * @package
  */
 export const selectRuleBasedOnFilesLimit = (
-  todoModule: TodoModuleV2,
+  todoModule: LatestModule,
   limit: OperationFileLimit,
   options: OperationOptions,
 ): SelectionResult => {
@@ -151,16 +157,10 @@ export const selectRuleBasedOnFilesLimit = (
 };
 
 /**
- * Selects the rule with the most violations that can be auto-fixed and is below the specified limit.
- *
- * @param todoModule - The TodoModuleV2 object.
- * @param limit - The upper limit for the number of violations.
- * @returns The rule ID with the most violations that can be auto-fixed and is below the limit, or null if no such rule exists.
- *
  * @package
  */
 export const selectRuleBasedOnViolationsLimit = (
-  todoModule: TodoModuleV2,
+  todoModule: LatestModule,
   limit: OperationViolationLimit,
   options: OperationOptions,
 ): SelectionResult => {
@@ -259,8 +259,8 @@ export const selectRuleBasedOnViolationsLimit = (
 };
 
 const isKeyOfTodo = (
-  todoModule: TodoModuleV2["todo"],
+  todoModule: LatestModule["todo"],
   ruleId: string | null,
-): ruleId is keyof TodoModuleV2["todo"] => {
+): ruleId is keyof LatestModule["todo"] => {
   return isNonEmptyString(ruleId) && Object.hasOwn(todoModule, ruleId);
 };
