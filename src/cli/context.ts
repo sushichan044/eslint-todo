@@ -7,7 +7,7 @@ import type { OperationLimit } from "../operation/types";
 import { safeTryNumber } from "../utils/number";
 
 type CLIContext = {
-  mode: "correct" | "generate";
+  mode: "correct" | "generate" | "list";
   operation: CLIOperation;
   /**
    * Path to the todo file relative to the current working directory
@@ -23,6 +23,7 @@ type Input = {
 
   mode: {
     correct: boolean;
+    list: boolean;
   };
   operation: CLIOperationInput;
   todoFileAbsolutePath: string;
@@ -31,8 +32,18 @@ type Input = {
 export const resolveCLIContext = (input: Input): CLIContext => {
   const todoFilePath = relative(input.cwd, input.todoFileAbsolutePath);
 
+  const mode = (() => {
+    if (input.mode.correct) {
+      return "correct";
+    }
+    if (input.mode.list) {
+      return "list";
+    }
+    return "generate";
+  })();
+
   return {
-    mode: input.mode.correct ? "correct" : "generate",
+    mode,
     operation: resolveCLIOperation(input.operation),
     todoFilePath: todoFilePath,
   };
