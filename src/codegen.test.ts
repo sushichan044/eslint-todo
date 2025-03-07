@@ -29,6 +29,8 @@ describe("generateESLintTodoModule", () => {
        * Auto generated file by eslint-todo. DO NOT EDIT MANUALLY.
        */
 
+      /* prettier-ignore */
+      // biome-ignore format: this is an auto-generated file
       export default {
         "no-console": {
           autoFix: false,
@@ -67,6 +69,8 @@ describe("generateESLintTodoModule", () => {
        * Auto generated file by eslint-todo. DO NOT EDIT MANUALLY.
        */
 
+      /* prettier-ignore */
+      // biome-ignore format: this is an auto-generated file
       export default {
         meta: {
           version: 2
@@ -97,6 +101,8 @@ describe("generateESLintTodoModule", () => {
        * Auto generated file by eslint-todo. DO NOT EDIT MANUALLY.
        */
 
+      /* prettier-ignore */
+      // biome-ignore format: this is an auto-generated file
       export default {};
       "
     `);
