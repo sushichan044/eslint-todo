@@ -6,14 +6,14 @@ import { writeFile } from "node:fs/promises";
 import { resolve } from "pathe";
 
 import type { Options, UserOptions } from "./options";
-import type { LatestModule, SupportedModules } from "./todofile";
+import type { LatestTodoModule, SupportedTodoModules } from "./todofile";
 import type { TodoFilePath } from "./todofile/path";
 import type { RuleSeverity, TodoModuleLike } from "./todofile/types";
 import type { ESLintInitializeOptions, IESLintTodoCoreLike } from "./types";
 
 import { generateTodoModuleCode } from "./codegen";
 import { optionsWithDefault } from "./options";
-import { LATEST_MODULE_HANDLER } from "./todofile";
+import { LATEST_TODO_MODULE_HANDLER } from "./todofile";
 import { resolveTodoModulePath } from "./todofile/path";
 // ここでは本当に TodoModuleV1Handler が必要
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
@@ -52,7 +52,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
   }
 
   buildESLintConfig(
-    todoModule: SupportedModules,
+    todoModule: SupportedTodoModules,
     severity: RuleSeverity,
   ): Linter.Config[] {
     if (TodoModuleV1Handler.isVersion(todoModule)) {
@@ -70,8 +70,8 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     return [];
   }
 
-  buildTodoFromLintResults(lintResults: ESLint.LintResult[]): LatestModule {
-    return LATEST_MODULE_HANDLER.buildTodoFromLintResults(
+  buildTodoFromLintResults(lintResults: ESLint.LintResult[]): LatestTodoModule {
+    return LATEST_TODO_MODULE_HANDLER.buildTodoFromLintResults(
       lintResults,
       this.#options,
     );
@@ -106,7 +106,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
 
     await writeFile(
       this.#todoFilePath.absolute,
-      generateTodoModuleCode(LATEST_MODULE_HANDLER.getDefaultTodo()),
+      generateTodoModuleCode(LATEST_TODO_MODULE_HANDLER.getDefaultTodo()),
     );
   }
 

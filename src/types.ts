@@ -1,6 +1,6 @@
 import type { ESLint, Linter } from "eslint";
 
-import type { LatestModule, SupportedModules } from "./todofile";
+import type { LatestTodoModule, SupportedTodoModules } from "./todofile";
 import type { TodoFilePath } from "./todofile/path";
 import type { RuleSeverity, TodoModuleLike } from "./todofile/types";
 import type { MaybePromisifyAllMethods } from "./utils/types";
@@ -19,7 +19,7 @@ interface ESLintTodoCoreLike {
    * - `null` if unsupported todo module passed.
    */
   buildESLintConfig(
-    todoModule: SupportedModules,
+    todoModule: SupportedTodoModules,
     severity: RuleSeverity,
   ): Linter.Config[];
 
@@ -27,7 +27,7 @@ interface ESLintTodoCoreLike {
    * Build a todo object from the lint results.
    * @param lintResults LintResults from ESLint
    */
-  buildTodoFromLintResults(lintResults: ESLint.LintResult[]): LatestModule;
+  buildTodoFromLintResults(lintResults: ESLint.LintResult[]): LatestTodoModule;
 
   /**
    * Get the path of current todo module.
