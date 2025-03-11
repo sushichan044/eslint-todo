@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.6
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Todo file is always ignored by prettier and biome &nbsp;-&nbsp; by **sushichan044** [<samp>(45b18)</samp>](https://github.com/sushichan044/eslint-todo/commit/45b1844)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.0.5...0.0.6)
+
 ## 0.0.5
 
 *No significant changes*
