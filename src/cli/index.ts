@@ -1,23 +1,19 @@
 import { defineCommand, runMain } from "citty";
 import { createConsola } from "consola";
 import { colorize } from "consola/utils";
-
-import type { UserOptions } from "../options";
+import { relative } from "pathe";
 
 import { version as packageVersion } from "../../package.json";
+// DEFAULT_CONFIG is needed as show default values in help message.
+// eslint-disable-next-line import-access/jsdoc
+import { DEFAULT_CONFIG } from "../config/config";
 import { ESLintTodoCore } from "../index";
-// needed for show default value in CLI
-// eslint-disable-next-line import-access/jsdoc
-import { DEFAULT_OPERATION_OPTIONS } from "../operation/options";
-// needed for show default value in CLI
-// eslint-disable-next-line import-access/jsdoc
-import { DEFAULT_OPTIONS } from "../options";
 import { runAction } from "./action";
 import { deleteRuleAction } from "./action/delete-rule";
 import { genAction } from "./action/gen";
 import { selectRulesToFixAction } from "./action/select-rule";
 import { updateAction } from "./action/update";
-import { structureCLIInput } from "./input";
+import { parseArguments } from "./arguments";
 
 const consola = createConsola({ formatOptions: { date: false } });
 
@@ -40,7 +36,7 @@ const cli = defineCommand({
     },
     "todo-file": {
       alias: "f",
-      description: `ESLint todo file name (default: ${DEFAULT_OPTIONS.todoFile})`,
+      description: `ESLint todo file name (default: ${DEFAULT_CONFIG.todoFile})`,
       required: false,
       type: "string",
       valueHint: "filename",
@@ -56,13 +52,13 @@ const cli = defineCommand({
 
     // operation options
     "allow-partial-selection": {
-      description: `Allow partial selection of violations. Only works with --correct. (default: ${DEFAULT_OPERATION_OPTIONS.allowPartialSelection})`,
+      description: `Allow partial selection of violations. Only works with --correct. (default: ${DEFAULT_CONFIG.correct.partialSelection})`,
       required: false,
       type: "boolean",
       valueHint: "boolean",
     },
     "auto-fixable-only": {
-      description: `Only handle auto-fixable violations. (default: ${DEFAULT_OPERATION_OPTIONS.autoFixableOnly})`,
+      description: `Only handle auto-fixable violations. (default: ${DEFAULT_CONFIG.correct.autoFixableOnly})`,
       required: false,
       type: "boolean",
       valueHint: "boolean",
@@ -117,42 +113,43 @@ const cli = defineCommand({
   },
   async run({ args }) {
     const cliCwd = process.cwd();
-    const options: UserOptions = {
-      cwd: args.cwd,
-      todoFile: args["todo-file"],
-    };
-    // initialize local ESLintTodoCore
-    const eslintTodoCore = new ESLintTodoCore(options);
 
-    const input = structureCLIInput({
-      cwd: cliCwd,
-      mode: {
-        correct: args.correct,
-      },
-      operation: {
+    const { config, context } = parseArguments({
+      correct: {
         "allowPartialSelection": args["allow-partial-selection"],
         "autoFixableOnly": args["auto-fixable-only"],
         "exclude.rules": args["exclude.rules"],
         "limit": args.limit,
         "limitType": args["limit-type"],
       },
-      todoFileAbsolutePath: eslintTodoCore.getTodoModulePath().absolute,
+      mode: {
+        correct: args.correct,
+      },
+      root: args.cwd,
+      todoFile: args["todo-file"],
     });
 
-    await runAction(updateAction, { consola, options });
+    // initialize local ESLintTodoCore
+    const eslintTodoCore = new ESLintTodoCore(config);
 
-    if (input.mode === "generate") {
-      await runAction(genAction, { consola, options });
-      consola.success(`ESLint todo file generated at ${input.todoFilePath}!`);
+    const todoFilePathFromCLI = relative(
+      cliCwd,
+      eslintTodoCore.getTodoModulePath().absolute,
+    );
+
+    await runAction(updateAction, { config, consola });
+
+    if (context.mode === "generate") {
+      await runAction(genAction, { config, consola });
+      consola.success(`ESLint todo file generated at ${todoFilePathFromCLI}!`);
       return;
     }
 
-    if (input.mode === "correct") {
-      const result = await runAction(
-        selectRulesToFixAction,
-        { consola, options },
-        input.operation,
-      );
+    if (context.mode === "correct") {
+      const result = await runAction(selectRulesToFixAction, {
+        config,
+        consola,
+      });
 
       if (!result.success) {
         consola.warn(
@@ -161,7 +158,7 @@ const cli = defineCommand({
         return;
       }
 
-      await runAction(deleteRuleAction, { consola, options }, result.selection);
+      await runAction(deleteRuleAction, { config, consola }, result.selection);
 
       if (result.selection.type === "full") {
         consola.success(
@@ -193,7 +190,7 @@ const cli = defineCommand({
       );
     }
 
-    throw new Error(`Unknown mode: ${JSON.stringify(input.mode)}`);
+    throw new Error(`Unknown mode: ${JSON.stringify(context.mode)}`);
   },
   setup({ args }) {
     consola.info(`eslint-todo CLI ${packageVersion}`);

@@ -1,17 +1,8 @@
+import type { CorrectModeConfig } from "../config/config";
 import type { LatestTodoModule } from "../todofile";
 import type { TodoModuleV2 } from "../todofile/v2";
-import type {
-  OperationFileLimit,
-  OperationLimit,
-  OperationViolationLimit,
-} from "./types";
 
 import { isNonEmptyString } from "../utils/string";
-import {
-  type OperationOptions,
-  operationOptionsWithDefault,
-  type UserOperationOptions,
-} from "./options";
 
 type PartialRuleSelection = {
   /**
@@ -54,26 +45,19 @@ export type SelectionResult =
  */
 export const selectRuleBasedOnLimit = (
   todoModule: LatestTodoModule,
-  limit: OperationLimit,
-  options: UserOperationOptions = {},
+  correctConfig: CorrectModeConfig,
 ): SelectionResult => {
-  const resolvedOptions = operationOptionsWithDefault(options);
-
-  switch (limit.type) {
+  switch (correctConfig.limit.type) {
     case "file": {
-      return selectRuleBasedOnFilesLimit(todoModule, limit, resolvedOptions);
+      return selectRuleBasedOnFilesLimit(todoModule, correctConfig);
     }
     case "violation": {
-      return selectRuleBasedOnViolationsLimit(
-        todoModule,
-        limit,
-        resolvedOptions,
-      );
+      return selectRuleBasedOnViolationsLimit(todoModule, correctConfig);
     }
     default: {
       // exhaustive check
-      const l = limit satisfies never;
-      throw new Error(`Got unknown limit: ${JSON.stringify(l)}`);
+      const l = correctConfig.limit.type satisfies never;
+      throw new Error(`Got unknown limit type: ${JSON.stringify(l)}`);
     }
   }
 };
@@ -83,15 +67,14 @@ export const selectRuleBasedOnLimit = (
  */
 export const selectRuleBasedOnFilesLimit = (
   todoModule: LatestTodoModule,
-  limit: OperationFileLimit,
-  options: OperationOptions,
+  config: CorrectModeConfig,
 ): SelectionResult => {
-  const { count: limitCount } = limit;
   const {
-    allowPartialSelection,
     autoFixableOnly,
     exclude: { rules: excludedRules },
-  } = options;
+    limit: { count: limitCount },
+    partialSelection: allowPartialSelection,
+  } = config;
 
   if (limitCount <= 0) {
     throw new Error("The file limit must be greater than 0.");
@@ -169,15 +152,14 @@ export const selectRuleBasedOnFilesLimit = (
  */
 export const selectRuleBasedOnViolationsLimit = (
   todoModule: LatestTodoModule,
-  limit: OperationViolationLimit,
-  options: OperationOptions,
+  config: CorrectModeConfig,
 ): SelectionResult => {
-  const { count: limitCount } = limit;
   const {
-    allowPartialSelection,
     autoFixableOnly,
     exclude: { rules: excludedRules },
-  } = options;
+    limit: { count: limitCount },
+    partialSelection: allowPartialSelection,
+  } = config;
 
   if (limitCount <= 0) {
     throw new Error("The violation limit must be greater than 0.");

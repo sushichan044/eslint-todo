@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 
+import type {
+  CorrectModeConfig,
+  CorrectModeUserConfig,
+} from "../config/config";
 import type { TodoModuleV2 } from "../todofile/v2";
 import type { SelectionResult } from "./select-rule";
-import type { OperationFileLimit, OperationViolationLimit } from "./types";
 
-import { operationOptionsWithDefault } from "./options";
+import { configWithDefault } from "../config/config";
 import {
   selectRuleBasedOnFilesLimit,
   selectRuleBasedOnLimit,
@@ -16,50 +19,56 @@ const createTodoModuleV2 = (todo: TodoModuleV2["todo"]): TodoModuleV2 => ({
   todo,
 });
 
+const createConfigBuilder =
+  (global?: CorrectModeUserConfig) =>
+  (correct?: CorrectModeUserConfig): CorrectModeConfig => {
+    return configWithDefault({
+      correct: {
+        ...correct,
+        ...global,
+      },
+    }).correct;
+  };
+
 describe("selectRuleBasedOnLimit", () => {
   const todoModule = createTodoModuleV2({});
-  const operationOptions = operationOptionsWithDefault();
+  const createCorrectConfig = createConfigBuilder();
 
   it("should call selectRuleBasedOnFilesLimit when limit type is file", () => {
-    const limit: OperationFileLimit = { count: 10, type: "file" };
+    const config = createCorrectConfig({ limit: { count: 10, type: "file" } });
 
-    const subject = selectRuleBasedOnLimit(todoModule, limit);
-    const expected = selectRuleBasedOnFilesLimit(
-      todoModule,
-      limit,
-      operationOptions,
-    );
+    const subject = selectRuleBasedOnLimit(todoModule, config);
+    const expected = selectRuleBasedOnFilesLimit(todoModule, config);
 
     expect(subject).toStrictEqual(expected);
   });
 
   it("should call selectRuleBasedOnViolationsLimit when limit type is violation", () => {
-    const limit: OperationViolationLimit = { count: 10, type: "violation" };
+    const config = createCorrectConfig({
+      limit: { count: 10, type: "violation" },
+    });
 
-    const subject = selectRuleBasedOnLimit(todoModule, limit);
-    const expected = selectRuleBasedOnViolationsLimit(
-      todoModule,
-      limit,
-      operationOptions,
-    );
+    const subject = selectRuleBasedOnLimit(todoModule, config);
+    const expected = selectRuleBasedOnViolationsLimit(todoModule, config);
 
     expect(subject).toStrictEqual(expected);
   });
 
   it("should throw an error for unknown limit type", () => {
-    const limit = { count: 10, type: "unknown" } as unknown;
-
-    expect(() =>
+    const config = createCorrectConfig({
       // @ts-expect-error 意図的に型に合わない引数を渡してエラーを発生させる
-      selectRuleBasedOnLimit(todoModule, limit),
-    ).toThrowError("Got unknown limit");
+      limit: { count: 10, type: "unknown" },
+    });
+    expect(() => selectRuleBasedOnLimit(todoModule, config)).toThrowError(
+      "Got unknown limit",
+    );
   });
 });
 
 describe("selectRuleBasedOnFilesLimit", () => {
   describe("when only autoFixable violations are allowed", () => {
     describe("full selection behavior", () => {
-      const operationOptions = operationOptionsWithDefault();
+      const createCorrectConfig = createConfigBuilder();
 
       it("should return the rule with the most violated files lte the limit", () => {
         const todoModule = createTodoModuleV2({
@@ -81,18 +90,18 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
-        const limit: OperationFileLimit = { count: 4, type: "file" };
+        const config = createCorrectConfig({
+          limit: {
+            count: 4,
+            type: "file",
+          },
+        });
         const expected: SelectionResult = {
           selection: { ruleId: "rule2", type: "full" },
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
-
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -117,17 +126,15 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
-        const limit: OperationFileLimit = { count: 4, type: "file" };
+        const config = createCorrectConfig({
+          limit: { count: 4, type: "file" },
+        });
         const expected: SelectionResult = {
           selection: { ruleId: "rule1", type: "full" },
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -142,14 +149,12 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
-        const limit: OperationFileLimit = { count: 2, type: "file" };
+        const config = createCorrectConfig({
+          limit: { count: 2, type: "file" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -162,34 +167,30 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
-        const limit: OperationFileLimit = { count: 1, type: "file" };
+        const config = createCorrectConfig({
+          limit: { count: 1, type: "file" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
-        const limit: OperationFileLimit = { count: 1, type: "file" };
+        const config = createCorrectConfig({
+          limit: { count: 1, type: "file" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
     });
 
     describe("partial selection behavior", () => {
-      const operationOptions = operationOptionsWithDefault({
-        allowPartialSelection: true,
+      const createCorrectConfig = createConfigBuilder({
+        partialSelection: true,
       });
 
       it("should return full selection unless all rules exceeds the limit", () => {
@@ -214,7 +215,9 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
-        const limit: OperationFileLimit = { count: 3, type: "file" };
+        const config = createCorrectConfig({
+          limit: { count: 3, type: "file" },
+        });
         const expected: SelectionResult = {
           selection: {
             ruleId: "rule2",
@@ -223,11 +226,7 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -250,7 +249,9 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
-        const limit: OperationFileLimit = { count: 2, type: "file" };
+        const config = createCorrectConfig({
+          limit: { count: 2, type: "file" },
+        });
         const expected: SelectionResult = {
           selection: {
             ruleId: "rule1",
@@ -263,24 +264,18 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
-        const limit: OperationFileLimit = { count: 1, type: "file" };
+        const config = createCorrectConfig({
+          limit: { count: 1, type: "file" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
     });
@@ -288,7 +283,7 @@ describe("selectRuleBasedOnFilesLimit", () => {
 
   describe("when non-autoFixable violations are allowed", () => {
     describe("full selection behavior", () => {
-      const operationOptions = operationOptionsWithDefault({
+      const createCorrectConfig = createConfigBuilder({
         autoFixableOnly: false,
       });
 
@@ -312,17 +307,15 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
-        const limit: OperationFileLimit = { count: 4, type: "file" };
+        const config = createCorrectConfig({
+          limit: { count: 4, type: "file" },
+        });
         const expected: SelectionResult = {
           selection: { ruleId: "rule2", type: "full" },
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -347,17 +340,15 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
-        const limit: OperationFileLimit = { count: 4, type: "file" };
+        const config = createCorrectConfig({
+          limit: { count: 4, type: "file" },
+        });
         const expected: SelectionResult = {
           selection: { ruleId: "rule1", type: "full" },
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -372,35 +363,32 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
-        const limit: OperationFileLimit = { count: 2, type: "file" };
+        const config = createCorrectConfig({
+          limit: { count: 2, type: "file" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
-        const limit: OperationFileLimit = { count: 1, type: "file" };
+        const config = createCorrectConfig({
+          autoFixableOnly: false,
+          limit: { count: 1, type: "file" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
     });
 
     describe("partial selection behavior", () => {
-      const operationOptions = operationOptionsWithDefault({
-        allowPartialSelection: true,
+      const createCorrectConfig = createConfigBuilder({
         autoFixableOnly: false,
+        partialSelection: true,
       });
 
       it("should return full selection unless all rules exceeds the limit", () => {
@@ -425,7 +413,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
-        const limit: OperationFileLimit = { count: 3, type: "file" };
+        const config = createCorrectConfig({
+          autoFixableOnly: false,
+          limit: { count: 3, type: "file" },
+          partialSelection: true,
+        });
         const expected: SelectionResult = {
           selection: {
             ruleId: "rule2",
@@ -434,11 +426,7 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -461,7 +449,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
-        const limit: OperationFileLimit = { count: 2, type: "file" };
+        const config = createCorrectConfig({
+          autoFixableOnly: false,
+          limit: { count: 2, type: "file" },
+          partialSelection: true,
+        });
         const expected: SelectionResult = {
           selection: {
             ruleId: "rule1",
@@ -474,30 +466,28 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
-        const limit: OperationFileLimit = { count: 1, type: "file" };
+        const config = createCorrectConfig({
+          autoFixableOnly: false,
+          limit: { count: 1, type: "file" },
+          partialSelection: true,
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnFilesLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
     });
   });
 
   describe("when exclude.rules is provided", () => {
+    const createCorrectConfig = createConfigBuilder();
+
     it("should respect exclude.rules option", () => {
       const todoModule = createTodoModuleV2({
         "@typescript-eslint/no-explicity-any": {
@@ -517,17 +507,17 @@ describe("selectRuleBasedOnFilesLimit", () => {
           },
         },
       });
-      const limit: OperationFileLimit = { count: 3, type: "file" };
-      const options = operationOptionsWithDefault({
+      const config = createCorrectConfig({
         autoFixableOnly: false,
         exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
+        limit: { count: 3, type: "file" },
       });
       const expected: SelectionResult = {
         selection: { ruleId: "rule2", type: "full" },
         success: true,
       };
 
-      const result = selectRuleBasedOnFilesLimit(todoModule, limit, options);
+      const result = selectRuleBasedOnFilesLimit(todoModule, config);
       expect(result).toStrictEqual(expected);
     });
 
@@ -551,27 +541,27 @@ describe("selectRuleBasedOnFilesLimit", () => {
           },
         },
       });
-      const limit: OperationFileLimit = { count: 3, type: "file" };
-      const options = operationOptionsWithDefault({
+      const config = createCorrectConfig({
         autoFixableOnly: false,
         exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
+        limit: { count: 3, type: "file" },
       });
       const expected: SelectionResult = { success: false };
 
-      const result = selectRuleBasedOnFilesLimit(todoModule, limit, options);
+      const result = selectRuleBasedOnFilesLimit(todoModule, config);
       expect(result).toStrictEqual(expected);
     });
   });
 
   describe("when invalid input is provided", () => {
-    const operationOptions = operationOptionsWithDefault();
+    const createCorrectConfig = createConfigBuilder();
 
     it("should throw an error if limit count is lte 0", () => {
       const todoModule = createTodoModuleV2({});
-      const limit: OperationFileLimit = { count: 0, type: "file" };
+      const config = createCorrectConfig({ limit: { count: 0, type: "file" } });
 
       expect(() =>
-        selectRuleBasedOnFilesLimit(todoModule, limit, operationOptions),
+        selectRuleBasedOnFilesLimit(todoModule, config),
       ).toThrowError("The file limit must be greater than 0");
     });
   });
@@ -580,7 +570,7 @@ describe("selectRuleBasedOnFilesLimit", () => {
 describe("selectRuleBasedOnViolationsLimit", () => {
   describe("when only autoFixable violations are allowed", () => {
     describe("full selection behavior", () => {
-      const operationOptions = operationOptionsWithDefault();
+      const createCorrectConfig = createConfigBuilder();
 
       it("should return the rule with the most violations lte the limit", () => {
         const todoModule = createTodoModuleV2({
@@ -601,17 +591,15 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 5, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 5, type: "violation" },
+        });
         const expected: SelectionResult = {
           selection: { ruleId: "rule2", type: "full" },
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -632,17 +620,15 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 4, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 4, type: "violation" },
+        });
         const expected: SelectionResult = {
           selection: { ruleId: "rule1", type: "full" },
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -656,14 +642,12 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 5, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 5, type: "violation" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -676,34 +660,30 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 4, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 4, type: "violation" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
-        const limit: OperationViolationLimit = { count: 1, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 1, type: "violation" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
     });
 
     describe("partial selection behavior", () => {
-      const operationOptions = operationOptionsWithDefault({
-        allowPartialSelection: true,
+      const createCorrectConfig = createConfigBuilder({
+        partialSelection: true,
       });
 
       it("should return full selection unless all rules exceeds the limit", () => {
@@ -728,7 +708,9 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 3, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 3, type: "violation" },
+        });
         const expected: SelectionResult = {
           selection: {
             ruleId: "rule2",
@@ -737,11 +719,7 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -764,7 +742,9 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 4, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 4, type: "violation" },
+        });
         const expected: SelectionResult = {
           selection: {
             ruleId: "rule1",
@@ -777,11 +757,7 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -794,27 +770,26 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 2, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 2, type: "violation" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
-        const limit: OperationViolationLimit = { count: 1, type: "violation" };
+        const config = createCorrectConfig({
+          limit: {
+            count: 1,
+            type: "violation",
+          },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
     });
@@ -822,7 +797,7 @@ describe("selectRuleBasedOnViolationsLimit", () => {
 
   describe("when non-autoFixable violations are allowed", () => {
     describe("full selection behavior", () => {
-      const operationOptions = operationOptionsWithDefault({
+      const createCorrectConfig = createConfigBuilder({
         autoFixableOnly: false,
       });
 
@@ -845,17 +820,15 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 5, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 5, type: "violation" },
+        });
         const expected: SelectionResult = {
           selection: { ruleId: "rule2", type: "full" },
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -876,17 +849,15 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 4, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 4, type: "violation" },
+        });
         const expected: SelectionResult = {
           selection: { ruleId: "rule1", type: "full" },
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -899,35 +870,31 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 4, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 4, type: "violation" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
-        const limit: OperationViolationLimit = { count: 1, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 1, type: "violation" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
     });
 
     describe("partial selection behavior", () => {
-      const operationOptions = operationOptionsWithDefault({
-        allowPartialSelection: true,
+      const createCorrectConfig = createConfigBuilder({
         autoFixableOnly: false,
+        partialSelection: true,
       });
 
       it("should return full selection unless all rules exceeds the limit", () => {
@@ -952,7 +919,9 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 3, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 3, type: "violation" },
+        });
         const expected: SelectionResult = {
           selection: {
             ruleId: "rule2",
@@ -961,11 +930,7 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -988,7 +953,9 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 4, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 4, type: "violation" },
+        });
         const expected: SelectionResult = {
           selection: {
             ruleId: "rule1",
@@ -1001,11 +968,7 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
@@ -1018,33 +981,31 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
-        const limit: OperationViolationLimit = { count: 2, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 2, type: "violation" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
-        const limit: OperationViolationLimit = { count: 1, type: "violation" };
+        const config = createCorrectConfig({
+          limit: { count: 1, type: "violation" },
+        });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(
-          todoModule,
-          limit,
-          operationOptions,
-        );
+        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
         expect(result).toStrictEqual(expected);
       });
     });
   });
 
   describe("when exclude.rules is provided", () => {
+    const createCorrectConfig = createConfigBuilder();
+
     it("should respect exclude.rules option", () => {
       const todoModule = createTodoModuleV2({
         "@typescript-eslint/no-explicity-any": {
@@ -1062,21 +1023,17 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           },
         },
       });
-      const limit: OperationViolationLimit = { count: 3, type: "violation" };
-      const options = operationOptionsWithDefault({
+      const config = createCorrectConfig({
         autoFixableOnly: false,
         exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
+        limit: { count: 3, type: "violation" },
       });
       const expected: SelectionResult = {
         selection: { ruleId: "rule2", type: "full" },
         success: true,
       };
 
-      const result = selectRuleBasedOnViolationsLimit(
-        todoModule,
-        limit,
-        options,
-      );
+      const result = selectRuleBasedOnViolationsLimit(todoModule, config);
       expect(result).toStrictEqual(expected);
     });
 
@@ -1096,31 +1053,29 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           },
         },
       });
-      const limit: OperationViolationLimit = { count: 1, type: "violation" };
-      const options = operationOptionsWithDefault({
+      const options = createCorrectConfig({
         autoFixableOnly: false,
         exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
+        limit: { count: 1, type: "violation" },
       });
       const expected: SelectionResult = { success: false };
 
-      const result = selectRuleBasedOnViolationsLimit(
-        todoModule,
-        limit,
-        options,
-      );
+      const result = selectRuleBasedOnViolationsLimit(todoModule, options);
       expect(result).toStrictEqual(expected);
     });
   });
 
   describe("when invalid input is provided", () => {
-    const operationOptions = operationOptionsWithDefault();
+    const createCorrectConfig = createConfigBuilder();
 
     it("should throw an error if limit count is lte 0", () => {
       const todoModule = createTodoModuleV2({});
-      const limit: OperationViolationLimit = { count: 0, type: "violation" };
+      const config = createCorrectConfig({
+        limit: { count: 0, type: "violation" },
+      });
 
       expect(() =>
-        selectRuleBasedOnViolationsLimit(todoModule, limit, operationOptions),
+        selectRuleBasedOnViolationsLimit(todoModule, config),
       ).toThrowError("The violation limit must be greater than 0");
     });
   });

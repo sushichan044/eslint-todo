@@ -5,14 +5,14 @@ import { existsSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { resolve } from "pathe";
 
-import type { Options, UserOptions } from "./options";
+import type { Config, UserConfig } from "./config";
 import type { TodoFilePath } from "./path";
 import type { LatestTodoModule, SupportedTodoModules } from "./todofile";
 import type { RuleSeverity, TodoModuleLike } from "./todofile/types";
 import type { ESLintInitializeOptions, IESLintTodoCoreLike } from "./types";
 
 import { generateTodoModuleCode } from "./codegen";
-import { optionsWithDefault } from "./options";
+import { configWithDefault } from "./config/config";
 import { resolveTodoModulePath } from "./path";
 import { LATEST_TODO_MODULE_HANDLER } from "./todofile";
 // ここでは本当に TodoModuleV1Handler が必要
@@ -25,16 +25,16 @@ import { importDefault } from "./utils/import";
  * ESLintTodo API Entrypoint.
  */
 export class ESLintTodoCore implements IESLintTodoCoreLike {
+  readonly #config: Config;
   // @ts-expect-error Initialize in this.initializeESLint()
   #eslint: ESLint;
   // @ts-expect-error Initialize in this.initializeESLint()
   #eslintWithAutoFix: ESLint; // for auto-fixing (future feature)
-  readonly #options: Options;
   readonly #todoFilePath: TodoFilePath;
 
-  constructor(userOptions: UserOptions) {
-    this.#options = optionsWithDefault(userOptions);
-    this.#todoFilePath = resolveTodoModulePath(this.#options);
+  constructor(userConfig?: UserConfig) {
+    this.#config = configWithDefault(userConfig);
+    this.#todoFilePath = resolveTodoModulePath(this.#config);
 
     this.initializeESLint();
   }
@@ -73,7 +73,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
   buildTodoFromLintResults(lintResults: ESLint.LintResult[]): LatestTodoModule {
     return LATEST_TODO_MODULE_HANDLER.buildTodoFromLintResults(
       lintResults,
-      this.#options,
+      this.#config,
     );
   }
 
@@ -84,9 +84,9 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
   initializeESLint(options: ESLintInitializeOptions = {}): void {
     const { overrideConfig } = options;
 
-    this.#eslint = new ESLint({ cwd: this.#options.cwd, overrideConfig });
+    this.#eslint = new ESLint({ cwd: this.#config.root, overrideConfig });
     this.#eslintWithAutoFix = new ESLint({
-      cwd: this.#options.cwd,
+      cwd: this.#config.root,
       fix: true,
       overrideConfig,
     });
@@ -94,7 +94,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
 
   async lint(): Promise<ESLint.LintResult[]> {
     const result = await this.#eslint.lintFiles(
-      resolve(this.#options.cwd, "**/*"),
+      resolve(this.#config.root, "**/*"),
     );
     return result;
   }

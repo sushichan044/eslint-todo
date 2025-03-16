@@ -1,17 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import type { Options } from "./options";
-
+import { configWithDefault } from "./config/config";
 import { resolveTodoModulePath } from "./path";
 
 describe("resolveTodoFilePath", () => {
   it("should resolve the correct absolute and relative paths", () => {
-    const options: Options = {
-      cwd: "/home/sushi/workspace",
+    const config = configWithDefault({
+      root: "/home/sushi/workspace",
       todoFile: ".eslint-todo.js",
-    };
+    });
 
-    const result = resolveTodoModulePath(options);
+    const result = resolveTodoModulePath(config);
 
     expect(result).toStrictEqual({
       absolute: "/home/sushi/workspace/.eslint-todo.js",
@@ -20,12 +19,11 @@ describe("resolveTodoFilePath", () => {
   });
 
   it("should handle nested todoFile paths", () => {
-    const options: Options = {
-      cwd: "/home/sushi/workspace",
-      todoFile: "nested/.eslint-todo.js",
-    };
-
-    const result = resolveTodoModulePath(options);
+    const config = configWithDefault({
+      root: "/home/sushi/workspace",
+      todoFile: "./nested/.eslint-todo.js",
+    });
+    const result = resolveTodoModulePath(config);
 
     expect(result).toStrictEqual({
       absolute: "/home/sushi/workspace/nested/.eslint-todo.js",
@@ -34,12 +32,12 @@ describe("resolveTodoFilePath", () => {
   });
 
   it("should handle absolute todoFile paths", () => {
-    const options: Options = {
-      cwd: "/home/sushi/workspace",
+    const config = configWithDefault({
+      root: "/home/sushi/workspace",
       todoFile: "/home/sushi/.eslint-todo.js",
-    };
+    });
 
-    const result = resolveTodoModulePath(options);
+    const result = resolveTodoModulePath(config);
 
     expect(result).toStrictEqual({
       absolute: "/home/sushi/.eslint-todo.js",

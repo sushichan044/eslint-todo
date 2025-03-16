@@ -8,8 +8,8 @@ import type { TodoModuleLike } from "./todofile/types";
 import type { TodoModuleV1 } from "./todofile/v1";
 import type { TodoModuleV2 } from "./todofile/v2";
 
+import { configWithDefault } from "./config/config";
 import { ESLintTodoCore } from "./index";
-import { optionsWithDefault } from "./options";
 // TODO: ここでは本当に TodoModuleV1Handler が必要
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TodoModuleV1Handler } from "./todofile/v1";
@@ -50,7 +50,7 @@ describe("buildESLintConfig", () => {
   const spyV1Builder = vi.spyOn(TodoModuleV1Handler, "buildConfigsForESLint");
   const spyV2Builder = vi.spyOn(TodoModuleV2Handler, "buildConfigsForESLint");
 
-  const core = new ESLintTodoCore(optionsWithDefault());
+  const core = new ESLintTodoCore(configWithDefault());
 
   beforeEach(() => {
     vi.resetAllMocks();

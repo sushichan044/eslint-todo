@@ -1,6 +1,6 @@
 import type { Linter } from "eslint";
 
-import type { UserOptions } from "../options";
+import type { UserConfig } from "../config";
 
 import { ESLintTodoCore } from "../index";
 // TODO: ここでは本当に TodoModuleV1Handler が必要
@@ -8,10 +8,12 @@ import { ESLintTodoCore } from "../index";
 import { TodoModuleV1Handler } from "../todofile/v1";
 import { TodoModuleV2Handler } from "../todofile/v2";
 
+type ESLintConfigTodoInput = Pick<UserConfig, "root" | "todoFile">;
+
 const eslintConfigTodo = async (
-  userOptions: UserOptions = {},
+  config?: ESLintConfigTodoInput,
 ): Promise<Linter.Config[]> => {
-  const core = new ESLintTodoCore(userOptions);
+  const core = new ESLintTodoCore(config);
 
   const todoModulePath = core.getTodoModulePath();
   const module = await (async () => {
