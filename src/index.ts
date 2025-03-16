@@ -48,7 +48,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     // If use import() here, it will be cached and this cannot be revalidated in the same process.
     // So, this.lint() will run with cached todo file, even if the file is updated after this._DO_NOT_USE_DIRECTLY_unsafeReadTodoModule().
     // To avoid this behavior, just use `RemoteESLintTodoCore.readTodoModule()` in the remote worker.
-    return await importDefault<TodoModuleLike>(this.#todoFilePath.absolute);
+    return await importDefault<TodoModuleLike>(this.#todoFilePath.absolute, {});
   }
 
   buildESLintConfig(
