@@ -11,6 +11,10 @@
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     },
+    "./config": {
+      "import": "./dist/config/index.mjs",
+      "types": "./dist/config/index.d.ts"
+    },
     "./eslint": {
       "import": "./dist/eslint/index.mjs",
       "types": "./dist/eslint/index.d.ts"
