@@ -1,4 +1,4 @@
-import type { IValidation } from "typia";
+import type { IValidation } from "@samchon/openapi";
 
 import { resolve } from "pathe";
 
