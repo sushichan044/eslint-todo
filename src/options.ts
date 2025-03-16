@@ -1,6 +1,8 @@
 import { defu } from "defu";
 import { cwd } from "node:process";
 
+import type { DeepPartial } from "./utils/types";
+
 export type Options = {
   /**
    * The file path to read and write the ESLint todo list.
@@ -16,7 +18,7 @@ export type Options = {
   cwd: string;
 };
 
-export type UserOptions = Partial<Options>;
+export type UserOptions = DeepPartial<Options>;
 
 /**
  * @package

@@ -1,5 +1,7 @@
 import defu from "defu";
 
+import type { DeepPartial } from "../utils/types";
+
 export type OperationOptions = {
   /**
    * Only handle auto-fixable violations.
@@ -16,7 +18,7 @@ export type OperationOptions = {
   allowPartialSelection: boolean;
 };
 
-export type UserOperationOptions = Partial<OperationOptions>;
+export type UserOperationOptions = DeepPartial<OperationOptions>;
 
 /**
  * @package

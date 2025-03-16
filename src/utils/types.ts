@@ -9,3 +9,12 @@ export type MaybePromisifyAllMethods<T> = {
 };
 
 export type IsNever<T> = T[] extends never[] ? true : false;
+
+export type DeepPartial<T> =
+  T extends Record<PropertyKey, unknown>
+    ? {
+        [K in keyof T]?: T[K] extends Record<PropertyKey, unknown>
+          ? DeepPartial<T[K]>
+          : T[K];
+      }
+    : T;
