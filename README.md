@@ -59,7 +59,7 @@ Add `--correct` flag to launch eslint-todo with error reduction mode.
 In this mode, eslint-todo searches the todo file with the limit from CLI and removes one matching rule from the todo file.
 This allows ESLint to detect that rule as a violation again. For safety, only auto-fixable rules are searched by default.
 
-You can use `--limit`, `--limit-type`, `--auto-fixable-only` options to control the behavior.
+You can use `--limit`, `--limit-type`, `--auto-fixable-only`, `--exclude.rules` options to control the behavior.
 
 Default options are: <br>
 Select one rule that has a total of 100 or fewer violations from **auto-fixable** rules.
@@ -78,6 +78,12 @@ Select one rule that has a total of 100 or fewer violations from **all rules inc
 
 ```bash
 eslint-todo --correct --limit 100 --limit-type violation --auto-fixable-only false
+```
+
+Exclude specific rules from the search:
+
+```bash
+eslint-todo --correct --exclude.rules @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-assignment
 ```
 
 ## Configuration (CLI)

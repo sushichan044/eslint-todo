@@ -131,7 +131,7 @@ describe("selectRuleBasedOnFilesLimit", () => {
         expect(result).toStrictEqual(expected);
       });
 
-      it("should return success: false if no rule meets the criteria", () => {
+      it("should return success: false if no rule meets the limit", () => {
         const todoModule = createTodoModuleV2({
           rule1: {
             autoFix: true,
@@ -494,6 +494,72 @@ describe("selectRuleBasedOnFilesLimit", () => {
         );
         expect(result).toStrictEqual(expected);
       });
+    });
+  });
+
+  describe("when exclude.rules is provided", () => {
+    it("should respect exclude.rules option", () => {
+      const todoModule = createTodoModuleV2({
+        "@typescript-eslint/no-explicity-any": {
+          autoFix: false,
+          violations: {
+            "file1.js": 1,
+            "file2.js": 1,
+            "file3.js": 1,
+          },
+        },
+        "rule2": {
+          autoFix: false,
+          violations: {
+            "file1.js": 1000,
+            "file2.js": 1000,
+            "file3.js": 1000,
+          },
+        },
+      });
+      const limit: OperationFileLimit = { count: 3, type: "file" };
+      const options = operationOptionsWithDefault({
+        autoFixableOnly: false,
+        exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
+      });
+      const expected: SelectionResult = {
+        selection: { ruleId: "rule2", type: "full" },
+        success: true,
+      };
+
+      const result = selectRuleBasedOnFilesLimit(todoModule, limit, options);
+      expect(result).toStrictEqual(expected);
+    });
+
+    it("should return success: false if no rule satisfies the limit AND exclude.rules", () => {
+      const todoModule = createTodoModuleV2({
+        "@typescript-eslint/no-explicity-any": {
+          autoFix: false,
+          violations: {
+            "file1.js": 1,
+            "file2.js": 1,
+            "file3.js": 1,
+          },
+        },
+        "rule2": {
+          autoFix: true,
+          violations: {
+            "file1.js": 1,
+            "file2.js": 1,
+            "file3.js": 1,
+            "file4.js": 1,
+          },
+        },
+      });
+      const limit: OperationFileLimit = { count: 3, type: "file" };
+      const options = operationOptionsWithDefault({
+        autoFixableOnly: false,
+        exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
+      });
+      const expected: SelectionResult = { success: false };
+
+      const result = selectRuleBasedOnFilesLimit(todoModule, limit, options);
+      expect(result).toStrictEqual(expected);
     });
   });
 
@@ -975,6 +1041,74 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         );
         expect(result).toStrictEqual(expected);
       });
+    });
+  });
+
+  describe("when exclude.rules is provided", () => {
+    it("should respect exclude.rules option", () => {
+      const todoModule = createTodoModuleV2({
+        "@typescript-eslint/no-explicity-any": {
+          autoFix: false,
+          violations: {
+            "file1.js": 3,
+          },
+        },
+        "rule2": {
+          autoFix: false,
+          violations: {
+            "file1.js": 1,
+            "file2.js": 1,
+            "file3.js": 1,
+          },
+        },
+      });
+      const limit: OperationViolationLimit = { count: 3, type: "violation" };
+      const options = operationOptionsWithDefault({
+        autoFixableOnly: false,
+        exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
+      });
+      const expected: SelectionResult = {
+        selection: { ruleId: "rule2", type: "full" },
+        success: true,
+      };
+
+      const result = selectRuleBasedOnViolationsLimit(
+        todoModule,
+        limit,
+        options,
+      );
+      expect(result).toStrictEqual(expected);
+    });
+
+    it("should return success: false if no rule satisfies the limit AND exclude.rules", () => {
+      const todoModule = createTodoModuleV2({
+        "@typescript-eslint/no-explicity-any": {
+          autoFix: false,
+          violations: {
+            "file1.js": 1,
+          },
+        },
+        "rule2": {
+          autoFix: true,
+          violations: {
+            "file1.js": 1,
+            "file2.js": 1,
+          },
+        },
+      });
+      const limit: OperationViolationLimit = { count: 1, type: "violation" };
+      const options = operationOptionsWithDefault({
+        autoFixableOnly: false,
+        exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
+      });
+      const expected: SelectionResult = { success: false };
+
+      const result = selectRuleBasedOnViolationsLimit(
+        todoModule,
+        limit,
+        options,
+      );
+      expect(result).toStrictEqual(expected);
     });
   });
 

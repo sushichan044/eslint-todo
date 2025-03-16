@@ -5,6 +5,7 @@ import type { UserOperationOptions } from "../operation/options";
 import type { OperationLimit } from "../operation/types";
 
 import { safeTryNumber } from "../utils/number";
+import { isNonEmptyString } from "../utils/string";
 
 type Input = {
   /**
@@ -46,10 +47,17 @@ export const structureCLIInput = (input: Input): StructuredCLIInput => {
 };
 
 type CLIOperationInput = {
-  allowPartialSelection: boolean;
-  autoFixableOnly: boolean;
-  limit: string;
-  limitType: string;
+  "allowPartialSelection": boolean;
+  "autoFixableOnly": boolean;
+  /**
+   * Comma-separated list of rules to exclude from the operation.
+   */
+  "exclude.rules": string;
+  /**
+   * Limit the number of violations or files to fix.
+   */
+  "limit": string;
+  "limitType": string;
 };
 
 type StructuredCLIOperation = {
@@ -77,11 +85,18 @@ const resolveCLIOperation = (
     type: parsedLimitType.output,
   };
 
+  const excludedRules = input["exclude.rules"]
+    .split(",")
+    .filter((element) => isNonEmptyString(element));
+
   return {
     limit,
     options: {
       allowPartialSelection: input.allowPartialSelection,
       autoFixableOnly: input.autoFixableOnly,
+      exclude: {
+        rules: excludedRules,
+      },
     },
   };
 };
