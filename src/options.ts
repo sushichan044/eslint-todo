@@ -1,4 +1,5 @@
 import { defu } from "defu";
+import { klona } from "klona";
 import { cwd } from "node:process";
 
 import type { DeepPartial } from "./utils/types";
@@ -27,8 +28,7 @@ export const optionsWithDefault = (options: UserOptions = {}): Options => {
   return defu(options, getDefaultOptions());
 };
 
-const getDefaultOptions = () =>
-  ({ ...DEFAULT_OPTIONS }) as const satisfies Options;
+const getDefaultOptions = () => klona(DEFAULT_OPTIONS);
 
 /**
  * @private

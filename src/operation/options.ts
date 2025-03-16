@@ -1,4 +1,5 @@
 import defu from "defu";
+import { klona } from "klona";
 
 import type { DeepPartial } from "../utils/types";
 
@@ -29,8 +30,7 @@ export const operationOptionsWithDefault = (
   return defu(options, getDefaultOperationOptions());
 };
 
-const getDefaultOperationOptions = () =>
-  ({ ...DEFAULT_OPERATION_OPTIONS }) as const satisfies OperationOptions;
+const getDefaultOperationOptions = () => klona(DEFAULT_OPERATION_OPTIONS);
 
 /**
  * @private
