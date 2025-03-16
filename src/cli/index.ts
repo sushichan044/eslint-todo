@@ -4,9 +4,10 @@ import { colorize } from "consola/utils";
 import { relative } from "pathe";
 
 import { version as packageVersion } from "../../package.json";
+import { mergeUserConfig } from "../config";
 // DEFAULT_CONFIG is needed as show default values in help message.
-// eslint-disable-next-line import-access/jsdoc
-import { DEFAULT_CONFIG } from "../config/config";
+import { configWithDefault } from "../config/config";
+import { readConfigFile } from "../config/file";
 import { ESLintTodoCore } from "../index";
 import { runAction } from "./action";
 import { deleteRuleAction } from "./action/delete-rule";
@@ -127,6 +128,20 @@ const cli = defineCommand({
       root: args.cwd as string | undefined,
       todoFile: args["todo-file"] as string | undefined,
     });
+
+    const configReadResult = await readConfigFile(cliCwd);
+    const configFromFile = (() => {
+      if (configReadResult.success) {
+        return configReadResult.data;
+      }
+
+      consola.warn("Invalid config file detected. Ignoring the config file.");
+      return {};
+    })();
+    // override file config with CLI flags
+    const resolvedUserConfig = mergeUserConfig(configFromFile, userConfig);
+
+    const config = configWithDefault(resolvedUserConfig);
 
     // initialize local ESLintTodoCore
     const eslintTodoCore = new ESLintTodoCore(config);

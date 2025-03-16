@@ -6,7 +6,11 @@ import type { DeepPartial } from "../utils/types";
 
 export type Config = {
   /**
-   * Project root. eslint-todo will search todo file and config file from this directory.
+   * Project root.
+   *
+   * **This directory must contain the ESLint configuration file.**
+   *
+   * This also affects the default location of the ESLint todo file.
    *
    * @default process.cwd()
    */
