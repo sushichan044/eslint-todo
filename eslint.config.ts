@@ -44,6 +44,18 @@ export default typegen(
               ],
             },
           ],
+          "@typescript-eslint/no-restricted-types": [
+            "error",
+            {
+              types: {
+                Partial: {
+                  message:
+                    "Consider using `DeepPartial` from `utils/types` instead",
+                  suggest: ["DeepPartial"],
+                },
+              },
+            },
+          ],
           "no-restricted-imports": "off",
         },
       },
