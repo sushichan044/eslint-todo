@@ -55,8 +55,8 @@ importers:
         specifier: 2.2.17
         version: 2.2.17(@typescript-eslint/parser@8.26.1(eslint@9.22.0(jiti@2.4.2))(typescript@5.8.2))(eslint@9.22.0(jiti@2.4.2))(tailwindcss@3.4.17)(typescript@5.8.2)
       '@virtual-live-lab/prettier-config':
-        specifier: 2.0.16
-        version: 2.0.16(prettier@3.5.3)
+        specifier: 2.0.17
+        version: 2.0.17(prettier@3.5.3)
       '@virtual-live-lab/tsconfig':
         specifier: 2.1.18
         version: 2.1.18(typescript@5.8.2)
@@ -1055,8 +1055,8 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
 
-  '@virtual-live-lab/prettier-config@2.0.16':
-    resolution: {integrity: sha512-t24s2z+Th0BWS7E2kdC8gUuuBNdqo0G0EEF8iQjVyzUyh+dxx/8zW3EHq5Xfo6r6Pqeww+KR5m6ikq+8fKIceg==}
+  '@virtual-live-lab/prettier-config@2.0.17':
+    resolution: {integrity: sha512-ZzZT+MWnXMGpcl/lnh6VOmjnFQgo2ShWtlVo9ujoR3STYAe5c1lIW3ftbgEvWYLKCHY9WUSNaVaGvd2Hoy9UtA==}
     peerDependencies:
       prettier: ^3.0.0
       prettier-plugin-astro: '>=0.11.0 <0.15.0'
@@ -5311,7 +5311,7 @@ snapshots:
       - typescript
       - vue
 
-  '@virtual-live-lab/prettier-config@2.0.16(prettier@3.5.3)':
+  '@virtual-live-lab/prettier-config@2.0.17(prettier@3.5.3)':
     dependencies:
       prettier: 3.5.3
 
