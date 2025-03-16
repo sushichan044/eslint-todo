@@ -4,7 +4,8 @@
   "type": "module",
   "module": "./dist/index.mjs",
   "files": [
-    "dist"
+    "dist",
+    "config-schema.json"
   ],
   "exports": {
     ".": {

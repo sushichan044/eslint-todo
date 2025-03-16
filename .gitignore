@@ -135,3 +135,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 eslint-typegen.d.ts
+
+# Ignore auto generated schema json
+/config-schema.json

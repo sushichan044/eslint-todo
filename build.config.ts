@@ -1,3 +1,4 @@
+import { cwd } from "node:process";
 import { defineBuildConfig } from "unbuild";
 
 import { generateJsonSchemaFile } from "./scripts/json-schema";
@@ -15,9 +16,8 @@ export default defineBuildConfig({
     "src/remote/client.ts",
   ],
   hooks: {
-    "build:done": async (c) => {
-      const directory = c.options.outDir;
-      await generateJsonSchemaFile(directory);
+    "build:done": async () => {
+      await generateJsonSchemaFile(cwd());
     },
     "rollup:options": (_, options) => {
       // typia plugin should be the first otherwise it will not work

@@ -40,9 +40,14 @@ const importJsonSchema = async () => {
 export const generateJsonSchemaFile = async (outputDirectory: string) => {
   await fs.ensureDir(outputDirectory);
 
+  const outPath = join(outputDirectory, "config-schema.json");
+
+  if (await fs.pathExists(outPath)) {
+    await fs.remove(outPath);
+  }
+
   await sh("pnpm", "run", "generate-json-schema");
   const schema = await importJsonSchema();
 
-  const outputPath = join(outputDirectory, "config-schema.json");
-  await fs.writeJSON(outputPath, schema, { spaces: 2 });
+  await fs.writeJSON(outPath, schema, { spaces: 2 });
 };
