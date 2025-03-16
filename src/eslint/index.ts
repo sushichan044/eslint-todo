@@ -1,6 +1,7 @@
 import type { Linter } from "eslint";
 
-import type { UserOptions } from "../options";
+import type { Config } from "../config";
+import type { DeepPartial } from "../utils/types";
 
 import { ESLintTodoCore } from "../index";
 // TODO: ここでは本当に TodoModuleV1Handler が必要
@@ -8,10 +9,23 @@ import { ESLintTodoCore } from "../index";
 import { TodoModuleV1Handler } from "../todofile/v1";
 import { TodoModuleV2Handler } from "../todofile/v2";
 
+type ESLintConfigTodoInput = DeepPartial<
+  Pick<Config, "todoFile"> & {
+    cwd: Config["root"];
+  }
+>;
+
 const eslintConfigTodo = async (
-  userOptions: UserOptions = {},
+  // Only for backward compatibility. Will be replaced with Partial<Pick<Config, "root" | "todoFile">> in the v0.1.0
+  config?: ESLintConfigTodoInput,
 ): Promise<Linter.Config[]> => {
-  const core = new ESLintTodoCore(userOptions);
+  const root = config?.cwd;
+  const todoFile = config?.todoFile;
+
+  const core = new ESLintTodoCore({
+    root,
+    todoFile,
+  });
 
   const todoModulePath = core.getTodoModulePath();
   const module = await (async () => {

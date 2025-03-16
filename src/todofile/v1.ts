@@ -48,11 +48,11 @@ export const TodoModuleV1Handler: TodoModuleHandler<
     }));
   },
 
-  buildTodoFromLintResults(lintResult, options) {
+  buildTodoFromLintResults(lintResult, config) {
     const todoModule: TodoModuleV1 = {};
 
     for (const result of lintResult) {
-      const relativeFilePath = relative(options.cwd, result.filePath);
+      const relativeFilePath = relative(config.root, result.filePath);
 
       for (const message of result.messages) {
         if (!isNonEmptyString(message.ruleId)) {

@@ -1,6 +1,6 @@
 import { relative, resolve } from "pathe";
 
-import type { Options } from "./options";
+import type { Config } from "./config";
 
 export type TodoFilePath = {
   /**
@@ -16,11 +16,11 @@ export type TodoFilePath = {
 /**
  * Resolve the absolute and relative path of the todo file.
  */
-export const resolveTodoModulePath = (options: Options): TodoFilePath => {
-  const { cwd, todoFile } = options;
+export const resolveTodoModulePath = (config: Config): TodoFilePath => {
+  const { root, todoFile } = config;
 
-  const absolutePath = resolve(cwd, todoFile);
-  const relativePath = relative(cwd, absolutePath);
+  const absolutePath = resolve(root, todoFile);
+  const relativePath = relative(root, absolutePath);
 
   return {
     absolute: absolutePath,

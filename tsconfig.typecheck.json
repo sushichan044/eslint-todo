@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  // generated json schema has some type errors
+  "exclude": ["node_modules", "dist", "src/generated/config/json/index.ts"]
+}

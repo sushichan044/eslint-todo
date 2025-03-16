@@ -1,6 +1,6 @@
 import type { ESLint, Linter } from "eslint";
 
-import type { Options } from "../options";
+import type { Config } from "../config";
 
 export type TodoModuleLike = Record<string, unknown>;
 
@@ -30,7 +30,7 @@ export interface TodoModuleHandler<
    */
   buildTodoFromLintResults(
     lintResult: ESLint.LintResult[],
-    options: Options,
+    config: Config,
   ): CURRENT;
 
   /**

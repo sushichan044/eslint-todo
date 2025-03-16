@@ -1,13 +1,14 @@
 import type { Remote } from "comlink";
 import type { ConsolaInstance } from "consola";
 
-import type { UserOptions } from "../../options";
+import type { Config } from "../../config";
 import type { RemoteESLintTodoCore } from "../../remote/core";
 import type { IsNever, MaybePromise } from "../../utils/types";
 
 import { launchRemoteESLintTodoCore } from "../../remote/client";
 
 type ActionAPI = {
+  config: Config;
   core: Remote<RemoteESLintTodoCore>;
   logger: ConsolaInstance;
 };
@@ -18,8 +19,8 @@ type CLIAction<Input = unknown, Return = unknown> =
     : (api: ActionAPI, input: Input) => MaybePromise<Return>;
 
 type RunActionOptions = {
+  config: Config;
   consola: ConsolaInstance;
-  options: UserOptions;
 };
 
 /**
@@ -51,13 +52,14 @@ export async function runAction<Input, Return = unknown>(
   options: RunActionOptions,
   input: Input | typeof NO_INPUT = NO_INPUT,
 ): Promise<Return> {
-  const { consola, options: coreOptions } = options;
+  const { config, consola } = options;
 
   // initialize remote ESLintTodoCore
   const remoteService = launchRemoteESLintTodoCore();
-  const remoteCore = await new remoteService.RemoteESLintTodoCore(coreOptions);
+  const remoteCore = await new remoteService.RemoteESLintTodoCore(config);
 
   const actionApi = {
+    config,
     core: remoteCore,
     logger: consola,
   } satisfies ActionAPI;

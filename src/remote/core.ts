@@ -3,7 +3,7 @@ import * as Comlink from "comlink";
 import nodeEndpoint from "comlink/dist/esm/node-adapter.mjs";
 import { parentPort } from "node:worker_threads";
 
-import type { UserOptions } from "../options";
+import type { UserConfig } from "../config";
 import type { SupportedTodoModules } from "../todofile";
 import type { RuleSeverity } from "../todofile/types";
 import type { IESLintTodoCoreLike } from "../types";
@@ -16,8 +16,8 @@ if (parentPort == null)
 export class RemoteESLintTodoCore implements IESLintTodoCoreLike {
   readonly #todoCore: ESLintTodoCore;
 
-  constructor(userOptions: UserOptions) {
-    this.#todoCore = new ESLintTodoCore(userOptions);
+  constructor(userConfig?: UserConfig) {
+    this.#todoCore = new ESLintTodoCore(userConfig);
   }
 
   buildESLintConfig(

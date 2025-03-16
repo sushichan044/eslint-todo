@@ -1,6 +1,9 @@
 import { defineConfig } from "vitest/config";
 
+import { typiaVite } from "./typia-plugin";
+
 export default defineConfig({
+  plugins: [typiaVite],
   test: {
     coverage: {
       provider: "v8",
