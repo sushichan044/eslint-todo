@@ -2,7 +2,6 @@ import type { Config } from "../config";
 import type { CorrectModeConfig } from "../config/config";
 
 import { configWithDefault } from "../config/config";
-import { safeTryNumber } from "../utils/number";
 import { isNonEmptyString } from "../utils/string";
 
 type Input = {
@@ -56,9 +55,9 @@ export const parseArguments = (input: Input): ParsedCLIInput => {
 };
 
 const parseCorrectMode = (input: Input["correct"]): CorrectModeConfig => {
-  const limitCount = safeTryNumber(input.limit);
-  if (limitCount === null) {
-    throw new Error("limit must be a number");
+  const limitCount = Number.parseInt(input.limit);
+  if (Number.isNaN(limitCount)) {
+    throw new TypeError("limit must be a number");
   }
 
   if (!isValidLimitType(input.limitType)) {
