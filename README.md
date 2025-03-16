@@ -49,7 +49,7 @@ Requires:
 ### Generate ESLint Todo file
 
 ```bash
-eslint-todo
+npx eslint-todo
 ```
 
 ### Reduce ignored errors
@@ -59,55 +59,62 @@ Add `--correct` flag to launch eslint-todo with error reduction mode.
 In this mode, eslint-todo searches the todo file with the limit from CLI and removes one matching rule from the todo file.
 This allows ESLint to detect that rule as a violation again. For safety, only auto-fixable rules are searched by default.
 
-You can use `--limit`, `--limit-type`, `--auto-fixable-only`, `--allow-partial-selection`, `--exclude.rules` options to control the behavior.
+## Configuration
 
-Default options are: <br>
-Select one rule that has a total of 100 or fewer violations from **auto-fixable** rules.
+### Configuration File (recommended)
 
-```bash
-eslint-todo --correct --limit 100 --limit-type violation
+Just create `eslint-todo.config.{js,ts}`:
+
+```typescript
+// example: eslint-todo.config.ts
+import { defineConfig } from '@sushichan044/eslint-todo/config';
+
+import { defineConfig } from "./dist/config";
+
+export default defineConfig({
+  correct: {
+    limit: {
+      count: 30,
+      type: "violation",
+    },
+  },
+});
 ```
 
-Select one rule that has a total of 10 or fewer files with violations from auto-fixable rules:
+You can check all available options at [here](./src/config/config.ts).
 
-```bash
-eslint-todo --correct --limit 10 --limit-type file
+<details>
+<summary>Want to use JSON?</summary>
+
+Sure!
+
+```json
+{
+  "$schema": "node_modules/@sushichan044/eslint-todo/config-schema.json",
+  "correct": {
+    "limit": {
+      "count": 30,
+      "type": "violation"
+    }
+  }
+}
 ```
 
-Select one rule that has a total of 100 or fewer violations from **all rules including non-auto-fixable** rules:
+</details>
 
-```bash
-eslint-todo --correct --limit 100 --limit-type violation --auto-fixable-only false
-```
+### Configuration via CLI flags
 
-Select a partial maximum from a set of rules if no rule matches the specified limit.
+You can also set eslint-todo by passing a flag to the CLI.
+Use `npx eslint-todo --help` to see all available options.
 
-```bash
-eslint-todo --correct --limit 100 --limit-type violation --allow-partial-selection
-```
-
-Exclude specific rules from the search:
-
-```bash
-eslint-todo --correct --exclude.rules @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-assignment
-```
-
-## Configuration (CLI)
-
-### cwd
-
-default: `process.cwd()`
-
-You can pass `--cwd` to specify the directory where `.eslint-todo.js` will be generated.
+> [!CAUTION]
+> The cli flag will be destructively renamed to the same name as the config file in v0.1.0.
 
 > [!WARNING]
-> You should place `eslint.config.js` on the specified directory.
+> This setting overrides the one in the configuration file.
+> See the [unjs/defu documentation](https://github.com/unjs/defu) for the actual overwriting behavior.
 
-### todo-file
-
-default: `.eslint-todo.js`
-
-You can pass `--todo-file` to specify the name of the ESLint Todo file.
+## Misc
 
 ### logging mode
 
