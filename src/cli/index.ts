@@ -67,6 +67,14 @@ const cli = defineCommand({
       type: "boolean",
       valueHint: "boolean",
     },
+    "exclude.rules": {
+      default: "",
+      description:
+        "List of rules to exclude from the operation. Comma-separated.",
+      required: false,
+      type: "string",
+      valueHint: "rule-id,rule-id",
+    },
     "limit": {
       default: "100",
       description:
@@ -122,10 +130,11 @@ const cli = defineCommand({
         correct: args.correct,
       },
       operation: {
-        allowPartialSelection: args["allow-partial-selection"],
-        autoFixableOnly: args["auto-fixable-only"],
-        limit: args.limit,
-        limitType: args["limit-type"],
+        "allowPartialSelection": args["allow-partial-selection"],
+        "autoFixableOnly": args["auto-fixable-only"],
+        "exclude.rules": args["exclude.rules"],
+        "limit": args.limit,
+        "limitType": args["limit-type"],
       },
       todoFileAbsolutePath: eslintTodoCore.getTodoModulePath().absolute,
     });

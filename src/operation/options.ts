@@ -17,6 +17,15 @@ export type OperationOptions = {
    * @default false
    */
   allowPartialSelection: boolean;
+  /**
+   * Exclude options for the operation.
+   */
+  exclude: {
+    /**
+     * List of rules to exclude from the operation.
+     */
+    rules: string[];
+  };
 };
 
 export type UserOperationOptions = DeepPartial<OperationOptions>;
@@ -38,4 +47,7 @@ const getDefaultOperationOptions = () => klona(DEFAULT_OPERATION_OPTIONS);
 export const DEFAULT_OPERATION_OPTIONS = {
   allowPartialSelection: false,
   autoFixableOnly: true,
+  exclude: {
+    rules: [],
+  },
 } as const satisfies OperationOptions;

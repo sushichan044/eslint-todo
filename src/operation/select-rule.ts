@@ -87,7 +87,11 @@ export const selectRuleBasedOnFilesLimit = (
   options: OperationOptions,
 ): SelectionResult => {
   const { count: limitCount } = limit;
-  const { allowPartialSelection, autoFixableOnly } = options;
+  const {
+    allowPartialSelection,
+    autoFixableOnly,
+    exclude: { rules: excludedRules },
+  } = options;
 
   if (limitCount <= 0) {
     throw new Error("The file limit must be greater than 0.");
@@ -99,6 +103,9 @@ export const selectRuleBasedOnFilesLimit = (
 
   for (const [ruleId, entry] of Object.entries(todoModule.todo)) {
     if (autoFixableOnly && !entry.autoFix) {
+      continue;
+    }
+    if (excludedRules.includes(ruleId)) {
       continue;
     }
 
@@ -166,7 +173,11 @@ export const selectRuleBasedOnViolationsLimit = (
   options: OperationOptions,
 ): SelectionResult => {
   const { count: limitCount } = limit;
-  const { allowPartialSelection, autoFixableOnly } = options;
+  const {
+    allowPartialSelection,
+    autoFixableOnly,
+    exclude: { rules: excludedRules },
+  } = options;
 
   if (limitCount <= 0) {
     throw new Error("The violation limit must be greater than 0.");
@@ -178,6 +189,9 @@ export const selectRuleBasedOnViolationsLimit = (
 
   for (const [ruleId, entry] of Object.entries(todoModule.todo)) {
     if (autoFixableOnly && !entry.autoFix) {
+      continue;
+    }
+    if (excludedRules.includes(ruleId)) {
       continue;
     }
 
