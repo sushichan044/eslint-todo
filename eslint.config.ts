@@ -105,5 +105,8 @@ export default typegen(
         "unicorn/filename-case": "off",
       },
     })
+    .prepend({
+      ignores: ["src/generated/**"],
+    })
     .append(eslintConfigTodo()),
 );

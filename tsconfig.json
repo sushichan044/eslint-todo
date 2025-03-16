@@ -6,7 +6,12 @@
     "plugins": [
       {
         "name": "eslint-plugin-import-access"
+      },
+      {
+        "transform": "typia/lib/transform"
       }
-    ]
+    ],
+    "strictNullChecks": true,
+    "strict": true
   }
 }

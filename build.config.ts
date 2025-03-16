@@ -1,5 +1,7 @@
 import { defineBuildConfig } from "unbuild";
 
+import { typiaRollup } from "./typia-plugin";
+
 export default defineBuildConfig({
   clean: true,
   declaration: true,
@@ -10,4 +12,10 @@ export default defineBuildConfig({
     "src/remote/core.ts",
     "src/remote/client.ts",
   ],
+  hooks: {
+    "rollup:options": (_, options) => {
+      // typia plugin should be the first otherwise it will not work
+      options.plugins.unshift(typiaRollup);
+    },
+  },
 });
