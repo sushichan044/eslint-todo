@@ -29,13 +29,13 @@ const cli = defineCommand({
     // because the default value is true, the flag is negated.
 
     // general options
-    "cwd": {
+    "root": {
       description: "Current working directory (default: .)",
       required: false,
       type: "string",
       valueHint: "path",
     },
-    "todo-file": {
+    "todoFile": {
       alias: "f",
       description: `ESLint todo file name.`,
       required: false,
@@ -52,37 +52,37 @@ const cli = defineCommand({
     },
 
     // operation options
-    "allow-partial-selection": {
-      description: `Allow partial selection of violations. Only works with --correct.`,
-      required: false,
-      type: "boolean",
-      valueHint: "boolean",
-    },
-    "auto-fixable-only": {
+    "correct.autoFixableOnly": {
       description: `Only handle auto-fixable violations.`,
       required: false,
       type: "boolean",
       valueHint: "boolean",
     },
-    "exclude.rules": {
+    "correct.exclude.rules": {
       description:
         "List of rules to exclude from the operation. Comma-separated.",
       required: false,
       type: "string",
       valueHint: "rule-id,rule-id",
     },
-    "limit": {
+    "correct.limit.count": {
       description:
         "Limit the number of violations or files to fix. Only works with --correct.",
       required: false,
       type: "string",
       valueHint: "number",
     },
-    "limit-type": {
+    "correct.limit.type": {
       description: "Type of limit to apply. Only works with --correct.",
       required: false,
       type: "string",
       valueHint: "violation | file",
+    },
+    "correct.partialSelection": {
+      description: `Allow partial selection of violations. Only works with --correct.`,
+      required: false,
+      type: "boolean",
+      valueHint: "boolean",
     },
 
     // logging
@@ -114,19 +114,21 @@ const cli = defineCommand({
     const { context, userConfig } = parseArguments({
       // args from citty are always not nullable even if default is not set
       correct: {
-        "allowPartialSelection": args["allow-partial-selection"] as
+        "autoFixableOnly": args["correct.autoFixableOnly"] as
           | boolean
           | undefined,
-        "autoFixableOnly": args["auto-fixable-only"] as boolean | undefined,
-        "exclude.rules": args["exclude.rules"] as string | undefined,
-        "limit": args.limit as string | undefined,
-        "limitType": args["limit-type"] as string | undefined,
+        "exclude.rules": args["correct.exclude.rules"] as string | undefined,
+        "limit.count": args["correct.limit.count"] as string | undefined,
+        "limit.type": args["correct.limit.type"] as string | undefined,
+        "partialSelection": args["correct.partialSelection"] as
+          | boolean
+          | undefined,
       },
       mode: {
         correct: args.correct,
       },
-      root: args.cwd as string | undefined,
-      todoFile: args["todo-file"] as string | undefined,
+      root: args.root as string | undefined,
+      todoFile: args.todoFile as string | undefined,
     });
 
     const configReadResult = await readConfigFile(cliCwd);

@@ -4,8 +4,8 @@ import { isNonEmptyString } from "../utils/string";
 
 type Input = {
   correct: {
-    "allowPartialSelection": boolean | undefined;
     "autoFixableOnly": boolean | undefined;
+    "partialSelection": boolean | undefined;
     /**
      * Comma-separated list of rules to exclude from the operation.
      */
@@ -13,8 +13,8 @@ type Input = {
     /**
      * Limit the number of violations or files to fix.
      */
-    "limit": string | undefined;
-    "limitType": string | undefined;
+    "limit.count": string | undefined;
+    "limit.type": string | undefined;
   };
   mode: {
     correct: boolean;
@@ -57,16 +57,19 @@ const isValidLimitType = (input: string): input is "file" | "violation" => {
 };
 
 const parseCorrectMode = (input: Input["correct"]): CorrectModeUserConfig => {
-  const limitCount = isNonEmptyString(input.limit)
-    ? Number.parseInt(input.limit)
+  const limitCount = isNonEmptyString(input["limit.count"])
+    ? Number.parseInt(input["limit.count"])
     : undefined;
   if (limitCount != undefined && Number.isNaN(limitCount)) {
     throw new TypeError("limit must be a number");
   }
 
-  if (isNonEmptyString(input.limitType) && !isValidLimitType(input.limitType)) {
+  if (
+    isNonEmptyString(input["limit.type"]) &&
+    !isValidLimitType(input["limit.type"])
+  ) {
     throw new Error(
-      `limit-type must be either 'violation' or 'file', got ${input.limitType}`,
+      `limit-type must be either 'violation' or 'file', got ${input["limit.type"]}`,
     );
   }
 
@@ -87,8 +90,8 @@ const parseCorrectMode = (input: Input["correct"]): CorrectModeUserConfig => {
     },
     limit: {
       count: limitCount,
-      type: input.limitType,
+      type: input["limit.type"],
     },
-    partialSelection: input.allowPartialSelection,
+    partialSelection: input.partialSelection,
   };
 };
