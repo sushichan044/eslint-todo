@@ -6,6 +6,10 @@ import type { DeepPartial } from "../utils/types";
 
 export type Config = {
   /**
+   * Options for correct mode.
+   */
+  correct: CorrectModeConfig;
+  /**
    * Project root.
    *
    * **This directory must contain the ESLint configuration file.**
@@ -21,15 +25,17 @@ export type Config = {
    * @default ".eslint-todo.js"
    */
   todoFile: string;
-  /**
-   * Options for correct mode.
-   */
-  correct: CorrectModeConfig;
 };
 
 export type UserConfig = DeepPartial<Config>;
 
 export type CorrectModeConfig = {
+  /**
+   * Allow to select non auto-fixable rules.
+   *
+   * @default true
+   */
+  autoFixableOnly: boolean;
   /**
    * Options for excluding todo items.
    */
@@ -61,12 +67,6 @@ export type CorrectModeConfig = {
    * @default false
    */
   partialSelection: boolean;
-  /**
-   * Allow to select non auto-fixable rules.
-   *
-   * @default true
-   */
-  autoFixableOnly: boolean;
 };
 
 export type CorrectModeUserConfig = DeepPartial<CorrectModeConfig>;
