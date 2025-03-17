@@ -71,10 +71,7 @@ export type CorrectModeConfig = {
 
 export type CorrectModeUserConfig = DeepPartial<CorrectModeConfig>;
 
-/**
- * @package
- */
-export const DEFAULT_CONFIG = {
+const DEFAULT_CONFIG = {
   correct: {
     autoFixableOnly: true,
     exclude: {

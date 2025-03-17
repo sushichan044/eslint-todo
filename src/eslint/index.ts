@@ -5,8 +5,7 @@ import { cwd } from "node:process";
 import type { Config } from "../config";
 import type { DeepPartial } from "../utils/types";
 
-import { mergeUserConfig } from "../config";
-import { readConfigFile } from "../config/file";
+import { resolveConfig } from "../config/resolve";
 import { ESLintTodoCore } from "../index";
 // TODO: ここでは本当に TodoModuleV1Handler が必要
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
@@ -27,24 +26,11 @@ const eslintConfigTodo = async (
   const todoFile = config?.todoFile;
 
   const cwdString = cwd();
-  const configReadResult = await readConfigFile(cwdString);
-  const configFromFile = (() => {
-    if (configReadResult.success) {
-      return configReadResult.data;
-    }
-
-    console.warn(
-      "[WARN] @sushichan044/eslint-todo: Invalid config file detected. Ignoring the config file.",
-    );
-    return {};
-  })();
-
-  // override config file value with provided config via function argument
-  const resolvedUserConfig = mergeUserConfig(configFromFile, {
+  const resolvedConfig = await resolveConfig(cwdString, {
     root,
     todoFile,
   });
-  const core = new ESLintTodoCore(resolvedUserConfig);
+  const core = new ESLintTodoCore(resolvedConfig);
 
   const todoModulePath = core.getTodoModulePath();
   const module = await (async () => {
