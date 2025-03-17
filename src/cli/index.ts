@@ -6,7 +6,7 @@ import { relative } from "pathe";
 import { version as packageVersion } from "../../package.json";
 import { resolveConfig } from "../config/resolve";
 import { ESLintTodoCore } from "../index";
-import { runAction } from "./action";
+import { prepareAction } from "./action";
 import { deleteRuleAction } from "./action/delete-rule";
 import { genAction } from "./action/gen";
 import { selectRulesToFixAction } from "./action/select-rule";
@@ -138,19 +138,25 @@ const cli = defineCommand({
       eslintTodoCore.getTodoModulePath().absolute,
     );
 
-    await runAction(updateAction, { config, consola });
+    const updateActionExecutor = prepareAction(updateAction, {
+      config,
+      consola,
+    });
+    await updateActionExecutor();
 
     if (context.mode === "generate") {
-      await runAction(genAction, { config, consola });
+      const genActionExecutor = prepareAction(genAction, { config, consola });
+      await genActionExecutor();
       consola.success(`ESLint todo file generated at ${todoFilePathFromCLI}!`);
       return;
     }
 
     if (context.mode === "correct") {
-      const result = await runAction(selectRulesToFixAction, {
+      const selectRulesToFixExecutor = prepareAction(selectRulesToFixAction, {
         config,
         consola,
       });
+      const result = await selectRulesToFixExecutor();
 
       if (!result.success) {
         consola.warn(
@@ -159,7 +165,11 @@ const cli = defineCommand({
         return;
       }
 
-      await runAction(deleteRuleAction, { config, consola }, result.selection);
+      const deleteRuleExecutor = prepareAction(deleteRuleAction, {
+        config,
+        consola,
+      });
+      await deleteRuleExecutor(result.selection);
 
       if (result.selection.type === "full") {
         consola.success(
