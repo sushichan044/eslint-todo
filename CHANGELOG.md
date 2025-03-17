@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.0.7
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Use deep partial for all types of options &nbsp;-&nbsp; by **sushichan044** [<samp>(19be7)</samp>](https://github.com/sushichan044/eslint-todo/commit/19be753)
+- Allow to specify excluded rule when `--correct` mode &nbsp;-&nbsp; by **sushichan044** [<samp>(794c1)</samp>](https://github.com/sushichan044/eslint-todo/commit/794c1d3)
+- Config file support &nbsp;-&nbsp; by **sushichan044** [<samp>(1227e)</samp>](https://github.com/sushichan044/eslint-todo/commit/1227e3b)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Use deepClone when get default options &nbsp;-&nbsp; by **sushichan044** [<samp>(91c63)</samp>](https://github.com/sushichan044/eslint-todo/commit/91c63e0)
+- **deps**:
+  - Update dependency valibot to v1.0.0-rc.4 &nbsp;-&nbsp; [<samp>(a2c08)</samp>](https://github.com/sushichan044/eslint-todo/commit/a2c0838)
+  - Update dependency typia to v8.0.3 &nbsp;-&nbsp; [<samp>(3bc97)</samp>](https://github.com/sushichan044/eslint-todo/commit/3bc97ba)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.0.6...0.0.7)
+
 ## 0.0.6
 
 ### &nbsp;&nbsp;&nbsp;Features
