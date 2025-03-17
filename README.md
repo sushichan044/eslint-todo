@@ -30,7 +30,7 @@ Requires:
 
     ``` diff
     // example: eslint.config.js
-    + import { eslintConfigTodo } from '@sushichan044/eslint-todo/eslint';
+    + import eslintConfigTodo from '@sushichan044/eslint-todo/eslint';
 
     export default [
       // your existing configs,
