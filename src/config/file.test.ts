@@ -1,4 +1,7 @@
+import typia from "typia";
 import { afterEach, describe, expect, it, vi } from "vitest";
+
+import type { UserConfig } from "./config";
 
 import * as importModule from "../utils/import";
 import { readConfigFile } from "./file";
@@ -13,23 +16,20 @@ describe("readConfigFile", () => {
   });
 
   it("should successfully load and validate a normal config file", async () => {
-    const mockConfig = {
-      root: "/test/path",
-      todoFile: "test-todo.js",
-    };
-    vi.mocked(importModule.importDefault).mockResolvedValue(mockConfig);
+    const randomConfig = typia.random<UserConfig>();
+    vi.mocked(importModule.importDefault).mockResolvedValue(randomConfig);
 
     const result = await readConfigFile("/test");
 
     expect(result.success).toBe(true);
-    expect(result.data).toStrictEqual(mockConfig);
+    expect(result.data).toStrictEqual(randomConfig);
     expect(importModule.importDefault).toHaveBeenCalledWith(
       "/test/eslint-todo.config",
       {},
     );
   });
 
-  it("should successfully validate a config file with $schema property", async () => {
+  it("should omit $schema property", async () => {
     const mockConfig = {
       $schema: "https://example.com/schema.json",
       root: "/test/path",
@@ -44,7 +44,6 @@ describe("readConfigFile", () => {
       root: "/test/path",
       todoFile: "test-todo.js",
     });
-    expect(result.data).not.toHaveProperty("$schema");
   });
 
   it("should fail validation when config file contains extra properties", async () => {
