@@ -28,8 +28,6 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
   readonly #config: Config;
   // @ts-expect-error Initialize in this.initializeESLint()
   #eslint: ESLint;
-  // @ts-expect-error Initialize in this.initializeESLint()
-  #eslintWithAutoFix: ESLint; // for auto-fixing (future feature)
   readonly #todoFilePath: TodoFilePath;
 
   constructor(userConfig?: UserConfig) {
@@ -85,11 +83,6 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     const { overrideConfig } = options;
 
     this.#eslint = new ESLint({ cwd: this.#config.root, overrideConfig });
-    this.#eslintWithAutoFix = new ESLint({
-      cwd: this.#config.root,
-      fix: true,
-      overrideConfig,
-    });
   }
 
   async lint(): Promise<ESLint.LintResult[]> {
