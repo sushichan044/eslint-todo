@@ -13,15 +13,13 @@ type ActionAPI = {
   logger: ConsolaInstance;
 };
 
-type CLIAction<Input = unknown, Return = unknown> =
+/**
+ * @package
+ */
+export type CLIAction<Input = unknown, Return = unknown> =
   IsNever<Input> extends true
     ? (api: ActionAPI) => MaybePromise<Return>
     : (api: ActionAPI, input: Input) => MaybePromise<Return>;
-
-type RunActionOptions = {
-  config: Config;
-  consola: ConsolaInstance;
-};
 
 /**
  * Define a CLI action.
@@ -32,48 +30,53 @@ export const defineAction = <Input = never, Return = unknown>(
   action: CLIAction<Input, Return>,
 ) => action;
 
-const NO_INPUT = Symbol("NO_INPUT");
+type ActionRunnerOptions = {
+  config: Config;
+  consola: ConsolaInstance;
+};
 
-// action with no input
-export async function runAction<Return = unknown>(
-  action: CLIAction<never, Return>,
-  options: RunActionOptions,
-): Promise<Return>;
-
-// action with input
-export async function runAction<Input, Return = unknown>(
+/**
+ * Prepare an action for execution.
+ *
+ * @param action The action to prepare
+ * @param options Options for running the action
+ * @returns A function that can be called with input to execute the action
+ */
+export function prepareAction<Input = never, Return = unknown>(
   action: CLIAction<Input, Return>,
-  options: RunActionOptions,
-  input: Input,
-): Promise<Return>;
-
-export async function runAction<Input, Return = unknown>(
-  action: CLIAction<Input, Return>,
-  options: RunActionOptions,
-  input: Input | typeof NO_INPUT = NO_INPUT,
-): Promise<Return> {
+  options: ActionRunnerOptions,
+): IsNever<Input> extends true
+  ? () => Promise<Return>
+  : (input: Input) => Promise<Return> {
   const { config, consola } = options;
 
-  // initialize remote ESLintTodoCore
-  const remoteService = launchRemoteESLintTodoCore();
-  const remoteCore = await new remoteService.RemoteESLintTodoCore(config);
+  const executor = async (input?: Input) => {
+    // initialize remote ESLintTodoCore
+    const remoteService = launchRemoteESLintTodoCore();
+    const remoteCore = await new remoteService.RemoteESLintTodoCore(config);
 
-  const actionApi = {
-    config,
-    core: remoteCore,
-    logger: consola,
-  } satisfies ActionAPI;
+    const actionApi = {
+      config,
+      core: remoteCore,
+      logger: consola,
+    } satisfies ActionAPI;
 
-  try {
-    if (input === NO_INPUT) {
-      // run action with no input
-      return await (action as CLIAction<never, Return>)(actionApi);
+    try {
+      if (input === undefined) {
+        return await (action as (api: ActionAPI) => Promise<Return>)(actionApi);
+      }
+      return await (
+        action as (api: ActionAPI, input: Input) => Promise<Return>
+      )(actionApi, input);
+    } catch (error) {
+      consola.error(error);
+      throw error;
+    } finally {
+      await remoteService.terminate();
     }
-    return await action(actionApi, input);
-  } catch (error) {
-    consola.error(error);
-    throw error;
-  } finally {
-    await remoteService.terminate();
-  }
+  };
+
+  return executor as IsNever<Input> extends true
+    ? () => Promise<Return>
+    : (input: Input) => Promise<Return>;
 }
