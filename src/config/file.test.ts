@@ -74,8 +74,7 @@ describe("readConfigFile", () => {
   });
 
   it("should return an empty object when config file is not found", async () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    vi.mocked(importModule.importDefault).mockResolvedValue(undefined);
+    vi.mocked(importModule.importDefault);
 
     const result = await readConfigFile("/test");
 
