@@ -5,7 +5,6 @@ import { isNonEmptyString } from "../utils/string";
 type Input = {
   correct: {
     "autoFixableOnly": boolean | undefined;
-    "partialSelection": boolean | undefined;
     /**
      * Comma-separated list of rules to exclude from the operation.
      */
@@ -15,6 +14,7 @@ type Input = {
      */
     "limit.count": string | undefined;
     "limit.type": string | undefined;
+    "partialSelection": boolean | undefined;
   };
   mode: {
     correct: boolean;
