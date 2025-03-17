@@ -1,0 +1,15 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+# Use Vitest for test
+
+- You should use vitest when writing test.
+- You should place test file at the same directory of source
+  - filename should be `${FILENAME}.test.ts`
+
+## テストケース設計で気をつけること
+
+- 境界値や、文字列操作における空文字などには特に注意が必要なので積極的にテストを書いてください。
