@@ -52,12 +52,16 @@ Requires:
 npx eslint-todo
 ```
 
-### Reduce ignored errors
+### Correct ignored errors
 
-Add `--correct` flag to launch eslint-todo with error reduction mode.
+Add `--correct` flag to launch eslint-todo with correct mode.
 
-In this mode, eslint-todo searches the todo file with the limit from CLI and removes one matching rule from the todo file.
+In this mode, eslint-todo searches the todo file with the limit from config file or CLI.
+And it removes one matching rule from the todo file.
+
 This allows ESLint to detect that rule as a violation again. For safety, only auto-fixable rules are searched by default.
+
+By default, it searches for rules that can be automatically fixed and have less than or equal to 100 violations.
 
 ## Configuration
 
@@ -68,8 +72,6 @@ Just create `eslint-todo.config.{js,ts}`:
 ```typescript
 // example: eslint-todo.config.ts
 import { defineConfig } from '@sushichan044/eslint-todo/config';
-
-import { defineConfig } from "./dist/config";
 
 export default defineConfig({
   correct: {
@@ -108,10 +110,10 @@ You can also set eslint-todo by passing a flag to the CLI.
 Use `npx eslint-todo --help` to see all available options.
 
 > [!CAUTION]
-> The cli flag will be destructively renamed to the same name as the config file in v0.1.0.
+> The cli flag will be destructively renamed to the same name as the property on config file in v0.1.0.
 
 > [!WARNING]
-> This setting overrides the one in the configuration file.
+> Config from CLI flag overwrites the one in the configuration file.
 > See the [unjs/defu documentation](https://github.com/unjs/defu) for the actual overwriting behavior.
 
 ## Misc
@@ -119,6 +121,6 @@ Use `npx eslint-todo --help` to see all available options.
 ### logging mode
 
 > [!CAUTION]
-> This feature is not working properly yet.
+> This feature is not implemented yet.
 
 You can pass `--debug`, `--trace`, `--verbose` to see the debug logs.
