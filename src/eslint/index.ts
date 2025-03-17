@@ -80,12 +80,4 @@ const eslintConfigTodo = async (
   return [...configs, ...core.buildESLintConfig(module, "off")];
 };
 
-/**
- * @deprecated
- * You should import this from default export.
- */
-// HACK: only deprecated named export
-const _old_eslintConfigTodo = eslintConfigTodo;
-
-export { _old_eslintConfigTodo as eslintConfigTodo };
 export default eslintConfigTodo;
