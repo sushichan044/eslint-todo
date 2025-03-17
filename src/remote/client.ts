@@ -9,7 +9,7 @@ import type { RemoteESLintTodoCore } from "./core";
 
 type RemoteCore = {
   RemoteESLintTodoCore: Comlink.Remote<typeof RemoteESLintTodoCore>;
-  terminate: () => Promise<number>;
+  terminate: () => Promise<void>;
   // future
   // [Symbol.asyncDispose]: () => Promise<void>;
 };
@@ -38,7 +38,9 @@ export const launchRemoteESLintTodoCore = (): RemoteCore => {
 
   return {
     RemoteESLintTodoCore: remoteCore,
-    terminate: async () => worker.terminate(),
+    terminate: async () => {
+      await worker.terminate();
+    },
     // future
     // [Symbol.asyncDispose]: async () => {
     //   await worker.terminate();
