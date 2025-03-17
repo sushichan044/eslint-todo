@@ -4,9 +4,10 @@ import { colorize } from "consola/utils";
 import { relative } from "pathe";
 
 import { version as packageVersion } from "../../package.json";
+import { mergeUserConfig } from "../config";
 // DEFAULT_CONFIG is needed as show default values in help message.
-// eslint-disable-next-line import-access/jsdoc
-import { DEFAULT_CONFIG } from "../config/config";
+import { configWithDefault } from "../config/config";
+import { readConfigFile } from "../config/file";
 import { ESLintTodoCore } from "../index";
 import { runAction } from "./action";
 import { deleteRuleAction } from "./action/delete-rule";
@@ -36,7 +37,7 @@ const cli = defineCommand({
     },
     "todo-file": {
       alias: "f",
-      description: `ESLint todo file name (default: ${DEFAULT_CONFIG.todoFile})`,
+      description: `ESLint todo file name.`,
       required: false,
       type: "string",
       valueHint: "filename",
@@ -52,19 +53,18 @@ const cli = defineCommand({
 
     // operation options
     "allow-partial-selection": {
-      description: `Allow partial selection of violations. Only works with --correct. (default: ${DEFAULT_CONFIG.correct.partialSelection})`,
+      description: `Allow partial selection of violations. Only works with --correct.`,
       required: false,
       type: "boolean",
       valueHint: "boolean",
     },
     "auto-fixable-only": {
-      description: `Only handle auto-fixable violations. (default: ${DEFAULT_CONFIG.correct.autoFixableOnly})`,
+      description: `Only handle auto-fixable violations.`,
       required: false,
       type: "boolean",
       valueHint: "boolean",
     },
     "exclude.rules": {
-      default: "",
       description:
         "List of rules to exclude from the operation. Comma-separated.",
       required: false,
@@ -72,17 +72,14 @@ const cli = defineCommand({
       valueHint: "rule-id,rule-id",
     },
     "limit": {
-      default: "100",
       description:
-        "Limit the number of violations or files to fix. Only works with --correct. (default: 100)",
+        "Limit the number of violations or files to fix. Only works with --correct.",
       required: false,
       type: "string",
       valueHint: "number",
     },
     "limit-type": {
-      default: "violation",
-      description:
-        "Type of limit to apply. Only works with --correct. (default: violation)",
+      description: "Type of limit to apply. Only works with --correct.",
       required: false,
       type: "string",
       valueHint: "violation | file",
@@ -114,20 +111,37 @@ const cli = defineCommand({
   async run({ args }) {
     const cliCwd = process.cwd();
 
-    const { config, context } = parseArguments({
+    const { context, userConfig } = parseArguments({
+      // args from citty are always not nullable even if default is not set
       correct: {
-        "allowPartialSelection": args["allow-partial-selection"],
-        "autoFixableOnly": args["auto-fixable-only"],
-        "exclude.rules": args["exclude.rules"],
-        "limit": args.limit,
-        "limitType": args["limit-type"],
+        "allowPartialSelection": args["allow-partial-selection"] as
+          | boolean
+          | undefined,
+        "autoFixableOnly": args["auto-fixable-only"] as boolean | undefined,
+        "exclude.rules": args["exclude.rules"] as string | undefined,
+        "limit": args.limit as string | undefined,
+        "limitType": args["limit-type"] as string | undefined,
       },
       mode: {
         correct: args.correct,
       },
-      root: args.cwd,
-      todoFile: args["todo-file"],
+      root: args.cwd as string | undefined,
+      todoFile: args["todo-file"] as string | undefined,
     });
+
+    const configReadResult = await readConfigFile(cliCwd);
+    const configFromFile = (() => {
+      if (configReadResult.success) {
+        return configReadResult.data;
+      }
+
+      consola.warn("Invalid config file detected. Ignoring the config file.");
+      return {};
+    })();
+    // override file config with CLI flags
+    const resolvedUserConfig = mergeUserConfig(configFromFile, userConfig);
+
+    const config = configWithDefault(resolvedUserConfig);
 
     // initialize local ESLintTodoCore
     const eslintTodoCore = new ESLintTodoCore(config);

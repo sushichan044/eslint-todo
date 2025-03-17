@@ -4,12 +4,17 @@
   "type": "module",
   "module": "./dist/index.mjs",
   "files": [
-    "dist"
+    "dist",
+    "config-schema.json"
   ],
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
+    },
+    "./config": {
+      "import": "./dist/config/index.mjs",
+      "types": "./dist/config/index.d.ts"
     },
     "./eslint": {
       "import": "./dist/eslint/index.mjs",
@@ -33,7 +38,7 @@
     "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write .",
     "format:ci": "prettier --check .",
-    "typecheck": "tsc --noEmit --project tsconfig.typecheck.json",
+    "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
     "eslint:inspect": "eslint --inspect-config",
@@ -60,6 +65,8 @@
   "devDependencies": {
     "@eslint/config-inspector": "1.0.2",
     "@ryoppippi/unplugin-typia": "2.0.3",
+    "@samchon/openapi": "3.1.0",
+    "@types/fs-extra": "11.0.4",
     "@types/node": "22.13.10",
     "@virtual-live-lab/eslint-config": "2.2.17",
     "@virtual-live-lab/prettier-config": "2.0.17",
@@ -71,6 +78,7 @@
     "eslint-plugin-import-access": "2.2.2",
     "eslint-plugin-unicorn": "57.0.0",
     "eslint-typegen": "2.1.0",
+    "fs-extra": "11.3.0",
     "globals": "16.0.0",
     "pkg-pr-new": "0.0.41",
     "pnpm": "10.6.3",
