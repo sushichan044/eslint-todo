@@ -63,11 +63,9 @@ export function prepareAction<Input = never, Return = unknown>(
 
     try {
       if (input === undefined) {
-        return await (action as (api: ActionAPI) => Promise<Return>)(actionApi);
+        return await (action as CLIAction<never, Return>)(actionApi);
       }
-      return await (
-        action as (api: ActionAPI, input: Input) => Promise<Return>
-      )(actionApi, input);
+      return await action(actionApi, input);
     } catch (error) {
       consola.error(error);
       throw error;
