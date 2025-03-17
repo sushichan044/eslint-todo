@@ -7,6 +7,13 @@ import type { UserConfig } from "./config";
 import { importDefault } from "../utils/import";
 import { UserConfigSchema } from "./validation";
 
+/**
+ * Read the config file and validate it.
+ * @param root Directory to read the config file.
+ * @returns Result of validation.
+ *
+ * @package
+ */
 // eslint-todo.config.{js,cjs,mjs,ts,cts,mts,json}
 export const readConfigFile = async (
   root: string,
@@ -15,11 +22,12 @@ export const readConfigFile = async (
     resolve(root, "./eslint-todo.config"),
     {},
   );
+  const config = loaded ?? {};
 
-  if (Object.hasOwn(loaded, "$schema")) {
+  if (Object.hasOwn(config, "$schema")) {
     // @ts-expect-error often used in JSON config file
     delete loaded.$schema;
   }
 
-  return UserConfigSchema(loaded);
+  return UserConfigSchema(config);
 };
