@@ -18,7 +18,7 @@ type ESLintConfigTodoInput = DeepPartial<
   }
 >;
 
-const eslintConfigTodo = async (
+const eslintConfigChallenger = async (
   // Only for backward compatibility. Will be replaced with Partial<Pick<Config, "root" | "todoFile">> in the v0.1.0
   config?: ESLintConfigTodoInput,
 ): Promise<Linter.Config[]> => {
@@ -43,11 +43,11 @@ const eslintConfigTodo = async (
 
   const configs: Linter.Config[] = [
     {
-      name: "@sushichan044/eslint-todo/setup",
+      name: "eslint-challenger/setup",
     },
     {
       ignores: [todoModulePath.relative],
-      name: "@sushichan044/eslint-todo/ignore",
+      name: "eslint-challenger/ignore",
     },
   ];
 
@@ -58,7 +58,7 @@ const eslintConfigTodo = async (
   ) {
     configs.push({
       files: [todoModulePath.relative],
-      name: "@sushichan044/eslint-todo/warning/FILE_NOT_FOUND_OR_INVALID_TODO_FILE",
+      name: "eslint-challenger/warning/FILE_NOT_FOUND_OR_INVALID_TODO_FILE",
     });
     return configs;
   }
@@ -66,4 +66,4 @@ const eslintConfigTodo = async (
   return [...configs, ...core.buildESLintConfig(module, "off")];
 };
 
-export default eslintConfigTodo;
+export default eslintConfigChallenger;

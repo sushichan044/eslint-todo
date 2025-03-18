@@ -40,7 +40,7 @@ describe("buildESLintConfig", () => {
   const expectedConfig = [
     {
       files: ["file1.js"],
-      name: "@sushichan044/eslint-todo/off/no-console",
+      name: "eslint-challenger/off/no-console",
       rules: {
         "no-console": "off",
       },

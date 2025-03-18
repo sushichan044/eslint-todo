@@ -1,5 +1,5 @@
 {
-  "name": "@sushichan044/eslint-todo",
+  "name": "eslint-challenger",
   "version": "0.0.7",
   "type": "module",
   "module": "./dist/index.mjs",
@@ -22,7 +22,7 @@
     }
   },
   "bin": {
-    "eslint-todo": "bin/eslint-todo.mjs"
+    "eslint-challenger": "bin/eslint-challenger.mjs"
   },
   "repository": {
     "type": "git",

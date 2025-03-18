@@ -1,4 +1,4 @@
-# @sushichan044/eslint-todo
+# eslint-challenger
 
 Simple tool to temporarily disable existing ESLint violations like `.rubocop_todo.yml` in RuboCop.
 
@@ -13,7 +13,7 @@ It also has a utility that helps reducing ignored violations at your pace.
 ## Installation
 
 ```bash
-npm install --save-dev eslint @sushichan044/eslint-todo
+npm install --save-dev eslint eslint-challenger
 ```
 
 Requires:
@@ -26,37 +26,39 @@ Requires:
 
 ## Getting Started
 
-1. Add `eslint-todo` config **at the bottom of your configs**. Do not forget `await`.
+1. Add `eslint-challenger` config **at the bottom of your configs**. Do not forget `await`.
 
     ``` diff
     // example: eslint.config.js
-    + import eslintConfigTodo from '@sushichan044/eslint-todo/eslint';
+    + import eslintConfigChallenger from 'eslint-challenger/eslint';
 
     export default [
       // your existing configs,
-    + await eslintConfigTodo()
+    + await eslintConfigChallenger()
     ]
     ```
 
-2. Run `eslint-todo` to generate ESLint Todo file at the directory where `eslint.config.js` is placed.
+2. Run `eslint-challenger` to generate ESLint challenger file at the directory where `eslint.config.js` is placed.
 
     ```bash
-    npx eslint-todo
+    npx eslint-challenger
     ```
 
 ## Usage
 
-### Generate ESLint Todo file
+### Generate ESLint challenger file
+
+This file contains the information about existing ESLint violations.
 
 ```bash
-npx eslint-todo
+npx eslint-challenger
 ```
 
 ### Correct ignored errors
 
-Add `--correct` flag to launch eslint-todo with correct mode.
+Add `--correct` flag to launch eslint-challenger with correct mode.
 
-In this mode, eslint-todo searches the todo file with the limit from config file or CLI.
+In this mode, eslint-challenger searches the todo file with the limit from config file or CLI.
 And it removes one matching rule from the todo file.
 
 This allows ESLint to detect that rule as a violation again. For safety, only auto-fixable rules are searched by default.
@@ -67,11 +69,11 @@ By default, it searches for rules that can be automatically fixed and have less 
 
 ### Configuration File (recommended)
 
-Just create `eslint-todo.config.{js,ts}`:
+Just create `eslint-challenger.config.{js,ts}`:
 
 ```typescript
-// example: eslint-todo.config.ts
-import { defineConfig } from '@sushichan044/eslint-todo/config';
+// example: eslint-challenger.config.ts
+import { defineConfig } from 'eslint-challenger/config';
 
 export default defineConfig({
   correct: {
@@ -92,7 +94,7 @@ Sure!
 
 ```json
 {
-  "$schema": "node_modules/@sushichan044/eslint-todo/config-schema.json",
+  "$schema": "node_modules/eslint-challenger/config-schema.json",
   "correct": {
     "limit": {
       "count": 30,
@@ -106,8 +108,9 @@ Sure!
 
 ### Configuration via CLI flags
 
-You can also set eslint-todo by passing a flag to the CLI.
-Use `npx eslint-todo --help` to see all available options.
+You can also config eslint-challenger by passing a flag to the CLI.
+
+Use `npx eslint-challenger --help` to see all available options.
 
 > [!CAUTION]
 > The cli flag will be destructively renamed to the same name as the property on config file in v0.1.0.

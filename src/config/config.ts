@@ -20,9 +20,9 @@ export type Config = {
    */
   root: string;
   /**
-   * The file path to read and write the ESLint todo list.
+   * The file path to read and write the ESLint challenger list.
    *
-   * @default ".eslint-todo.js"
+   * @default ".eslint-challenger.js"
    */
   todoFile: string;
 };
@@ -84,7 +84,7 @@ const DEFAULT_CONFIG = {
     partialSelection: false,
   },
   root: cwd(),
-  todoFile: ".eslint-todo.js",
+  todoFile: ".eslint-challenger.js",
 } as const satisfies Config;
 
 export const configWithDefault = (config?: UserConfig): Config => {

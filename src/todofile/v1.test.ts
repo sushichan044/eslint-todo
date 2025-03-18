@@ -23,7 +23,7 @@ describe("TodoModuleV1Handler", () => {
       expect(configs).toStrictEqual([
         {
           files: ["file1.js"],
-          name: "@sushichan044/eslint-todo/off/no-console",
+          name: "eslint-challenger/off/no-console",
           rules: {
             "no-console": "off",
           },
@@ -47,7 +47,7 @@ describe("TodoModuleV1Handler", () => {
       expect(configs).toStrictEqual([
         {
           files: [String.raw`file\*.js`, String.raw`pages/\[id\].tsx`],
-          name: "@sushichan044/eslint-todo/off/no-console",
+          name: "eslint-challenger/off/no-console",
           rules: {
             "no-console": "off",
           },
@@ -81,7 +81,7 @@ describe("TodoModuleV1Handler", () => {
       expect(configs).toStrictEqual([
         {
           files: ["file1.js", "file1.js"],
-          name: "@sushichan044/eslint-todo/off/no-console",
+          name: "eslint-challenger/off/no-console",
           rules: {
             "no-console": "off",
           },
@@ -109,7 +109,7 @@ describe("TodoModuleV1Handler", () => {
       expect(disabledConfigs).toStrictEqual([
         {
           files: ["file1.js"],
-          name: "@sushichan044/eslint-todo/off/no-console",
+          name: "eslint-challenger/off/no-console",
           rules: {
             "no-console": "off",
           },
@@ -119,7 +119,7 @@ describe("TodoModuleV1Handler", () => {
       expect(errorConfigs).toStrictEqual([
         {
           files: ["file1.js"],
-          name: "@sushichan044/eslint-todo/error/no-console",
+          name: "eslint-challenger/error/no-console",
           rules: {
             "no-console": "error",
           },

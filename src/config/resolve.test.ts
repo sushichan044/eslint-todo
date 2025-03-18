@@ -49,7 +49,7 @@ describe("resolveConfig", () => {
         partialSelection: false,
       },
       root: "/test/path",
-      todoFile: ".eslint-todo.js",
+      todoFile: ".eslint-challenger.js",
     });
   });
 
@@ -159,7 +159,7 @@ describe("resolveConfig", () => {
         partialSelection: false,
       },
       root: "/test/path",
-      todoFile: ".eslint-todo.js",
+      todoFile: ".eslint-challenger.js",
     });
   });
 
@@ -208,7 +208,7 @@ describe("resolveConfig", () => {
         partialSelection: false,
       },
       root: "/test/path",
-      todoFile: ".eslint-todo.js",
+      todoFile: ".eslint-challenger.js",
     });
   });
 });

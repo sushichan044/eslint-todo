@@ -21,8 +21,8 @@ const cli = defineCommand({
     // do not set default values for boolean options!
     // CLI flag name is unexpected behavior when default value is set.
     //
-    // example: `auto-fixable-only` with `default: true` results in
-    // $ eslint-todo --no-auto-fixable-only
+    // example: `correct.autoFixableOnly` with `default: true` results in
+    // $ eslint-challenger --no-correct.autoFixableOnly
     // because the default value is true, the flag is negated.
 
     // general options
@@ -102,7 +102,7 @@ const cli = defineCommand({
   meta: {
     description:
       "Generate ESLint todo file and temporally suppress ESLint errors!",
-    name: "@sushichan044/eslint-todo/cli",
+    name: "eslint-challenger/cli",
     version: packageVersion,
   },
   async run({ args }) {
@@ -204,7 +204,7 @@ const cli = defineCommand({
     throw new Error(`Unknown mode: ${JSON.stringify(context.mode)}`);
   },
   setup({ args }) {
-    consola.info(`eslint-todo CLI ${packageVersion}`);
+    consola.info(`eslint-challenger CLI ${packageVersion}`);
 
     switch (true) {
       case args.debug: {

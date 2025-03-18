@@ -1,6 +1,6 @@
 /* eslint-disable */
 /**
- * Auto generated file by eslint-todo. DO NOT EDIT MANUALLY.
+ * Auto generated file by eslint-challenger. DO NOT EDIT MANUALLY.
  */
 
 /* prettier-ignore */

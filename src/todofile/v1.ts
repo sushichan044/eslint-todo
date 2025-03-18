@@ -41,7 +41,7 @@ export const TodoModuleV1Handler: TodoModuleHandler<
   buildConfigsForESLint: (todo, severity) => {
     return Object.entries(todo).map(([ruleId, entry]) => ({
       files: entry.files.map((f) => escapeGlobCharacters(f)),
-      name: `@sushichan044/eslint-todo/${severity}/${ruleId}`,
+      name: `eslint-challenger/${severity}/${ruleId}`,
       rules: {
         [ruleId]: severity,
       },

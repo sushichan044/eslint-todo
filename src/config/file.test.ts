@@ -24,7 +24,7 @@ describe("readConfigFile", () => {
     expect(result.success).toBe(true);
     expect(result.data).toStrictEqual(randomConfig);
     expect(importModule.importDefault).toHaveBeenCalledWith(
-      "/test/eslint-todo.config",
+      "/test/eslint-challenger.config",
       {},
     );
   });
@@ -33,7 +33,7 @@ describe("readConfigFile", () => {
     const mockConfig = {
       $schema: "https://example.com/schema.json",
       root: "/test/path",
-      todoFile: "test-todo.js",
+      todoFile: "test-challenger.js",
     };
     vi.mocked(importModule.importDefault).mockResolvedValue(mockConfig);
 
@@ -42,14 +42,14 @@ describe("readConfigFile", () => {
     expect(result.success).toBe(true);
     expect(result.data).toStrictEqual({
       root: "/test/path",
-      todoFile: "test-todo.js",
+      todoFile: "test-challenger.js",
     });
   });
 
   it("should fail validation when config file contains extra properties", async () => {
     const mockConfig = {
       root: "/test/path",
-      todoFile: "test-todo.js",
+      todoFile: "test-challenger.js",
       unknownProperty: "this should cause an error",
     };
     vi.mocked(importModule.importDefault).mockResolvedValue(mockConfig);
@@ -95,7 +95,7 @@ describe("readConfigFile", () => {
         partialSelection: false,
       },
       root: "/test/path",
-      todoFile: "test-todo.js",
+      todoFile: "test-challenger.js",
     };
     vi.mocked(importModule.importDefault).mockResolvedValue(mockConfig);
 

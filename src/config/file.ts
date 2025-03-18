@@ -14,12 +14,12 @@ import { UserConfigSchema } from "./validation";
  *
  * @package
  */
-// eslint-todo.config.{js,cjs,mjs,ts,cts,mts,json}
+// eslint-challenger.config.{js,cjs,mjs,ts,cts,mts,json}
 export const readConfigFile = async (
   root: string,
 ): Promise<IValidation<UserConfig>> => {
   const loaded = await importDefault<UserConfig>(
-    resolve(root, "./eslint-todo.config"),
+    resolve(root, "./eslint-challenger.config"),
     {},
   );
   const config = loaded ?? {};

@@ -97,7 +97,7 @@ export default typegen(
       },
     })
     .append({
-      files: ["bin/eslint-todo.mjs"],
+      files: ["bin/eslint-challenger.mjs"],
       languageOptions: {
         globals: globals.nodeBuiltin,
       },
