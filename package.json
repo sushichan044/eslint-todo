@@ -61,7 +61,7 @@
     "magicast": "0.3.5",
     "pathe": "2.0.3",
     "typia": "8.0.3",
-    "valibot": "1.0.0-rc.4"
+    "valibot": "1.0.0"
   },
   "devDependencies": {
     "@eslint/config-inspector": "1.0.2",
