@@ -69,7 +69,7 @@
     "@samchon/openapi": "3.1.0",
     "@types/fs-extra": "11.0.4",
     "@types/node": "22.13.10",
-    "@virtual-live-lab/eslint-config": "2.2.18",
+    "@virtual-live-lab/eslint-config": "2.2.19",
     "@virtual-live-lab/prettier-config": "2.0.18",
     "@virtual-live-lab/tsconfig": "2.1.18",
     "@vitest/coverage-v8": "3.0.9",
