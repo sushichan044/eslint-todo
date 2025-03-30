@@ -156,6 +156,18 @@ const cli = defineCommand({
         config,
         consola,
         hooks: {
+          "pre-condition:git-changes": (hasChanges) => {
+            if (hasChanges) {
+              consola.warn(
+                `${todoFilePathFromCLI} has uncommitted changes. Please commit or stash them before running this action.`,
+              );
+            }
+          },
+
+          "before:select-rule": () => {
+            consola.start("Selecting rules to fix ...");
+          },
+
           "after:select-rule": (result) => {
             if (!result.success) {
               consola.warn(
@@ -165,16 +177,6 @@ const cli = defineCommand({
             }
 
             consola.success(`Selected ${result.selection.ruleId}.`);
-          },
-          "before:select-rule": () => {
-            consola.start("Selecting rules to fix ...");
-          },
-          "check:git-changes": (hasChanges) => {
-            if (hasChanges) {
-              consola.warn(
-                "There are unstaged changes in the git repository. Please commit or stash them before running this action.",
-              );
-            }
           },
         },
       });

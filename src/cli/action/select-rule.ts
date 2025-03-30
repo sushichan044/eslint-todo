@@ -7,14 +7,14 @@ import { defineAction } from "./index";
 type Hooks = {
   "after:select-rule": (result: Readonly<SelectionResult>) => void;
   "before:select-rule": () => void;
-  "check:git-changes": (hasChanges: boolean) => void;
+  "pre-condition:git-changes": (hasChanges: boolean) => void;
 };
 
 export const selectRulesToFixAction = defineAction<
   never,
   SelectionResult,
   Hooks
->(async ({ config, core, git, hooks }) => {
+>(async ({ config, core, hooks }) => {
   const currentModule = await core.readTodoModule();
   if (!LATEST_TODO_MODULE_HANDLER.isVersion(currentModule)) {
     throw new Error(
@@ -22,8 +22,8 @@ export const selectRulesToFixAction = defineAction<
     );
   }
 
-  const hasChanges = await git.hasGitChanges();
-  await hooks.callHook("check:git-changes", hasChanges);
+  const hasChanges = await core.todoModuleHasUncommittedChanges();
+  await hooks.callHook("pre-condition:git-changes", hasChanges);
 
   if (hasChanges) {
     return {
