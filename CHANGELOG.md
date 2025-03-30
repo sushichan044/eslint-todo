@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.1
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- **deps**: Update dependency typia to v8.1.0 &nbsp;-&nbsp; [<samp>(36184)</samp>](https://github.com/sushichan044/eslint-todo/commit/361849f)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.1.0...0.1.1)
+
 ## 0.1.0
 
 ### &nbsp;&nbsp;&nbsp;Breaking Changes
