@@ -11,15 +11,22 @@ const importJsonSchema = async () => {
   const JSON_SCHEMA_NAME = "UserConfigJsonSchema";
 
   if (!(await fs.pathExists(JSON_SCHEMA_PATH))) {
-    throw new Error(`JSON schema file not found: ${JSON_SCHEMA_PATH}`);
+    throw new Error(
+      `scripts/json-schema.ts: JSON schema file not found: ${JSON_SCHEMA_PATH}`,
+    );
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const module_ = await import(JSON_SCHEMA_PATH);
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (module_[JSON_SCHEMA_NAME] == null) {
+    throw new Error(
+      `scripts/json-schema.ts: ${JSON_SCHEMA_NAME} is not exported from ${JSON_SCHEMA_PATH}`,
+    );
   }
 
-  const module_ = (await import(JSON_SCHEMA_PATH).then(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-    (m) => m[JSON_SCHEMA_NAME],
-  )) as Record<string, unknown>;
-
-  return module_;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  return module_[JSON_SCHEMA_NAME] as Record<string, unknown>;
 };
 
 /**
@@ -38,4 +45,8 @@ export const generateJsonSchemaFile = async (outputDirectory: string) => {
   const schema = await importJsonSchema();
 
   await fs.writeJSON(outPath, schema, { spaces: 2 });
+
+  console.log(
+    `scripts/json-schema.ts: JSON schema file generated at ${outPath}`,
+  );
 };
