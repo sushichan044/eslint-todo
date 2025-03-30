@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.1.0
+
+### &nbsp;&nbsp;&nbsp;Breaking Changes
+
+- Remove named export from `/eslint` &nbsp;-&nbsp; by **sushichan044** [<samp>(2f964)</samp>](https://github.com/sushichan044/eslint-todo/commit/2f96446)
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Add function to check todo module has uncomitted changes in core api &nbsp;-&nbsp; by **sushichan044** [<samp>(74659)</samp>](https://github.com/sushichan044/eslint-todo/commit/74659ff)
+- Check git diff before generate todo module &nbsp;-&nbsp; by **sushichan044** [<samp>(40de4)</samp>](https://github.com/sushichan044/eslint-todo/commit/40de4b7)
+- Check git diff before delete rule from todo module &nbsp;-&nbsp; by **sushichan044** [<samp>(cd112)</samp>](https://github.com/sushichan044/eslint-todo/commit/cd112a2)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Warn and exit fast in correct mode &nbsp;-&nbsp; by **sushichan044** [<samp>(f475a)</samp>](https://github.com/sushichan044/eslint-todo/commit/f475a16)
+- **deps**:
+  - Update dependency consola to v3.4.2 &nbsp;-&nbsp; [<samp>(becd6)</samp>](https://github.com/sushichan044/eslint-todo/commit/becd6b2)
+  - Update dependency valibot to v1.0.0 &nbsp;-&nbsp; [<samp>(4e10a)</samp>](https://github.com/sushichan044/eslint-todo/commit/4e10ab2)
+- **types**:
+  - Hook key-value relations &nbsp;-&nbsp; by **sushichan044** [<samp>(27266)</samp>](https://github.com/sushichan044/eslint-todo/commit/27266c5)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.0.7...0.1.0)
+
 ## 0.0.7
 
 ### &nbsp;&nbsp;&nbsp;Features
