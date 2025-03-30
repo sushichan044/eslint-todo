@@ -52,5 +52,10 @@ interface ESLintTodoCoreLike {
    */
   resetTodoModule(): Promise<void>;
 
+  /**
+   * Check if the todo module has uncommitted git changes.
+   */
+  todoModuleHasUncommittedChanges(): Promise<boolean>;
+
   writeTodoModule(todo: TodoModuleLike): Promise<void>;
 }

@@ -19,7 +19,6 @@ export class RemoteESLintTodoCore implements IESLintTodoCoreLike {
   constructor(userConfig?: UserConfig) {
     this.#todoCore = new ESLintTodoCore(userConfig);
   }
-
   buildESLintConfig(
     todoModule: SupportedTodoModules,
     severity: RuleSeverity,
@@ -65,6 +64,12 @@ export class RemoteESLintTodoCore implements IESLintTodoCoreLike {
     ...parameters: Parameters<ESLintTodoCore["resetTodoModule"]>
   ): ReturnType<ESLintTodoCore["resetTodoModule"]> {
     return this.#todoCore.resetTodoModule(...parameters);
+  }
+
+  async todoModuleHasUncommittedChanges(
+    ...parameters: Parameters<ESLintTodoCore["todoModuleHasUncommittedChanges"]>
+  ): ReturnType<ESLintTodoCore["todoModuleHasUncommittedChanges"]> {
+    return this.#todoCore.todoModuleHasUncommittedChanges(...parameters);
   }
 
   async writeTodoModule(
