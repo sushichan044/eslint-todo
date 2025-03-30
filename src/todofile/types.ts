@@ -40,6 +40,8 @@ export interface TodoModuleHandler<
 
   /**
    * Check if the object is a version of this todo file.
+   *
+   * NOTE: you should use `typia.validateEquals<CURRENT>()` when implementing this method.
    * @param todo Object to check.
    */
   isVersion(todo: TodoModuleLike): todo is CURRENT;

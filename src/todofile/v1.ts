@@ -1,4 +1,5 @@
 import { relative } from "pathe";
+import typia from "typia";
 
 import type { TodoModuleHandler } from "./types";
 import type { TodoModuleV2 } from "./v2";
@@ -81,7 +82,7 @@ export const TodoModuleV1Handler: TodoModuleHandler<
   },
 
   isVersion(todo): todo is TodoModuleV1 {
-    return todo["meta"] == null;
+    return typia.validateEquals<TodoModuleV1>(todo).success;
   },
 
   upgradeToNextVersion: (todo) => {
