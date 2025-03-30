@@ -1,5 +1,6 @@
 import * as fs from "fs-extra/esm";
 import { join, resolve } from "pathe";
+
 import { sh } from "../src/utils/command";
 
 const importJsonSchema = async () => {
