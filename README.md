@@ -4,6 +4,8 @@ Simple tool to temporarily disable existing ESLint violations like `.rubocop_tod
 
 It also has a utility that helps reducing ignored violations at your pace.
 
+This tool is designed to work with AI Agents such as [Devin](https://devin.ai/).
+
 > [!NOTE]
 > This tool only supports ESLint Flat Config with ES Module.
 >
@@ -108,9 +110,6 @@ Sure!
 
 You can also set eslint-todo by passing a flag to the CLI.
 Use `npx eslint-todo --help` to see all available options.
-
-> [!CAUTION]
-> The cli flag will be destructively renamed to the same name as the property on config file in v0.1.0.
 
 > [!WARNING]
 > Config from CLI flag overwrites the one in the configuration file.
