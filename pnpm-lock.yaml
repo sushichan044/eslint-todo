@@ -52,8 +52,8 @@ importers:
         specifier: 1.0.2
         version: 1.0.2(eslint@9.22.0(jiti@2.4.2))
       '@ryoppippi/unplugin-typia':
-        specifier: 2.0.3
-        version: 2.0.3(rollup@4.34.9)(typescript@5.8.2)(typia@8.0.3(@samchon/openapi@3.1.0)(typescript@5.8.2))(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(yaml@2.7.0))
+        specifier: 2.1.4
+        version: 2.1.4(rollup@4.34.9)(typescript@5.8.2)(typia@8.0.3(@samchon/openapi@3.1.0)(typescript@5.8.2))(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(yaml@2.7.0))
       '@samchon/openapi':
         specifier: 3.1.0
         version: 3.1.0
@@ -865,10 +865,10 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ryoppippi/unplugin-typia@2.0.3':
-    resolution: {integrity: sha512-1kEqo3kQzf+2YchQ27p654zUQU68yue6JTUR6VmECsOKgAOnAOOKib+3MCVtnMw8AhzqUGtf8c83mQcXIZ5Mew==}
+  '@ryoppippi/unplugin-typia@2.1.4':
+    resolution: {integrity: sha512-pZtB5YhX0Egm4agc1gOn11IQiR4NnCmwvaea9kbwBImsCpR84gGayenzFDIJxkzv0U9iEBxZGUojuKnuzfpejg==}
     peerDependencies:
-      svelte: ^5.0.0
+      svelte: ^5.25.2
       typescript: '>=4.8.0 <5.9.0'
       typia: '>=8.0.0 <9.0.0'
       vite: '>=3.0.0'
@@ -1134,6 +1134,11 @@ packages:
 
   acorn@8.14.0:
     resolution: {integrity: sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==}
+    engines: {node: '>=0.4.0'}
+    hasBin: true
+
+  acorn@8.14.1:
+    resolution: {integrity: sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -1740,8 +1745,8 @@ packages:
   didyoumean@1.2.2:
     resolution: {integrity: sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==}
 
-  diff-match-patch@1.0.5:
-    resolution: {integrity: sha512-IayShXAgj/QMXgB0IWmKx+rOPuGMhqm5w6jvFxmVenXKIzRqTAAsbBPT3kWQeGANj3jGgvcvv4yK6SxqYmikgw==}
+  diff-match-patch-es@1.0.1:
+    resolution: {integrity: sha512-KhSofrZDERg/NE6Nd+TK53knp2qz0o2Ix8rhkXd3Chfm7Wlo58Eq/juNmkyS6bS+3xS26L3Pstz3BdY/q+e9UQ==}
 
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
@@ -4023,6 +4028,10 @@ packages:
     resolution: {integrity: sha512-3T/PUdKTCnkUmhQU6FFJEHsLwadsRegktX3TNHk+2JJB9HlA8gp1/VXblXVDI93kSnXF2rdPx0GMbHtJIV2LPg==}
     engines: {node: '>=16'}
 
+  type-fest@4.38.0:
+    resolution: {integrity: sha512-2dBz5D5ycHIoliLYLi0Q2V7KRaDlH0uWIvmk7TYlAg5slqwiPv1ezJdZm1QEM0xgk29oYWMCbIG7E6gHpvChlg==}
+    engines: {node: '>=16'}
+
   typed-array-buffer@1.0.3:
     resolution: {integrity: sha512-nAYYwfY3qnzX30IkA6AQZjVbtK6duGontcQm1WSG1MD94YLqK0515GNApXkoxKOWMusVssAHWLh9SeaoefYFGw==}
     engines: {node: '>= 0.4'}
@@ -4128,8 +4137,8 @@ packages:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
-  unplugin@2.2.0:
-    resolution: {integrity: sha512-m1ekpSwuOT5hxkJeZGRxO7gXbXT3gF26NjQ7GdVHoLoF8/nopLcd/QfPigpCy7i51oFHiRJg/CyHhj4vs2+KGw==}
+  unplugin@2.2.2:
+    resolution: {integrity: sha512-Qp+iiD+qCRnUek+nDoYvtWX7tfnYyXsrOnJ452FRTgOyKmTM7TUJ3l+PLPJOOWPTUyKISKp4isC5JJPSXUjGgw==}
     engines: {node: '>=18.12.0'}
 
   untildify@4.0.0:
@@ -5008,20 +5017,20 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.34.9':
     optional: true
 
-  '@ryoppippi/unplugin-typia@2.0.3(rollup@4.34.9)(typescript@5.8.2)(typia@8.0.3(@samchon/openapi@3.1.0)(typescript@5.8.2))(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(yaml@2.7.0))':
+  '@ryoppippi/unplugin-typia@2.1.4(rollup@4.34.9)(typescript@5.8.2)(typia@8.0.3(@samchon/openapi@3.1.0)(typescript@5.8.2))(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(yaml@2.7.0))':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.34.9)
       consola: 3.4.2
       defu: 6.1.4
-      diff-match-patch: 1.0.5
+      diff-match-patch-es: 1.0.1
       find-cache-dir: 5.0.0
       magic-string: 0.30.17
       pathe: 2.0.3
       pkg-types: 2.1.0
-      type-fest: 4.36.0
+      type-fest: 4.38.0
       typescript: 5.8.2
       typia: 8.0.3(@samchon/openapi@3.1.0)(typescript@5.8.2)
-      unplugin: 2.2.0
+      unplugin: 2.2.2
     optionalDependencies:
       vite: 6.2.3(@types/node@22.13.14)(jiti@2.4.2)(yaml@2.7.0)
     transitivePeerDependencies:
@@ -5382,6 +5391,8 @@ snapshots:
       acorn: 8.14.0
 
   acorn@8.14.0: {}
+
+  acorn@8.14.1: {}
 
   agent-base@7.1.3: {}
 
@@ -6072,7 +6083,7 @@ snapshots:
 
   didyoumean@1.2.2: {}
 
-  diff-match-patch@1.0.5: {}
+  diff-match-patch-es@1.0.1: {}
 
   dir-glob@3.0.1:
     dependencies:
@@ -8631,6 +8642,8 @@ snapshots:
 
   type-fest@4.36.0: {}
 
+  type-fest@4.38.0: {}
+
   typed-array-buffer@1.0.3:
     dependencies:
       call-bound: 1.0.3
@@ -8763,9 +8776,9 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unplugin@2.2.0:
+  unplugin@2.2.2:
     dependencies:
-      acorn: 8.14.0
+      acorn: 8.14.1
       webpack-virtual-modules: 0.6.2
 
   untildify@4.0.0: {}
