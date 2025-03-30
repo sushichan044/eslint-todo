@@ -145,9 +145,32 @@ const cli = defineCommand({
     await updateActionExecutor();
 
     if (context.mode === "generate") {
-      const genActionExecutor = prepareAction(genAction, { config, consola });
+      const genActionExecutor = prepareAction(genAction, {
+        config,
+        consola,
+        hooks: {
+          "after:lint": () => {
+            consola.success("ESLint finished!");
+          },
+          "before:lint": () => {
+            consola.start("Running ESLint ...");
+          },
+
+          "warn:todo-module-is-dirty": () => {
+            consola.warn(
+              `${todoFilePathFromCLI} has uncommitted changes. Please commit or stash them before running this action.`,
+            );
+          },
+
+          "after:write": () => {
+            consola.success(
+              `ESLint todo file generated at ${todoFilePathFromCLI}!`,
+            );
+          },
+        },
+      });
+
       await genActionExecutor();
-      consola.success(`ESLint todo file generated at ${todoFilePathFromCLI}!`);
       return;
     }
 
