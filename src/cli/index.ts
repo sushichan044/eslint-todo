@@ -156,12 +156,10 @@ const cli = defineCommand({
         config,
         consola,
         hooks: {
-          "pre-condition:git-changes": (hasChanges) => {
-            if (hasChanges) {
-              consola.warn(
-                `${todoFilePathFromCLI} has uncommitted changes. Please commit or stash them before running this action.`,
-              );
-            }
+          "warn:todo-module-is-dirty": () => {
+            consola.warn(
+              `${todoFilePathFromCLI} has uncommitted changes. Please commit or stash them before running this action.`,
+            );
           },
 
           "before:select-rule": () => {

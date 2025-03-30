@@ -7,7 +7,7 @@ import { defineAction } from "./index";
 type Hooks = {
   "after:select-rule": (result: Readonly<SelectionResult>) => void;
   "before:select-rule": () => void;
-  "pre-condition:git-changes": (hasChanges: boolean) => void;
+  "warn:todo-module-is-dirty": () => void;
 };
 
 export const selectRulesToFixAction = defineAction<
@@ -23,9 +23,9 @@ export const selectRulesToFixAction = defineAction<
   }
 
   const hasChanges = await core.todoModuleHasUncommittedChanges();
-  await hooks.callHook("pre-condition:git-changes", hasChanges);
 
   if (hasChanges) {
+    await hooks.callHook("warn:todo-module-is-dirty");
     return {
       success: false,
     };
