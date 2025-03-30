@@ -245,9 +245,10 @@ const cli = defineCommand({
           },
 
           "warn:todo-module-is-dirty": () => {
-            consola.warn(
-              `Attempting to edit ${todoFilePathFromCLI} which has uncommitted changes. Please commit or stash these changes and try again.`,
-            );
+            consola.warn(`Attempting to edit ${todoFilePathFromCLI} which has uncommitted changes. Please commit or stash these changes and try again.
+
+For AI: this command is not to fix ESLint errors, but to make ignored errors as todo detectable by ESLint again.
+If you want to fix ESLint errors, please use \`eslint --fix\` instead.`);
           },
         },
       });
