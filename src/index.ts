@@ -19,6 +19,7 @@ import { LATEST_TODO_MODULE_HANDLER } from "./todofile";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TodoModuleV1Handler } from "./todofile/v1";
 import { TodoModuleV2Handler } from "./todofile/v2";
+import { initGitUtility } from "./utils/git";
 import { importDefault } from "./utils/import";
 
 /**
@@ -28,15 +29,16 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
   readonly #config: Config;
   // @ts-expect-error Initialize in this.initializeESLint()
   #eslint: ESLint;
+  readonly #git: ReturnType<typeof initGitUtility>;
   readonly #todoFilePath: TodoFilePath;
 
   constructor(userConfig?: UserConfig) {
     this.#config = configWithDefault(userConfig);
     this.#todoFilePath = resolveTodoModulePath(this.#config);
+    this.#git = initGitUtility(this.#config.root);
 
     this.initializeESLint();
   }
-
   /**
    * WARNING: DO NOT USE THIS METHOD DIRECTLY.
    *
@@ -101,6 +103,13 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
       this.#todoFilePath.absolute,
       generateTodoModuleCode(LATEST_TODO_MODULE_HANDLER.getDefaultTodo()),
     );
+  }
+
+  async todoModuleHasUncommittedChanges(): Promise<boolean> {
+    return await this.#git.hasGitChanges({
+      between: "working-and-staged",
+      file: this.#todoFilePath.absolute,
+    });
   }
 
   async writeTodoModule(todo: TodoModuleLike): Promise<void> {

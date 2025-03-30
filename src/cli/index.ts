@@ -145,9 +145,32 @@ const cli = defineCommand({
     await updateActionExecutor();
 
     if (context.mode === "generate") {
-      const genActionExecutor = prepareAction(genAction, { config, consola });
+      const genActionExecutor = prepareAction(genAction, {
+        config,
+        consola,
+        hooks: {
+          "after:lint": () => {
+            consola.success("ESLint finished!");
+          },
+          "before:lint": () => {
+            consola.start("Running ESLint ...");
+          },
+
+          "warn:todo-module-is-dirty": () => {
+            consola.warn(
+              `Attempting to edit ${todoFilePathFromCLI} which has uncommitted changes. Please commit or stash these changes and try again.`,
+            );
+          },
+
+          "after:write": () => {
+            consola.success(
+              `ESLint todo file generated at ${todoFilePathFromCLI}!`,
+            );
+          },
+        },
+      });
+
       await genActionExecutor();
-      consola.success(`ESLint todo file generated at ${todoFilePathFromCLI}!`);
       return;
     }
 
@@ -155,50 +178,83 @@ const cli = defineCommand({
       const selectRulesToFixExecutor = prepareAction(selectRulesToFixAction, {
         config,
         consola,
+        hooks: {
+          "before:select-rule": () => {
+            consola.start("Selecting rules to fix ...");
+          },
+
+          "after:select-rule": (result) => {
+            if (!result.success) {
+              consola.warn(
+                "Couldn't find any rule to fix. Check your configuration and change the limit if necessary.",
+              );
+              return;
+            }
+
+            consola.success(`Selected ${result.selection.ruleId}.`);
+          },
+        },
       });
       const result = await selectRulesToFixExecutor();
 
       if (!result.success) {
-        consola.warn(
-          "Couldn't find any rule to fix. Increase the limit and retry.",
-        );
         return;
       }
 
       const deleteRuleExecutor = prepareAction(deleteRuleAction, {
         config,
         consola,
+        hooks: {
+          "after:delete-and-write": () => {
+            if (result.selection.type === "full") {
+              consola.success(
+                `All violations of rule ${colorize(
+                  "magenta",
+                  result.selection.ruleId,
+                )} are deleted from the todo file and now ESLint will detect the violations.`,
+              );
+              return;
+            }
+
+            if (result.selection.type === "partial") {
+              const violationCount = Object.entries(
+                result.selection.violations,
+              ).reduce((sum, [, count]) => sum + count, 0);
+
+              consola.success(
+                `${violationCount} violations of rule ${colorize(
+                  "magenta",
+                  result.selection.ruleId,
+                )} are deleted from the todo file and now ESLint will detect the violations.`,
+              );
+              return;
+            }
+
+            const _exhaustiveCheck = result.selection satisfies never;
+            throw new Error(
+              `Unknown selection type: ${JSON.stringify(_exhaustiveCheck)}`,
+            );
+          },
+          "before:delete-and-write": () => {
+            consola.start(
+              `Deleting all violations of rule ${colorize(
+                "magenta",
+                result.selection.ruleId,
+              )} from the todo file ...`,
+            );
+          },
+
+          "warn:todo-module-is-dirty": () => {
+            consola.warn(`Attempting to edit ${todoFilePathFromCLI} which has uncommitted changes. Please commit or stash these changes and try again.
+
+For AI: this command is not to fix ESLint errors, but to make ignored errors as todo detectable by ESLint again.
+If you want to fix ESLint errors, please use \`eslint --fix\` instead.`);
+          },
+        },
       });
+
       await deleteRuleExecutor(result.selection);
-
-      if (result.selection.type === "full") {
-        consola.success(
-          `All violations of rule ${colorize(
-            "magenta",
-            result.selection.ruleId,
-          )} are deleted from the todo file and now ESLint will detect the violations.`,
-        );
-        return;
-      }
-
-      if (result.selection.type === "partial") {
-        const violationCount = Object.entries(
-          result.selection.violations,
-        ).reduce((sum, [, count]) => sum + count, 0);
-
-        consola.success(
-          `${violationCount} violations of rule ${colorize(
-            "magenta",
-            result.selection.ruleId,
-          )} are deleted from the todo file and now ESLint will detect the violations.`,
-        );
-        return;
-      }
-
-      const _exhaustiveCheck = result.selection satisfies never;
-      throw new Error(
-        `Unknown selection type: ${JSON.stringify(_exhaustiveCheck)}`,
-      );
+      return;
     }
 
     throw new Error(`Unknown mode: ${JSON.stringify(context.mode)}`);

@@ -1,19 +1,7 @@
 import * as fs from "fs-extra/esm";
-import { spawn } from "node:child_process";
 import { join, resolve } from "pathe";
 
-const sh = async (cmd: string, ...arguments_: string[]) => {
-  const proc = spawn(cmd, arguments_, { stdio: "inherit" });
-  return new Promise<void>((resolve, reject) => {
-    proc.on("exit", (code) => {
-      if (code === 0) {
-        resolve();
-      } else {
-        reject(new Error(`Exit code: ${code}`));
-      }
-    });
-  });
-};
+import { sh } from "../src/utils/command";
 
 const importJsonSchema = async () => {
   const JSON_SCHEMA_PATH = resolve(
@@ -46,7 +34,7 @@ export const generateJsonSchemaFile = async (outputDirectory: string) => {
     await fs.remove(outPath);
   }
 
-  await sh("pnpm", "run", "generate-json-schema");
+  await sh(["pnpm", "run", "generate-json-schema"]);
   const schema = await importJsonSchema();
 
   await fs.writeJSON(outPath, schema, { spaces: 2 });

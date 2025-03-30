@@ -20,6 +20,9 @@ importers:
       consola:
         specifier: 3.4.2
         version: 3.4.2
+      cross-spawn:
+        specifier: 7.0.6
+        version: 7.0.6
       defu:
         specifier: 6.1.4
         version: 6.1.4
@@ -54,6 +57,9 @@ importers:
       '@samchon/openapi':
         specifier: 3.1.0
         version: 3.1.0
+      '@types/cross-spawn':
+        specifier: 6.0.6
+        version: 6.0.6
       '@types/fs-extra':
         specifier: 11.0.4
         version: 11.0.4
@@ -898,6 +904,9 @@ packages:
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
+
+  '@types/cross-spawn@6.0.6':
+    resolution: {integrity: sha512-fXRhhUkG4H3TQk5dBhQ7m/JDdSNHKwR2BBia62lhwEIq9xGiQKLxd6LymNhn47SjXhsUEPmxi+PKw2OkW4LLjA==}
 
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
@@ -5039,6 +5048,10 @@ snapshots:
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
   '@trysound/sax@0.2.0': {}
+
+  '@types/cross-spawn@6.0.6':
+    dependencies:
+      '@types/node': 22.13.10
 
   '@types/estree@1.0.6': {}
 
