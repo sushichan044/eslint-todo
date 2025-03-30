@@ -9,6 +9,7 @@ import type { RemoteESLintTodoCore } from "../../remote/core";
 import type { DeepPartial, IsNever, MaybePromise } from "../../utils/types";
 
 import { launchRemoteESLintTodoCore } from "../../remote/client";
+import { initGitUtility } from "../../utils/git";
 
 type HookHandlers<Hooks extends Record<string, HookCallback>> = {
   [K in HookKeys<Hooks>]: Hooks[K];
@@ -19,6 +20,7 @@ type ActionAPI<
 > = {
   config: Config;
   core: Remote<RemoteESLintTodoCore>;
+  git: ReturnType<typeof initGitUtility>;
   hooks: Hookable<Hooks>;
   logger: ConsolaInstance;
 };
@@ -92,6 +94,7 @@ export function prepareAction<
     const actionApi = {
       config: options.config,
       core: remoteCore,
+      git: initGitUtility(options.config.root),
       hooks,
       logger: options.consola,
     } satisfies ActionAPI<Hooks>;

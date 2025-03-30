@@ -155,13 +155,32 @@ const cli = defineCommand({
       const selectRulesToFixExecutor = prepareAction(selectRulesToFixAction, {
         config,
         consola,
+        hooks: {
+          "after:select-rule": (result) => {
+            if (!result.success) {
+              consola.warn(
+                "Couldn't find any rule to fix. Check your configuration and change the limit if necessary.",
+              );
+              return;
+            }
+
+            consola.success(`Selected ${result.selection.ruleId}.`);
+          },
+          "before:select-rule": () => {
+            consola.start("Selecting rules to fix ...");
+          },
+          "check:git-changes": (hasChanges) => {
+            if (hasChanges) {
+              consola.warn(
+                "There are unstaged changes in the git repository. Please commit or stash them before running this action.",
+              );
+            }
+          },
+        },
       });
       const result = await selectRulesToFixExecutor();
 
       if (!result.success) {
-        consola.warn(
-          "Couldn't find any rule to fix. Increase the limit and retry.",
-        );
         return;
       }
 
