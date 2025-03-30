@@ -104,7 +104,7 @@
       "typia"
     ],
     "overrides": {
-      "esbuild": "0.25.1"
+      "esbuild": "0.25.2"
     }
   }
 }
