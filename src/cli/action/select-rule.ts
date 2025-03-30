@@ -7,7 +7,6 @@ import { defineAction } from "./index";
 type Hooks = {
   "after:select-rule": (result: Readonly<SelectionResult>) => void;
   "before:select-rule": () => void;
-  "warn:todo-module-is-dirty": () => void;
 };
 
 export const selectRulesToFixAction = defineAction<
@@ -20,15 +19,6 @@ export const selectRulesToFixAction = defineAction<
     throw new Error(
       "This action requires the latest version of the todo file.",
     );
-  }
-
-  const hasChanges = await core.todoModuleHasUncommittedChanges();
-
-  if (hasChanges) {
-    await hooks.callHook("warn:todo-module-is-dirty");
-    return {
-      success: false,
-    };
   }
 
   await hooks.callHook("before:select-rule");
