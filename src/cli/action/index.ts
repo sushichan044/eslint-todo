@@ -10,10 +10,9 @@ import type { DeepPartial, IsNever, MaybePromise } from "../../utils/types";
 
 import { launchRemoteESLintTodoCore } from "../../remote/client";
 
-type HookHandlers<Hooks extends Record<string, HookCallback>> = Record<
-  HookKeys<Hooks>,
-  Hooks[HookKeys<Hooks>]
->;
+type HookHandlers<Hooks extends Record<string, HookCallback>> = {
+  [K in HookKeys<Hooks>]: Hooks[K];
+};
 
 type ActionAPI<
   Hooks extends Record<string, HookCallback> = Record<string, never>,
