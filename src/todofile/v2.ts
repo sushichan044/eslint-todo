@@ -1,5 +1,5 @@
 import { relative } from "pathe";
-import * as v from "valibot";
+import typia from "typia";
 
 import type { TodoModuleHandler } from "./types";
 
@@ -43,11 +43,6 @@ export type TodoModuleV2 = {
   };
   todo: Record<string, ESLintTodoEntryV2>;
 };
-
-// only for version checking.
-const todoModuleMetaIsV2 = v.strictObject({
-  version: v.literal(2),
-});
 
 export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
   version: 2,
@@ -102,11 +97,7 @@ export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
   },
 
   isVersion(todo): todo is TodoModuleV2 {
-    if (!Object.hasOwn(todo, "meta")) {
-      return false;
-    }
-
-    return v.safeParse(todoModuleMetaIsV2, todo["meta"]).success;
+    return typia.validateEquals<TodoModuleV2>(todo).success;
   },
 
   upgradeToNextVersion: () => false,
