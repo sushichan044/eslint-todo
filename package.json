@@ -34,7 +34,7 @@
   },
   "scripts": {
     "build": "unbuild",
-    "build:json-schema": "vite-node src/build/json-schema.ts",
+    "build:json-schema": "vite-node scripts/json-schema.ts",
     "dev": "unbuild --stub",
     "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write .",

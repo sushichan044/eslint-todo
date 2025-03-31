@@ -2,7 +2,7 @@ import * as fs from "fs-extra/esm";
 import { cwd } from "node:process";
 import { join } from "pathe";
 
-import { UserConfigJsonSchema } from "../config/json";
+import { UserConfigJsonSchema } from "../src/config/json";
 
 /**
  * Generate JSON schema and add it to the build artifacts.
@@ -19,7 +19,7 @@ const generateJsonSchemaFile = async (outputDirectory: string) => {
   await fs.writeJSON(outPath, UserConfigJsonSchema, { spaces: 2 });
 
   console.log(
-    `src/build/json-schema.ts: JSON schema file generated at ${outPath}`,
+    `scripts/json-schema.ts: JSON schema file generated at ${outPath}`,
   );
 };
 
