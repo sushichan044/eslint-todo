@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { UserConfigJsonSchema } from ".";
+import { UserConfigJsonSchema } from "./json";
 
 describe("UserConfigJsonSchema matches snapshot", () => {
   it("should match snapshot", () => {
