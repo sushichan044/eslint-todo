@@ -34,6 +34,7 @@
   },
   "scripts": {
     "build": "unbuild",
+    "build:json-schema": "vite-node scripts/json-schema.ts",
     "dev": "unbuild --stub",
     "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write .",
@@ -44,8 +45,7 @@
     "eslint:inspect": "eslint --inspect-config",
     "pkg-pr-new": "pkg-pr-new publish --compact --comment=update --pnpm",
     "check": "pnpm run build && pnpm run lint && pnpm run format:ci && pnpm run typecheck && pnpm run test:run",
-    "prepare": "ts-patch install",
-    "generate-json-schema": "rimraf src/generated/config && typia generate --input src/config/json --output src/generated/config/json --project tsconfig.json && rimraf src/generated/config/**/*.test.ts"
+    "prepare": "ts-patch install"
   },
   "peerDependencies": {
     "eslint": "^8.57.0 || ^9.0.0"
@@ -92,6 +92,8 @@
     "typescript": "5.8.2",
     "typescript-eslint": "8.28.0",
     "unbuild": "3.5.0",
+    "vite": "6.2.4",
+    "vite-node": "3.1.1",
     "vitest": "3.0.9"
   },
   "packageManager": "pnpm@10.7.0",

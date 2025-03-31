@@ -1,4 +1,6 @@
-import { coverageConfigDefaults, defineConfig } from "vitest/config";
+/// <reference types="vitest/config" />
+
+import { defineConfig } from "vite";
 
 import { typiaVite } from "./typia-plugin";
 
@@ -6,7 +8,6 @@ export default defineConfig({
   plugins: [typiaVite],
   test: {
     coverage: {
-      exclude: [...coverageConfigDefaults.exclude, "src/generated/**"],
       include: ["src/**"],
       provider: "v8",
       reporter: ["text", "json-summary", "json"],

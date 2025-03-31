@@ -1,7 +1,6 @@
-import { cwd } from "node:process";
 import { defineBuildConfig } from "unbuild";
 
-import { generateJsonSchemaFile } from "./scripts/json-schema";
+import { sh } from "./src/utils/command";
 import { typiaRollup } from "./typia-plugin";
 
 export default defineBuildConfig({
@@ -17,7 +16,7 @@ export default defineBuildConfig({
   ],
   hooks: {
     "build:done": async () => {
-      await generateJsonSchemaFile(cwd());
+      await sh(["pnpm", "run", "build:json-schema"]);
     },
     "rollup:options": (_, options) => {
       // typia plugin should be the first otherwise it will not work
