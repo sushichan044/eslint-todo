@@ -23,4 +23,7 @@ export default defineBuildConfig({
       options.plugins.unshift(typiaRollup);
     },
   },
+  rollup: {
+    inlineDependencies: true,
+  },
 });
