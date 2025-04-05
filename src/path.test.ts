@@ -7,41 +7,41 @@ describe("resolveTodoFilePath", () => {
   it("should resolve the correct absolute and relative paths", () => {
     const config = configWithDefault({
       root: "/home/sushi/workspace",
-      todoFile: ".eslint-todo.js",
+      suppressionsLocation: "eslint-suppressions.json",
     });
 
     const result = resolveTodoModulePath(config);
 
     expect(result).toStrictEqual({
-      absolute: "/home/sushi/workspace/.eslint-todo.js",
-      relative: ".eslint-todo.js",
+      absolute: "/home/sushi/workspace/eslint-suppressions.json",
+      relative: "eslint-suppressions.json",
     });
   });
 
-  it("should handle nested todoFile paths", () => {
+  it("should handle nested suppressionsLocation paths", () => {
     const config = configWithDefault({
       root: "/home/sushi/workspace",
-      todoFile: "./nested/.eslint-todo.js",
+      suppressionsLocation: "./nested/eslint-suppressions.json",
     });
     const result = resolveTodoModulePath(config);
 
     expect(result).toStrictEqual({
-      absolute: "/home/sushi/workspace/nested/.eslint-todo.js",
-      relative: "nested/.eslint-todo.js",
+      absolute: "/home/sushi/workspace/nested/eslint-suppressions.json",
+      relative: "nested/eslint-suppressions.json",
     });
   });
 
-  it("should handle absolute todoFile paths", () => {
+  it("should handle absolute suppressionsLocation paths", () => {
     const config = configWithDefault({
       root: "/home/sushi/workspace",
-      todoFile: "/home/sushi/.eslint-todo.js",
+      suppressionsLocation: "/home/sushi/eslint-suppressions.json",
     });
 
     const result = resolveTodoModulePath(config);
 
     expect(result).toStrictEqual({
-      absolute: "/home/sushi/.eslint-todo.js",
-      relative: "../.eslint-todo.js",
+      absolute: "/home/sushi/eslint-suppressions.json",
+      relative: "../eslint-suppressions.json",
     });
   });
 });

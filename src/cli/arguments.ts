@@ -3,7 +3,7 @@ import type { CorrectModeUserConfig, UserConfig } from "../config/config";
 import { isNonEmptyString } from "../utils/string";
 
 type Input = {
-  correct: {
+  "correct": {
     "autoFixableOnly": boolean | undefined;
     /**
      * Comma-separated list of rules to exclude from the operation.
@@ -16,11 +16,11 @@ type Input = {
     "limit.type": string | undefined;
     "partialSelection": boolean | undefined;
   };
-  mode: {
+  "mode": {
     correct: boolean;
   };
-  root: string | undefined;
-  todoFile: string | undefined;
+  "root": string | undefined;
+  "suppressions-location": string | undefined;
 };
 
 type ParsedCLIInput = {
@@ -38,8 +38,6 @@ type ParsedCLIInput = {
  * @package
  */
 export const parseArguments = (input: Input): ParsedCLIInput => {
-  // const relativeTodoFilePath = relative(input.root, input.todoFileAbsolutePath);
-
   return {
     context: {
       mode: input.mode.correct ? "correct" : "generate",
@@ -47,7 +45,7 @@ export const parseArguments = (input: Input): ParsedCLIInput => {
     userConfig: {
       correct: parseCorrectMode(input.correct),
       root: input.root,
-      todoFile: input.todoFile,
+      suppressionsLocation: input["suppressions-location"],
     },
   };
 };

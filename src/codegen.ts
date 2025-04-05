@@ -1,5 +1,6 @@
 import { generateCode, parseModule } from "magicast";
 
+import type { ESLintSuppressionsJSON } from "./todofile/suppressions-json";
 import type { TodoModuleLike } from "./todofile/types";
 
 /**
@@ -28,4 +29,12 @@ export const generateTodoModuleCode = (eslintTodo: TodoModuleLike): string => {
   });
 
   return `${jsCode}\n`;
+};
+
+export const generateESLintSuppressionsJSON = (
+  eslintSuppressions: ESLintSuppressionsJSON,
+): string => {
+  const json = JSON.stringify(eslintSuppressions, null, 2);
+
+  return `${json}\n`;
 };

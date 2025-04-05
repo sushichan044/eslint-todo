@@ -24,6 +24,12 @@
     {
       "groupName": "GitHub Actions",
       "matchDatasources": ["github-actions"]
+    },
+    {
+      "groupName": "eslint-config-inspector",
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["@eslint/config-inspector"],
+      "matchUpdateTypes": ["minor", "patch"]
     }
   ]
 }

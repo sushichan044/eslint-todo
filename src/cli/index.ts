@@ -10,7 +10,6 @@ import { prepareAction } from "./action";
 import { deleteRuleAction } from "./action/delete-rule";
 import { genAction } from "./action/gen";
 import { selectRulesToFixAction } from "./action/select-rule";
-import { updateAction } from "./action/update";
 import { parseArguments } from "./arguments";
 
 const consola = createConsola({ formatOptions: { date: false } });
@@ -32,12 +31,12 @@ const cli = defineCommand({
       type: "string",
       valueHint: "path",
     },
-    "todoFile": {
+    "suppressions-location": {
       alias: "f",
-      description: `ESLint todo file name.`,
+      description: "eslint-suppressions.json file location.",
       required: false,
       type: "string",
-      valueHint: "filename",
+      valueHint: "path",
     },
 
     // mode toggle
@@ -110,7 +109,7 @@ const cli = defineCommand({
 
     const { context, userConfig } = parseArguments({
       // args from citty are always not nullable even if default is not set
-      correct: {
+      "correct": {
         "autoFixableOnly": args["correct.autoFixableOnly"] as
           | boolean
           | undefined,
@@ -121,11 +120,13 @@ const cli = defineCommand({
           | boolean
           | undefined,
       },
-      mode: {
+      "mode": {
         correct: args.correct,
       },
-      root: args.root as string | undefined,
-      todoFile: args.todoFile as string | undefined,
+      "root": args.root as string | undefined,
+      "suppressions-location": args["suppressions-location"] as
+        | string
+        | undefined,
     });
 
     const config = await resolveConfig(cliCwd, userConfig);
@@ -137,12 +138,6 @@ const cli = defineCommand({
       cliCwd,
       eslintTodoCore.getTodoModulePath().absolute,
     );
-
-    const updateActionExecutor = prepareAction(updateAction, {
-      config,
-      consola,
-    });
-    await updateActionExecutor();
 
     if (context.mode === "generate") {
       const genActionExecutor = prepareAction(genAction, {

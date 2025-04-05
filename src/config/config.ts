@@ -20,11 +20,11 @@ export type Config = {
    */
   root: string;
   /**
-   * The file path to read and write the ESLint todo list.
+   * The path to the ESLint bulk suppressions file.
    *
-   * @default ".eslint-todo.js"
+   * @default "eslint-suppressions.json"
    */
-  todoFile: string;
+  suppressionsLocation: string;
 };
 
 export type UserConfig = DeepPartial<Config>;
@@ -84,7 +84,7 @@ const DEFAULT_CONFIG = {
     partialSelection: false,
   },
   root: cwd(),
-  todoFile: ".eslint-todo.js",
+  suppressionsLocation: "eslint-suppressions.json",
 } as const satisfies Config;
 
 export const configWithDefault = (config?: UserConfig): Config => {

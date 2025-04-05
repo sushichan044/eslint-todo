@@ -17,9 +17,9 @@ export type TodoFilePath = {
  * Resolve the absolute and relative path of the todo file.
  */
 export const resolveTodoModulePath = (config: Config): TodoFilePath => {
-  const { root, todoFile } = config;
+  const { root, suppressionsLocation } = config;
 
-  const absolutePath = resolve(root, todoFile);
+  const absolutePath = resolve(root, suppressionsLocation);
   const relativePath = relative(root, absolutePath);
 
   return {
