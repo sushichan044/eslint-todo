@@ -96,5 +96,5 @@ export default typegen(
     .prepend({
       ignores: ["src/generated/**"],
     })
-    .append(eslintConfigTodo()),
+    .append(eslintConfigTodo({ suppressionsLocation: ".eslint-todo.js" })),
 );
