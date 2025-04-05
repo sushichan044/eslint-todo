@@ -5,39 +5,39 @@ import { parseArguments } from "./arguments";
 describe("CLI Arguments", () => {
   it("parseArguments should handle correct mode with autoFixableOnly", () => {
     const result = parseArguments({
-      correct: {
+      "correct": {
         "autoFixableOnly": true,
         "exclude.rules": undefined,
         "limit.count": undefined,
         "limit.type": undefined,
         "partialSelection": undefined,
       },
-      mode: {
+      "mode": {
         correct: true,
       },
-      root: undefined,
-      todoFile: "custom-todo.json",
+      "root": undefined,
+      "suppressions-location": "custom-todo.json",
     });
 
     expect(result.context.mode).toBe("correct");
-    expect(result.userConfig.todoFile).toBe("custom-todo.json");
+    expect(result.userConfig.suppressionsLocation).toBe("custom-todo.json");
     expect(result.userConfig.correct?.autoFixableOnly).toBe(true);
   });
 
   it("parseArguments should handle generate mode", () => {
     const result = parseArguments({
-      correct: {
+      "correct": {
         "autoFixableOnly": undefined,
         "exclude.rules": undefined,
         "limit.count": undefined,
         "limit.type": undefined,
         "partialSelection": undefined,
       },
-      mode: {
+      "mode": {
         correct: false,
       },
-      root: "/custom/root",
-      todoFile: undefined,
+      "root": "/custom/root",
+      "suppressions-location": undefined,
     });
 
     expect(result.context.mode).toBe("generate");
@@ -46,18 +46,18 @@ describe("CLI Arguments", () => {
 
   it("parseArguments should handle exclude.rules", () => {
     const result = parseArguments({
-      correct: {
+      "correct": {
         "autoFixableOnly": undefined,
         "exclude.rules": "no-console,no-unused-vars,",
         "limit.count": undefined,
         "limit.type": undefined,
         "partialSelection": undefined,
       },
-      mode: {
+      "mode": {
         correct: true,
       },
-      root: undefined,
-      todoFile: undefined,
+      "root": undefined,
+      "suppressions-location": undefined,
     });
 
     expect(result.context.mode).toBe("correct");

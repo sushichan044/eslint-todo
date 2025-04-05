@@ -49,7 +49,7 @@ describe("resolveConfig", () => {
         partialSelection: false,
       },
       root: "/test/path",
-      todoFile: ".eslint-todo.js",
+      suppressionsLocation: "eslint-suppressions.json",
     });
   });
 
@@ -58,7 +58,7 @@ describe("resolveConfig", () => {
       correct: {
         autoFixableOnly: false,
       },
-      todoFile: "custom-todo.js",
+      suppressionsLocation: "custom-suppressions.json",
     };
 
     vi.mocked(fileModule.readConfigFile).mockResolvedValueOnce({
@@ -81,7 +81,7 @@ describe("resolveConfig", () => {
         partialSelection: false,
       },
       root: "/test/path",
-      todoFile: "custom-todo.js",
+      suppressionsLocation: "custom-suppressions.json",
     });
   });
 
@@ -93,7 +93,7 @@ describe("resolveConfig", () => {
           count: 50,
         },
       },
-      todoFile: "file-todo.js",
+      suppressionsLocation: "file-suppressions.json",
     };
 
     const userConfig: UserConfig = {
@@ -103,7 +103,7 @@ describe("resolveConfig", () => {
           type: "file",
         },
       },
-      todoFile: "user-todo.js",
+      suppressionsLocation: "user-suppressions.json",
     };
 
     vi.mocked(fileModule.readConfigFile).mockResolvedValueOnce({
@@ -126,7 +126,7 @@ describe("resolveConfig", () => {
         partialSelection: false,
       },
       root: "/test/path",
-      todoFile: "user-todo.js",
+      suppressionsLocation: "user-suppressions.json",
     });
   });
 
@@ -159,7 +159,7 @@ describe("resolveConfig", () => {
         partialSelection: false,
       },
       root: "/test/path",
-      todoFile: ".eslint-todo.js",
+      suppressionsLocation: "eslint-suppressions.json",
     });
   });
 
@@ -208,7 +208,7 @@ describe("resolveConfig", () => {
         partialSelection: false,
       },
       root: "/test/path",
-      todoFile: ".eslint-todo.js",
+      suppressionsLocation: "eslint-suppressions.json",
     });
   });
 });

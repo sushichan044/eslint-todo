@@ -32,12 +32,12 @@ const cli = defineCommand({
       type: "string",
       valueHint: "path",
     },
-    "todoFile": {
+    "suppressions-location": {
       alias: "f",
-      description: `ESLint todo file name.`,
+      description: "eslint-suppressions.json file location.",
       required: false,
       type: "string",
-      valueHint: "filename",
+      valueHint: "path",
     },
 
     // mode toggle
@@ -110,7 +110,7 @@ const cli = defineCommand({
 
     const { context, userConfig } = parseArguments({
       // args from citty are always not nullable even if default is not set
-      correct: {
+      "correct": {
         "autoFixableOnly": args["correct.autoFixableOnly"] as
           | boolean
           | undefined,
@@ -121,11 +121,13 @@ const cli = defineCommand({
           | boolean
           | undefined,
       },
-      mode: {
+      "mode": {
         correct: args.correct,
       },
-      root: args.root as string | undefined,
-      todoFile: args.todoFile as string | undefined,
+      "root": args.root as string | undefined,
+      "suppressions-location": args["suppressions-location"] as
+        | string
+        | undefined,
     });
 
     const config = await resolveConfig(cliCwd, userConfig);

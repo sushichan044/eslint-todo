@@ -13,7 +13,7 @@ import { TodoModuleV1Handler } from "../todofile/v1";
 import { TodoModuleV2Handler } from "../todofile/v2";
 
 type ESLintConfigTodoInput = DeepPartial<
-  Pick<Config, "todoFile"> & {
+  Pick<Config, "suppressionsLocation"> & {
     cwd: Config["root"];
   }
 >;
@@ -23,12 +23,12 @@ const eslintConfigTodo = async (
   config?: ESLintConfigTodoInput,
 ): Promise<Linter.Config[]> => {
   const root = config?.cwd;
-  const todoFile = config?.todoFile;
+  const suppressionsLocation = config?.suppressionsLocation;
 
   const cwdString = cwd();
   const resolvedConfig = await resolveConfig(cwdString, {
     root,
-    todoFile,
+    suppressionsLocation,
   });
   const core = new ESLintTodoCore(resolvedConfig);
 

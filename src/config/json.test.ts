@@ -75,9 +75,9 @@ describe("UserConfigJsonSchema matches snapshot", () => {
             "title": "Project root",
             "type": "string",
           },
-          "todoFile": {
-            "description": "The file path to read and write the ESLint todo list.",
-            "title": "The file path to read and write the ESLint todo list",
+          "suppressionsLocation": {
+            "description": "The path to the ESLint bulk suppressions file.",
+            "title": "The path to the ESLint bulk suppressions file",
             "type": "string",
           },
         },
