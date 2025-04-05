@@ -21,11 +21,11 @@ type SuppressionEntry = {
   };
 };
 
-export type ESLintSuppressionsJson = {
+export type ESLintSuppressionsJSON = {
   [filePath: string]: SuppressionEntry;
 };
 
-export const ESLintSuppressionsJsonHandler: TodoModuleHandler<ESLintSuppressionsJson> =
+export const ESLintSuppressionsJSONHandler: TodoModuleHandler<ESLintSuppressionsJSON> =
   {
     // TODO: v1, v2 の型定義を削除したら "eslint-suppressions-json" に変更する
     version: 0,
@@ -48,8 +48,8 @@ export const ESLintSuppressionsJsonHandler: TodoModuleHandler<ESLintSuppressions
       return {};
     },
 
-    isVersion(todo): todo is ESLintSuppressionsJson {
-      return typia.validateEquals<ESLintSuppressionsJson>(todo).success;
+    isVersion(todo): todo is ESLintSuppressionsJSON {
+      return typia.validateEquals<ESLintSuppressionsJSON>(todo).success;
     },
 
     upgradeToNextVersion: () => false,
