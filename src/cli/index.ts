@@ -10,7 +10,6 @@ import { prepareAction } from "./action";
 import { deleteRuleAction } from "./action/delete-rule";
 import { genAction } from "./action/gen";
 import { selectRulesToFixAction } from "./action/select-rule";
-import { updateAction } from "./action/update";
 import { parseArguments } from "./arguments";
 
 const consola = createConsola({ formatOptions: { date: false } });
@@ -139,12 +138,6 @@ const cli = defineCommand({
       cliCwd,
       eslintTodoCore.getTodoModulePath().absolute,
     );
-
-    const updateActionExecutor = prepareAction(updateAction, {
-      config,
-      consola,
-    });
-    await updateActionExecutor();
 
     if (context.mode === "generate") {
       const genActionExecutor = prepareAction(genAction, {

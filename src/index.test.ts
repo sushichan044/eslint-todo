@@ -3,26 +3,13 @@ import type { Linter } from "eslint";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { TodoModuleLike } from "./todofile/types";
-// TODO: ここでは本当に TodoModuleV1Handler が必要
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import type { TodoModuleV1 } from "./todofile/v1";
 import type { TodoModuleV2 } from "./todofile/v2";
 
 import { configWithDefault } from "./config/config";
 import { ESLintTodoCore } from "./index";
-// TODO: ここでは本当に TodoModuleV1Handler が必要
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { TodoModuleV1Handler } from "./todofile/v1";
 import { TodoModuleV2Handler } from "./todofile/v2";
 
 describe("buildESLintConfig", () => {
-  const todoModuleV1 = {
-    "no-console": {
-      autoFix: false,
-      files: ["file1.js"],
-    },
-  } satisfies TodoModuleV1;
-
   const todoModuleV2 = {
     meta: {
       version: 2,
@@ -47,29 +34,12 @@ describe("buildESLintConfig", () => {
     },
   ] satisfies Linter.Config[];
 
-  const spyV1Builder = vi.spyOn(TodoModuleV1Handler, "buildConfigsForESLint");
   const spyV2Builder = vi.spyOn(TodoModuleV2Handler, "buildConfigsForESLint");
 
   const core = new ESLintTodoCore(configWithDefault());
 
   beforeEach(() => {
     vi.resetAllMocks();
-  });
-
-  it("should return ESLint configs for V1 todo module", () => {
-    const result = core.buildESLintConfig(todoModuleV1, "off");
-
-    expect(spyV1Builder).toHaveBeenCalledWith(todoModuleV1, "off");
-    expect(result).toStrictEqual(expectedConfig);
-  });
-
-  it("should return ESLint configs for empty object as v1 todo module", () => {
-    const todoModuleEmpty = {} satisfies TodoModuleV1;
-
-    const result = core.buildESLintConfig(todoModuleEmpty, "off");
-
-    expect(spyV1Builder).toHaveBeenCalledWith(todoModuleEmpty, "off");
-    expect(result).toStrictEqual([]);
   });
 
   it("should return ESLint configs for V2 todo module", () => {
@@ -89,7 +59,6 @@ describe("buildESLintConfig", () => {
     // @ts-expect-error type is not correct because we are passing unsupported object.
     const result = core.buildESLintConfig(unknownTodoModule);
 
-    expect(spyV1Builder).not.toHaveBeenCalled();
     expect(spyV2Builder).not.toHaveBeenCalled();
     expect(result).toStrictEqual([]);
   });
