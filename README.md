@@ -1,5 +1,8 @@
 # @sushichan044/eslint-todo
 
+> [!CAUTION]
+> This library will soon be subject to destructive changes based on [ESLint bulk suppressions](https://eslint.org/blog/2025/04/introducing-bulk-suppressions/#getting-started).
+
 Simple tool to temporarily disable existing ESLint violations like `.rubocop_todo.yml` in RuboCop.
 
 It also has a utility that helps reducing ignored violations at your pace.
