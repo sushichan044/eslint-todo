@@ -68,7 +68,7 @@
     "@samchon/openapi": "4.0.0",
     "@types/cross-spawn": "6.0.6",
     "@types/fs-extra": "11.0.4",
-    "@types/node": "22.13.14",
+    "@types/node": "22.14.0",
     "@virtual-live-lab/eslint-config": "2.2.19",
     "@virtual-live-lab/prettier-config": "2.0.18",
     "@virtual-live-lab/tsconfig": "2.1.19",
