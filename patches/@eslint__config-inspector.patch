@@ -1,0 +1,220 @@
+diff --git a/dist/cli.mjs b/dist/cli.mjs
+index 4cc3bc492b14f4c400c57ad80b804cd44da5bfce..b89e14e392f4fbde52798b48771a2adda9ae2a39 100644
+--- a/dist/cli.mjs
++++ b/dist/cli.mjs
+@@ -173,7 +173,7 @@ function stripTrailingSeparators$1(segment, isSep) {
+ // This module is browser compatible.
+ // Alphabet chars.
+ // Non-alphabetic chars.
+-const CHAR_DOT$1 = 46; /* . */ 
++const CHAR_DOT$1 = 46; /* . */
+ const CHAR_FORWARD_SLASH$1 = 47; /* / */
+ 
+ // Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+@@ -1479,15 +1479,15 @@ function assertArgs$1(path, suffix) {
+ // Ported from https://github.com/browserify/path-browserify/
+ // This module is browser compatible.
+ // Alphabet chars.
+-const CHAR_UPPERCASE_A = 65; /* A */ 
+-const CHAR_LOWERCASE_A = 97; /* a */ 
+-const CHAR_UPPERCASE_Z = 90; /* Z */ 
+-const CHAR_LOWERCASE_Z = 122; /* z */ 
++const CHAR_UPPERCASE_A = 65; /* A */
++const CHAR_LOWERCASE_A = 97; /* a */
++const CHAR_UPPERCASE_Z = 90; /* Z */
++const CHAR_LOWERCASE_Z = 122; /* z */
+ // Non-alphabetic chars.
+-const CHAR_DOT = 46; /* . */ 
+-const CHAR_FORWARD_SLASH = 47; /* / */ 
+-const CHAR_BACKWARD_SLASH = 92; /* \ */ 
+-const CHAR_COLON = 58; /* : */ 
++const CHAR_DOT = 46; /* . */
++const CHAR_FORWARD_SLASH = 47; /* / */
++const CHAR_BACKWARD_SLASH = 92; /* \ */
++const CHAR_COLON = 58; /* : */
+ const CHAR_QUESTION_MARK = 63; /* ? */
+ 
+ // Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+@@ -6195,7 +6195,7 @@ function requireBraceExpansion () {
+ 	    ? expand(m.post, false)
+ 	    : [''];
+ 
+-	  if (/\$$/.test(m.pre)) {    
++	  if (/\$$/.test(m.pre)) {
+ 	    for (var k = 0; k < post.length; k++) {
+ 	      var expansion = pre+ '{' + m.body + '}' + post[k];
+ 	      expansions.push(expansion);
+@@ -6910,7 +6910,7 @@ class AST {
+                         const aps = addPatternStart;
+                         // check if we have a possibility of matching . or ..,
+                         // and prevent that.
+-                        const needNoTrav = 
++                        const needNoTrav =
+                         // dots are allowed, and the pattern starts with [ or .
+                         (dot && aps.has(src.charAt(0))) ||
+                             // the pattern starts with \., and then [ or .
+@@ -8224,7 +8224,7 @@ async function resolveConfigPath(options) {
+     configPath
+   };
+ }
+-async function readConfig(options) {
++export async function readConfig(options) {
+   const {
+     chdir = true,
+     globMatchedFiles: globFiles = true
+@@ -8454,72 +8454,72 @@ async function createHostServer(options) {
+   return createServer(toNodeListener(app));
+ }
+ 
+-const cli = cac(
+-  "eslint-config-inspector"
+-);
+-cli.command("build", "Build inspector with current config file for static hosting").option("--config <configFile>", "Config file path").option("--files", "Include matched file paths in payload", { default: true }).option("--basePath <basePath>", "Base directory for globs to resolve. Default to directory of config file if not provided").option("--base <baseURL>", "Base URL for deployment", { default: "/" }).option("--outDir <dir>", "Output directory", { default: ".eslint-config-inspector" }).action(async (options) => {
+-  console.log(MARK_INFO, "Building static ESLint config inspector...");
+-  if (process$1.env.ESLINT_CONFIG)
+-    options.config ||= process$1.env.ESLINT_CONFIG;
+-  const cwd = process$1.cwd();
+-  const outDir = resolve$3(cwd, options.outDir);
+-  let configs;
+-  try {
+-    configs = await readConfig({
+-      cwd,
+-      userConfigPath: options.config,
+-      userBasePath: options.basePath,
+-      globMatchedFiles: options.files
+-    });
+-  } catch (error) {
+-    if (error instanceof ConfigInspectorError) {
+-      error.prettyPrint();
+-      process$1.exit(1);
+-    }
+-    throw error;
+-  }
+-  let baseURL = options.base;
+-  if (!baseURL.endsWith("/"))
+-    baseURL += "/";
+-  if (!baseURL.startsWith("/"))
+-    baseURL = `/${baseURL}`;
+-  baseURL = baseURL.replace(/\/+/g, "/");
+-  if (existsSync(outDir))
+-    await fs.rm(outDir, { recursive: true });
+-  await fs.mkdir(outDir, { recursive: true });
+-  await fs.cp(distDir, outDir, { recursive: true });
+-  const htmlFiles = await glob("**/*.html", { cwd: distDir, onlyFiles: true, expandDirectories: false });
+-  if (baseURL !== "/") {
+-    for (const file of htmlFiles) {
+-      const content = await fs.readFile(resolve$3(distDir, file), "utf-8");
+-      const newContent = content.replaceAll(/\s(href|src)="\//g, ` $1="${baseURL}`).replaceAll('baseURL:"/"', `baseURL:"${baseURL}"`);
+-      await fs.writeFile(resolve$3(outDir, file), newContent, "utf-8");
+-    }
+-  }
+-  await fs.mkdir(resolve$3(outDir, "api"), { recursive: true });
+-  configs.payload.meta.configPath = "";
+-  configs.payload.meta.basePath = "";
+-  await fs.writeFile(resolve$3(outDir, "api/payload.json"), JSON.stringify(configs.payload, null, 2), "utf-8");
+-  console.log(MARK_CHECK, `Built to ${relative$2(cwd, outDir)}`);
+-  console.log(MARK_INFO, `You can use static server like \`npx serve ${relative$2(cwd, outDir)}\` to serve the inspector`);
+-});
+-cli.command("", "Start dev inspector").option("--config <configFile>", "Config file path").option("--files", "Include matched file paths in payload", { default: true }).option("--basePath <basePath>", "Base directory for globs to resolve. Default to directory of config file if not provided").option("--host <host>", "Host", { default: process$1.env.HOST || "127.0.0.1" }).option("--port <port>", "Port", { default: process$1.env.PORT || 7777 }).option("--open", "Open browser", { default: true }).action(async (options) => {
+-  const host = options.host;
+-  const port = await getPort({ port: options.port, portRange: [7777, 9e3], host });
+-  if (process$1.env.ESLINT_CONFIG)
+-    options.config ||= process$1.env.ESLINT_CONFIG;
+-  console.log(MARK_INFO, `Starting ESLint config inspector at`, c.green`http://${host === "127.0.0.1" ? "localhost" : host}:${port}`, "\n");
+-  const cwd = process$1.cwd();
+-  const server = await createHostServer({
+-    cwd,
+-    userConfigPath: options.config,
+-    userBasePath: options.basePath,
+-    globMatchedFiles: options.files
+-  });
+-  server.listen(port, host, async () => {
+-    if (options.open)
+-      await open(`http://${host === "127.0.0.1" ? "localhost" : host}:${port}`);
+-  });
+-});
+-cli.help();
+-cli.parse();
++// const cli = cac(
++//   "eslint-config-inspector"
++// );
++// cli.command("build", "Build inspector with current config file for static hosting").option("--config <configFile>", "Config file path").option("--files", "Include matched file paths in payload", { default: true }).option("--basePath <basePath>", "Base directory for globs to resolve. Default to directory of config file if not provided").option("--base <baseURL>", "Base URL for deployment", { default: "/" }).option("--outDir <dir>", "Output directory", { default: ".eslint-config-inspector" }).action(async (options) => {
++//   console.log(MARK_INFO, "Building static ESLint config inspector...");
++//   if (process$1.env.ESLINT_CONFIG)
++//     options.config ||= process$1.env.ESLINT_CONFIG;
++//   const cwd = process$1.cwd();
++//   const outDir = resolve$3(cwd, options.outDir);
++//   let configs;
++//   try {
++//     configs = await readConfig({
++//       cwd,
++//       userConfigPath: options.config,
++//       userBasePath: options.basePath,
++//       globMatchedFiles: options.files
++//     });
++//   } catch (error) {
++//     if (error instanceof ConfigInspectorError) {
++//       error.prettyPrint();
++//       process$1.exit(1);
++//     }
++//     throw error;
++//   }
++//   let baseURL = options.base;
++//   if (!baseURL.endsWith("/"))
++//     baseURL += "/";
++//   if (!baseURL.startsWith("/"))
++//     baseURL = `/${baseURL}`;
++//   baseURL = baseURL.replace(/\/+/g, "/");
++//   if (existsSync(outDir))
++//     await fs.rm(outDir, { recursive: true });
++//   await fs.mkdir(outDir, { recursive: true });
++//   await fs.cp(distDir, outDir, { recursive: true });
++//   const htmlFiles = await glob("**/*.html", { cwd: distDir, onlyFiles: true, expandDirectories: false });
++//   if (baseURL !== "/") {
++//     for (const file of htmlFiles) {
++//       const content = await fs.readFile(resolve$3(distDir, file), "utf-8");
++//       const newContent = content.replaceAll(/\s(href|src)="\//g, ` $1="${baseURL}`).replaceAll('baseURL:"/"', `baseURL:"${baseURL}"`);
++//       await fs.writeFile(resolve$3(outDir, file), newContent, "utf-8");
++//     }
++//   }
++//   await fs.mkdir(resolve$3(outDir, "api"), { recursive: true });
++//   configs.payload.meta.configPath = "";
++//   configs.payload.meta.basePath = "";
++//   await fs.writeFile(resolve$3(outDir, "api/payload.json"), JSON.stringify(configs.payload, null, 2), "utf-8");
++//   console.log(MARK_CHECK, `Built to ${relative$2(cwd, outDir)}`);
++//   console.log(MARK_INFO, `You can use static server like \`npx serve ${relative$2(cwd, outDir)}\` to serve the inspector`);
++// });
++// cli.command("", "Start dev inspector").option("--config <configFile>", "Config file path").option("--files", "Include matched file paths in payload", { default: true }).option("--basePath <basePath>", "Base directory for globs to resolve. Default to directory of config file if not provided").option("--host <host>", "Host", { default: process$1.env.HOST || "127.0.0.1" }).option("--port <port>", "Port", { default: process$1.env.PORT || 7777 }).option("--open", "Open browser", { default: true }).action(async (options) => {
++//   const host = options.host;
++//   const port = await getPort({ port: options.port, portRange: [7777, 9e3], host });
++//   if (process$1.env.ESLINT_CONFIG)
++//     options.config ||= process$1.env.ESLINT_CONFIG;
++//   console.log(MARK_INFO, `Starting ESLint config inspector at`, c.green`http://${host === "127.0.0.1" ? "localhost" : host}:${port}`, "\n");
++//   const cwd = process$1.cwd();
++//   const server = await createHostServer({
++//     cwd,
++//     userConfigPath: options.config,
++//     userBasePath: options.basePath,
++//     globMatchedFiles: options.files
++//   });
++//   server.listen(port, host, async () => {
++//     if (options.open)
++//       await open(`http://${host === "127.0.0.1" ? "localhost" : host}:${port}`);
++//   });
++// });
++// cli.help();
++// cli.parse();
+diff --git a/package.json b/package.json
+index 0eb65291ab4950bf661a68664370553326dfb487..fd469c12d57e053d9b22578e8bea5af0139f02e6 100644
+--- a/package.json
++++ b/package.json
+@@ -15,6 +15,9 @@
+     "@eslint/config-inspector": "./bin.mjs",
+     "eslint-config-inspector": "./bin.mjs"
+   },
++  "exports": {
++    "./monkey-patch": "./dist/cli.mjs"
++  },
+   "files": [
+     "*.mjs",
+     "dist"

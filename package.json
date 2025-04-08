@@ -69,6 +69,7 @@
     "@types/cross-spawn": "6.0.6",
     "@types/fs-extra": "11.0.4",
     "@types/node": "22.14.0",
+    "@typescript-eslint/utils": "8.29.0",
     "@virtual-live-lab/eslint-config": "2.2.19",
     "@virtual-live-lab/prettier-config": "2.0.18",
     "@virtual-live-lab/tsconfig": "2.1.19",
@@ -106,6 +107,9 @@
     ],
     "overrides": {
       "esbuild": "0.25.2"
+    },
+    "patchedDependencies": {
+      "@eslint/config-inspector": "patches/@eslint__config-inspector.patch"
     }
   }
 }
