@@ -1,7 +1,7 @@
 import { relative } from "pathe";
 import typia from "typia";
 
-import type { TodoModuleHandler } from "./types";
+import type { TodoModuleHandler } from "./index";
 import type { TodoModuleV2 } from "./v2";
 
 import { isNonEmptyString } from "../utils/string";

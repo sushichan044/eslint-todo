@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { TodoModuleLike } from "./types";
+import type { TodoModuleLike } from "./index";
 import type { TodoModuleV1 } from "./v1";
 import type { TodoModuleV2 } from "./v2";
 

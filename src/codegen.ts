@@ -1,6 +1,6 @@
 import { generateCode, parseModule } from "magicast";
 
-import type { TodoModuleLike } from "./todofile/types";
+import type { TodoModuleLike } from "./todofile";
 
 /**
  * Create a JavaScript code from the ESLint todo module.

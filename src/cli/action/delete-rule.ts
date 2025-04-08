@@ -1,7 +1,7 @@
 import type { RuleSelection } from "../../operation/select-rule";
 
 import { deleteRule } from "../../operation/delete-rule";
-import { LATEST_TODO_MODULE_HANDLER } from "../../todofile";
+import { TodoModuleV2Handler } from "../../todofile/v2";
 import { defineAction } from "./index";
 
 type Input = RuleSelection;
@@ -16,7 +16,7 @@ type Hooks = {
 export const deleteRuleAction = defineAction<Input, void, Hooks>(
   async ({ core, hooks }, input) => {
     const currentModule = await core.readTodoModule();
-    if (!LATEST_TODO_MODULE_HANDLER.isVersion(currentModule)) {
+    if (!TodoModuleV2Handler.isVersion(currentModule)) {
       throw new Error(
         "This action requires the latest version of the todo file.",
       );

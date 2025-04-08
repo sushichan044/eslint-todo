@@ -1,7 +1,7 @@
 import type { SelectionResult } from "../../operation/select-rule";
 
 import { selectRuleBasedOnLimit } from "../../operation/select-rule";
-import { LATEST_TODO_MODULE_HANDLER } from "../../todofile";
+import { TodoModuleV2Handler } from "../../todofile/v2";
 import { defineAction } from "./index";
 
 type Hooks = {
@@ -15,7 +15,7 @@ export const selectRulesToFixAction = defineAction<
   Hooks
 >(async ({ config, core, hooks }) => {
   const currentModule = await core.readTodoModule();
-  if (!LATEST_TODO_MODULE_HANDLER.isVersion(currentModule)) {
+  if (!TodoModuleV2Handler.isVersion(currentModule)) {
     throw new Error(
       "This action requires the latest version of the todo file.",
     );

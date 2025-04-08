@@ -1,6 +1,6 @@
 import { klona } from "klona/json";
 
-import type { LatestTodoModule } from "../todofile";
+import type { TodoModuleV2 } from "../todofile/v2";
 import type { RuleSelection } from "./select-rule";
 
 /**
@@ -11,9 +11,9 @@ import type { RuleSelection } from "./select-rule";
  * @returns The new todo module with the rule deleted.
  */
 export const deleteRule = (
-  currentModule: LatestTodoModule,
+  currentModule: TodoModuleV2,
   ruleSelection: RuleSelection,
-): LatestTodoModule => {
+): TodoModuleV2 => {
   if (!Object.hasOwn(currentModule.todo, ruleSelection.ruleId)) {
     return currentModule;
   }

@@ -1,5 +1,4 @@
 import type { CorrectModeConfig } from "../config/config";
-import type { LatestTodoModule } from "../todofile";
 import type { TodoModuleV2 } from "../todofile/v2";
 
 import { isNonEmptyString } from "../utils/string";
@@ -44,7 +43,7 @@ export type SelectionResult =
  * @param options - Options for the operation.
  */
 export const selectRuleBasedOnLimit = (
-  todoModule: LatestTodoModule,
+  todoModule: TodoModuleV2,
   correctConfig: CorrectModeConfig,
 ): SelectionResult => {
   switch (correctConfig.limit.type) {
@@ -66,7 +65,7 @@ export const selectRuleBasedOnLimit = (
  * @package
  */
 export const selectRuleBasedOnFilesLimit = (
-  todoModule: LatestTodoModule,
+  todoModule: TodoModuleV2,
   config: CorrectModeConfig,
 ): SelectionResult => {
   const {
@@ -151,7 +150,7 @@ export const selectRuleBasedOnFilesLimit = (
  * @package
  */
 export const selectRuleBasedOnViolationsLimit = (
-  todoModule: LatestTodoModule,
+  todoModule: TodoModuleV2,
   config: CorrectModeConfig,
 ): SelectionResult => {
   const {

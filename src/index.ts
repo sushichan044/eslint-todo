@@ -5,14 +5,14 @@ import { resolve } from "pathe";
 
 import type { Config, UserConfig } from "./config";
 import type { TodoFilePath } from "./path";
-import type { LatestTodoModule } from "./todofile";
-import type { TodoModuleLike } from "./todofile/types";
+import type { TodoModuleLike } from "./todofile";
+import type { TodoModuleV2 } from "./todofile/v2";
 import type { ESLintInitializeOptions, IESLintTodoCoreLike } from "./types";
 
 import { generateTodoModuleCode } from "./codegen";
 import { configWithDefault } from "./config/config";
 import { resolveTodoModulePath } from "./path";
-import { LATEST_TODO_MODULE_HANDLER } from "./todofile";
+import { TodoModuleV2Handler } from "./todofile/v2";
 import { initGitUtility } from "./utils/git";
 import { importDefault } from "./utils/import";
 
@@ -45,8 +45,8 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     return await importDefault<TodoModuleLike>(this.#todoFilePath.absolute, {});
   }
 
-  buildTodoFromLintResults(lintResults: ESLint.LintResult[]): LatestTodoModule {
-    return LATEST_TODO_MODULE_HANDLER.buildTodoFromLintResults(
+  buildTodoFromLintResults(lintResults: ESLint.LintResult[]): TodoModuleV2 {
+    return TodoModuleV2Handler.buildTodoFromLintResults(
       lintResults,
       this.#config,
     );
@@ -76,7 +76,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
 
     await writeFile(
       this.#todoFilePath.absolute,
-      generateTodoModuleCode(LATEST_TODO_MODULE_HANDLER.getDefaultTodo()),
+      generateTodoModuleCode(TodoModuleV2Handler.getDefaultTodo()),
     );
   }
 

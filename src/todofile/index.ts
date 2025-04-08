@@ -1,34 +1,53 @@
-import type { TodoModuleHandler } from "./types";
-import type { TodoModuleV2 } from "./v2";
+import type { ESLint, Linter } from "eslint";
 
-import { type TodoModuleV1, TodoModuleV1Handler } from "./v1";
-import { TodoModuleV2Handler } from "./v2";
+import type { Config } from "../config";
 
-// SupportedTodoModules
+export type TodoModuleLike = Record<string, unknown>;
 
-type SupportedTodoModulesArray = [
-  // you should place newer Module forwards
-  TodoModuleV2,
-  TodoModuleV1,
-];
-export type SupportedTodoModules = SupportedTodoModulesArray[number];
+export type RuleSeverity = Extract<Linter.RuleSeverity, "error" | "off">;
 
-type SupportedTodoModuleHandlers = [
-  TodoModuleHandler<TodoModuleV2>,
-  TodoModuleHandler<TodoModuleV1>,
-];
+/**
+ * Interface representing a handler for managing different versions of a todo module.
+ *
+ * @template CURRENT - The current version of the todo module.
+ * @template NEXT - The next version of the todo module, defaults to `TodoModuleLike`.
+ *
+ * @package
+ */
+export interface TodoModuleHandler<
+  CURRENT extends TodoModuleLike,
+  NEXT extends TodoModuleLike = TodoModuleLike,
+> {
+  /**
+   * Build a todo object from the lint results.
+   * @param lintResult Lint results from ESLint
+   */
+  buildTodoFromLintResults(
+    lintResult: ESLint.LintResult[],
+    config: Config,
+  ): CURRENT;
 
-export const SUPPORTED_TODO_MODULE_HANDLERS = [
-  // you should add module handler here if you add new version of TodoModule
-  TodoModuleV2Handler,
-  TodoModuleV1Handler,
-] as const satisfies SupportedTodoModuleHandlers;
+  /**
+   * Get a default todo object.
+   */
+  getDefaultTodo(): CURRENT;
 
-// LatestModule
+  /**
+   * Check if the object is a version of this todo file.
+   *
+   * NOTE: you should use `typia.validateEquals<CURRENT>()` when implementing this method.
+   * @param todo Object to check.
+   */
+  isVersion(todo: TodoModuleLike): todo is CURRENT;
 
-export type LatestTodoModule = SupportedTodoModulesArray[0];
+  /**
+   * Upgrade the todo object to the next version.
+   * @param todo Current todo object
+   * @returns
+   * - `false` if the object cannot be upgraded. (Breaking change)
+   * - Next version of the todo object if the object can be upgraded.
+   */
+  upgradeToNextVersion(todo: CURRENT): false | NEXT;
 
-export const LATEST_TODO_MODULE_HANDLER =
-  TodoModuleV2Handler satisfies LatestTodoModuleHandler;
-
-type LatestTodoModuleHandler = TodoModuleHandler<LatestTodoModule>;
+  version: number;
+}
