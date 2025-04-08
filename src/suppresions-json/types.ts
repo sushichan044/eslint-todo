@@ -16,3 +16,18 @@ type ESLintSuppression = {
 export interface ESLintSuppressionsJson {
   [filePath: string]: ESLintSuppression;
 }
+
+/**
+ * Represents the rule-based representation of suppressions for internal use.
+ *
+ * This format makes it easier to work with suppressions by rule ID.
+ *
+ * @package
+ */
+export interface InternalRuleBasedSuppressionsJson {
+  [ruleId: string]: {
+    [filePath: string]: {
+      count: number;
+    };
+  };
+}
