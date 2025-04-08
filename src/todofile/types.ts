@@ -19,12 +19,6 @@ export interface TodoModuleHandler<
   NEXT extends TodoModuleLike = TodoModuleLike,
 > {
   /**
-   * Build ESLint configs to enable / disable rules in the todo object.
-   * @param todo Todo object
-   */
-  buildConfigsForESLint(todo: CURRENT, severity: RuleSeverity): Linter.Config[];
-
-  /**
    * Build a todo object from the lint results.
    * @param lintResult Lint results from ESLint
    */

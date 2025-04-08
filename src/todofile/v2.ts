@@ -3,7 +3,7 @@ import typia from "typia";
 
 import type { TodoModuleHandler } from "./types";
 
-import { escapeGlobCharacters, isNonEmptyString } from "../utils/string";
+import { isNonEmptyString } from "../utils/string";
 
 type ESLintTodoEntryV2 = {
   /**
@@ -46,16 +46,6 @@ export type TodoModuleV2 = {
 
 export const TodoModuleV2Handler: TodoModuleHandler<TodoModuleV2> = {
   version: 2,
-
-  buildConfigsForESLint: ({ todo }, severity) => {
-    return Object.entries(todo).map(([ruleId, entry]) => ({
-      files: Object.keys(entry.violations).map((f) => escapeGlobCharacters(f)),
-      name: `@sushichan044/eslint-todo/${severity}/${ruleId}`,
-      rules: {
-        [ruleId]: severity,
-      },
-    }));
-  },
 
   buildTodoFromLintResults(lintResult, config) {
     const todoModule = TodoModuleV2Handler.getDefaultTodo();

@@ -1,7 +1,13 @@
+import type { Linter } from "eslint";
+
+import type { RuleSeverity } from "../lib/eslint";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { TodoModuleV1 } from "../todofile/v1";
 import type { TodoModuleV2 } from "../todofile/v2";
 import type { ESLintSuppressionsJson } from "./types";
+
+import { escapeGlobCharacters } from "../utils/string";
+import { toRuleBasedSuppression } from "./rule-based";
 
 interface SuppressionsJsonGenerator {
   fromV1(v1: TodoModuleV1): ESLintSuppressionsJson;
@@ -48,4 +54,19 @@ export const SuppressionsJsonGenerator: SuppressionsJsonGenerator = {
 
     return suppressionsJson;
   },
+};
+
+export const buildESLintConfigWithSuppressionsJson = (
+  suppressionsJson: ESLintSuppressionsJson,
+  severity: RuleSeverity,
+): Linter.Config[] => {
+  const ruleBased = toRuleBasedSuppression(suppressionsJson);
+
+  return Object.entries(ruleBased).map(([ruleId, files]) => ({
+    files: Object.keys(files).map((s) => escapeGlobCharacters(s)),
+    name: `@sushichan044/eslint-todo/${severity}/${ruleId}`,
+    rules: {
+      [ruleId]: severity,
+    },
+  }));
 };
