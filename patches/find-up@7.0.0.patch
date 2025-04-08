@@ -1,0 +1,30 @@
+diff --git a/index.js b/index.js
+index c49fef0dad6eb406e5ae3557cec4d17cb241a431..75c7fc625851f590e0dd79d639c8222f56722307 100644
+--- a/index.js
++++ b/index.js
+@@ -1,6 +1,10 @@
+ import path from 'node:path';
++import {fileURLToPath} from 'node:url';
+ import {locatePath, locatePathSync} from 'locate-path';
+-import {toPath} from 'unicorn-magic';
++
++function toPath(urlOrPath) {
++	return urlOrPath instanceof URL ? fileURLToPath(urlOrPath) : urlOrPath;
++}
+ 
+ export const findUpStop = Symbol('findUpStop');
+ 
+diff --git a/package.json b/package.json
+index 3d9600202067dbd77ebdacd61d6df686aabd253c..d2b379f844853b5c4f29142cec5703f3e6ca3242 100644
+--- a/package.json
++++ b/package.json
+@@ -48,8 +48,7 @@
+ 	],
+ 	"dependencies": {
+ 		"locate-path": "^7.2.0",
+-		"path-exists": "^5.0.0",
+-		"unicorn-magic": "^0.1.0"
++		"path-exists": "^5.0.0"
+ 	},
+ 	"devDependencies": {
+ 		"ava": "^5.3.1",

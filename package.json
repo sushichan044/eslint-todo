@@ -51,25 +51,27 @@
     "eslint": "^8.57.0 || ^9.0.0"
   },
   "dependencies": {
+    "@typescript-eslint/utils": "8.29.0",
+    "bundle-require": "5.1.0",
     "citty": "0.1.6",
     "comlink": "4.4.2",
     "consola": "3.4.2",
     "cross-spawn": "7.0.6",
     "defu": "6.1.4",
+    "find-up": "7.0.0",
     "hookable": "5.5.3",
     "jiti": "2.4.2",
     "klona": "2.0.6",
     "magicast": "0.3.5",
+    "mlly": "1.7.4",
     "pathe": "2.0.3"
   },
   "devDependencies": {
-    "@eslint/config-inspector": "1.0.2",
     "@ryoppippi/unplugin-typia": "2.1.4",
     "@samchon/openapi": "4.0.0",
     "@types/cross-spawn": "6.0.6",
     "@types/fs-extra": "11.0.4",
     "@types/node": "22.14.0",
-    "@typescript-eslint/utils": "8.29.0",
     "@virtual-live-lab/eslint-config": "2.2.19",
     "@virtual-live-lab/prettier-config": "2.0.18",
     "@virtual-live-lab/tsconfig": "2.1.19",
@@ -109,7 +111,7 @@
       "esbuild": "0.25.2"
     },
     "patchedDependencies": {
-      "@eslint/config-inspector": "patches/@eslint__config-inspector.patch"
+      "find-up@7.0.0": "patches/find-up@7.0.0.patch"
     }
   }
 }

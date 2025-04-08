@@ -1,6 +1,7 @@
 import type { SelectionResult } from "../../operation/select-rule";
 
 import { selectRuleBasedOnLimit } from "../../operation/select-rule";
+import { SuppressionsJsonGenerator } from "../../suppressions-json";
 import { TodoModuleV2Handler } from "../../todofile/v2";
 import { defineAction } from "./index";
 
@@ -13,7 +14,7 @@ export const selectRulesToFixAction = defineAction<
   never,
   SelectionResult,
   Hooks
->(async ({ config, core, hooks }) => {
+>(async ({ config, core, eslintConfig, hooks }) => {
   const currentModule = await core.readTodoModule();
   if (!TodoModuleV2Handler.isVersion(currentModule)) {
     throw new Error(
@@ -21,8 +22,14 @@ export const selectRulesToFixAction = defineAction<
     );
   }
 
+  const suppressions = SuppressionsJsonGenerator.fromV2(currentModule);
+
   await hooks.callHook("before:select-rule");
-  const result = selectRuleBasedOnLimit(currentModule, config.correct);
+  const result = selectRuleBasedOnLimit(
+    suppressions,
+    eslintConfig,
+    config.correct,
+  );
   await hooks.callHook("after:select-rule", result);
 
   return result;
