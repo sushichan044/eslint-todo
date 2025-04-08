@@ -1,10 +1,8 @@
-import type { ESLint, Linter } from "eslint";
+import type { ESLint } from "eslint";
 
 import type { Config } from "../config";
 
 export type TodoModuleLike = Record<string, unknown>;
-
-export type RuleSeverity = Extract<Linter.RuleSeverity, "error" | "off">;
 
 /**
  * Interface representing a handler for managing different versions of a todo module.
