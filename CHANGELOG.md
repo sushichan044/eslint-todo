@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Improve compatibility with `eslint-suppressions.json` &nbsp;-&nbsp; by **sushichan044** [<samp>(ea5cf)</samp>](https://github.com/sushichan044/eslint-todo/commit/ea5cfd7)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.1.2...0.1.3)
+
 ## 0.1.2
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes
