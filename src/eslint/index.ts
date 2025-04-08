@@ -7,6 +7,10 @@ import type { DeepPartial } from "../utils/types";
 
 import { resolveConfig } from "../config/resolve";
 import { ESLintTodoCore } from "../index";
+import {
+  buildESLintConfigWithSuppressionsJson,
+  SuppressionsJsonGenerator,
+} from "../suppressions-json";
 // TODO: ここでは本当に TodoModuleV1Handler が必要
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TodoModuleV1Handler } from "../todofile/v1";
@@ -51,19 +55,43 @@ const eslintConfigTodo = async (
     },
   ];
 
-  if (
-    module == null ||
-    (!TodoModuleV1Handler.isVersion(module) &&
-      !TodoModuleV2Handler.isVersion(module))
-  ) {
-    configs.push({
-      files: [todoModulePath.relative],
-      name: "@sushichan044/eslint-todo/warning/FILE_NOT_FOUND_OR_INVALID_TODO_FILE",
-    });
-    return configs;
+  if (module == null) {
+    return [
+      ...configs,
+      {
+        files: [todoModulePath.relative],
+        name: "@sushichan044/eslint-todo/warning/FILE_NOT_FOUND_OR_INVALID_TODO_FILE",
+      },
+    ];
   }
 
-  return [...configs, ...core.buildESLintConfig(module, "off")];
+  if (TodoModuleV1Handler.isVersion(module)) {
+    return [
+      ...configs,
+      ...buildESLintConfigWithSuppressionsJson(
+        SuppressionsJsonGenerator.fromV1(module),
+        "off",
+      ),
+    ];
+  }
+
+  if (TodoModuleV2Handler.isVersion(module)) {
+    return [
+      ...configs,
+      ...buildESLintConfigWithSuppressionsJson(
+        SuppressionsJsonGenerator.fromV2(module),
+        "off",
+      ),
+    ];
+  }
+
+  return [
+    ...configs,
+    {
+      files: [todoModulePath.relative],
+      name: "@sushichan044/eslint-todo/warning/FILE_NOT_FOUND_OR_INVALID_TODO_FILE",
+    },
+  ];
 };
 
 export default eslintConfigTodo;

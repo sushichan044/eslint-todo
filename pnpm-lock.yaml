@@ -7,6 +7,11 @@ settings:
 overrides:
   esbuild: 0.25.2
 
+patchedDependencies:
+  '@eslint/config-inspector':
+    hash: 88b1cea3a14d0ddebcfdece9200ae6fb8f9b83e971bbc6f6aad4efbe65f37d9e
+    path: patches/@eslint__config-inspector.patch
+
 importers:
 
   .:
@@ -44,7 +49,7 @@ importers:
     devDependencies:
       '@eslint/config-inspector':
         specifier: 1.0.2
-        version: 1.0.2(eslint@9.24.0(jiti@2.4.2))
+        version: 1.0.2(patch_hash=88b1cea3a14d0ddebcfdece9200ae6fb8f9b83e971bbc6f6aad4efbe65f37d9e)(eslint@9.24.0(jiti@2.4.2))
       '@ryoppippi/unplugin-typia':
         specifier: 2.1.4
         version: 2.1.4(rollup@4.34.9)(typescript@5.8.3)(typia@9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3))(vite@6.2.5(@types/node@22.14.0)(jiti@2.4.2)(yaml@2.7.0))
@@ -60,6 +65,9 @@ importers:
       '@types/node':
         specifier: 22.14.0
         version: 22.14.0
+      '@typescript-eslint/utils':
+        specifier: 8.29.0
+        version: 8.29.0(eslint@9.24.0(jiti@2.4.2))(typescript@5.8.3)
       '@virtual-live-lab/eslint-config':
         specifier: 2.2.19
         version: 2.2.19(@typescript-eslint/parser@8.29.0(eslint@9.24.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.24.0(jiti@2.4.2))(tailwindcss@3.4.17)(typescript@5.8.3)
@@ -4548,7 +4556,7 @@ snapshots:
 
   '@eslint/config-helpers@0.2.0': {}
 
-  '@eslint/config-inspector@1.0.2(eslint@9.24.0(jiti@2.4.2))':
+  '@eslint/config-inspector@1.0.2(patch_hash=88b1cea3a14d0ddebcfdece9200ae6fb8f9b83e971bbc6f6aad4efbe65f37d9e)(eslint@9.24.0(jiti@2.4.2))':
     dependencies:
       '@nodelib/fs.walk': 3.0.1
       ansis: 3.17.0
@@ -5084,7 +5092,7 @@ snapshots:
 
   '@stylistic/eslint-plugin-ts@4.2.0(eslint@9.24.0(jiti@2.4.2))(typescript@5.8.3)':
     dependencies:
-      '@typescript-eslint/utils': 8.27.0(eslint@9.24.0(jiti@2.4.2))(typescript@5.8.3)
+      '@typescript-eslint/utils': 8.29.0(eslint@9.24.0(jiti@2.4.2))(typescript@5.8.3)
       eslint: 9.24.0(jiti@2.4.2)
       eslint-visitor-keys: 4.2.0
       espree: 10.3.0
@@ -6410,7 +6418,7 @@ snapshots:
   eslint-plugin-perfectionist@4.10.1(eslint@9.24.0(jiti@2.4.2))(typescript@5.8.3):
     dependencies:
       '@typescript-eslint/types': 8.26.1
-      '@typescript-eslint/utils': 8.27.0(eslint@9.24.0(jiti@2.4.2))(typescript@5.8.3)
+      '@typescript-eslint/utils': 8.29.0(eslint@9.24.0(jiti@2.4.2))(typescript@5.8.3)
       eslint: 9.24.0(jiti@2.4.2)
       natural-orderby: 5.0.0
     transitivePeerDependencies:
