@@ -5,6 +5,7 @@ import type { Hookable, HookCallback, HookKeys } from "hookable";
 import { createHooks } from "hookable";
 
 import type { Config } from "../../config";
+import type { ESLintConfigSubset } from "../../lib/eslint";
 import type { RemoteESLintTodoCore } from "../../remote/core";
 import type { DeepPartial, IsNever, MaybePromise } from "../../utils/types";
 
@@ -19,6 +20,7 @@ type ActionAPI<
 > = {
   config: Config;
   core: Remote<RemoteESLintTodoCore>;
+  eslintConfig: ESLintConfigSubset;
   hooks: Hookable<Hooks>;
   logger: ConsolaInstance;
 };
@@ -55,6 +57,7 @@ type ActionRunnerOptions<
 > = {
   config: Config;
   consola: ConsolaInstance;
+  eslintConfig: ESLintConfigSubset;
   hooks?: DeepPartial<HookHandlers<Hooks>>;
 };
 
@@ -92,6 +95,7 @@ export function prepareAction<
     const actionApi = {
       config: options.config,
       core: remoteCore,
+      eslintConfig: options.eslintConfig,
       hooks,
       logger: options.consola,
     } satisfies ActionAPI<Hooks>;

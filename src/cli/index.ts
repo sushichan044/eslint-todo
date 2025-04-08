@@ -6,6 +6,7 @@ import { relative } from "pathe";
 import { version as packageVersion } from "../../package.json";
 import { resolveConfig } from "../config/resolve";
 import { ESLintTodoCore } from "../index";
+import { createESLintConfigSubset, readESLintConfig } from "../lib/eslint";
 import { prepareAction } from "./action";
 import { deleteRuleAction } from "./action/delete-rule";
 import { genAction } from "./action/gen";
@@ -130,6 +131,9 @@ const cli = defineCommand({
 
     const config = await resolveConfig(cliCwd, userConfig);
 
+    const eslintConfig = await readESLintConfig(config.root);
+    const eslintConfigSubset = createESLintConfigSubset(eslintConfig);
+
     // initialize local ESLintTodoCore
     const eslintTodoCore = new ESLintTodoCore(config);
 
@@ -141,6 +145,7 @@ const cli = defineCommand({
     const updateActionExecutor = prepareAction(updateAction, {
       config,
       consola,
+      eslintConfig: eslintConfigSubset,
     });
     await updateActionExecutor();
 
@@ -148,6 +153,7 @@ const cli = defineCommand({
       const genActionExecutor = prepareAction(genAction, {
         config,
         consola,
+        eslintConfig: eslintConfigSubset,
         hooks: {
           "after:lint": () => {
             consola.success("ESLint finished!");
@@ -191,6 +197,7 @@ If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
       const selectRulesToFixExecutor = prepareAction(selectRulesToFixAction, {
         config,
         consola,
+        eslintConfig: eslintConfigSubset,
         hooks: {
           "before:select-rule": () => {
             consola.start("Selecting rules to fix ...");
@@ -217,6 +224,7 @@ If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
       const deleteRuleExecutor = prepareAction(deleteRuleAction, {
         config,
         consola,
+        eslintConfig: eslintConfigSubset,
         hooks: {
           "after:delete-and-write": () => {
             if (result.selection.type === "full") {

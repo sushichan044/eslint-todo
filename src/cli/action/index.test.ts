@@ -44,12 +44,14 @@ describe("prepareAction", () => {
       const preparedAction = prepareAction(actionWithNoInputs, {
         config,
         consola,
+        eslintConfig: { rules: {} },
       });
       await preparedAction();
 
       expect(actionWithNoInputs).toHaveBeenCalledExactlyOnceWith({
         config,
         core: mockCore,
+        eslintConfig: { rules: {} },
         // We are not testing hooks here, so we can safely assign any value to it
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         hooks: expect.any(Hookable),
@@ -66,6 +68,7 @@ describe("prepareAction", () => {
       const preparedAction = prepareAction(actionWithInputs, {
         config,
         consola,
+        eslintConfig: { rules: {} },
       });
 
       const result = await preparedAction("input");
@@ -73,6 +76,7 @@ describe("prepareAction", () => {
         {
           config,
           core: mockCore,
+          eslintConfig: { rules: {} },
           // We are not testing hooks here, so we can safely assign any value to it
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           hooks: expect.any(Hookable),
@@ -91,6 +95,7 @@ describe("prepareAction", () => {
       const preparedAction = prepareAction(action, {
         config: configWithDefault(),
         consola,
+        eslintConfig: { rules: {} },
       });
       await preparedAction();
       expect(mockRemoteService.terminate).toHaveBeenCalledOnce();
@@ -106,6 +111,7 @@ describe("prepareAction", () => {
       const preparedAction = prepareAction(action, {
         config: configWithDefault(),
         consola,
+        eslintConfig: { rules: {} },
       });
       await expect(preparedAction()).rejects.toThrow(TestError);
       expect(mockRemoteService.terminate).toHaveBeenCalledOnce();
@@ -136,6 +142,7 @@ describe("prepareAction", () => {
       const preparedAction = prepareAction(action, {
         config: configWithDefault(),
         consola,
+        eslintConfig: { rules: {} },
         hooks: {
           after: afterHook,
           before: beforeHook,

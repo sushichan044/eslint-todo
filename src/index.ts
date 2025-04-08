@@ -4,6 +4,7 @@ import { writeFile } from "node:fs/promises";
 import { resolve } from "pathe";
 
 import type { Config, UserConfig } from "./config";
+import type { ESLintConfig } from "./lib/eslint";
 import type { TodoFilePath } from "./path";
 import type { TodoModuleLike } from "./todofile";
 import type { TodoModuleV2 } from "./todofile/v2";
@@ -11,6 +12,7 @@ import type { ESLintInitializeOptions, IESLintTodoCoreLike } from "./types";
 
 import { generateTodoModuleCode } from "./codegen";
 import { configWithDefault } from "./config/config";
+import { readESLintConfig } from "./lib/eslint";
 import { resolveTodoModulePath } from "./path";
 import { TodoModuleV2Handler } from "./todofile/v2";
 import { initGitUtility } from "./utils/git";
@@ -67,6 +69,10 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
       resolve(this.#config.root, "**/*"),
     );
     return result;
+  }
+
+  async readESLintConfig(): Promise<ESLintConfig> {
+    return readESLintConfig(this.#config.root);
   }
 
   async resetTodoModule(): Promise<void> {

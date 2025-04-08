@@ -42,6 +42,12 @@ export class RemoteESLintTodoCore implements IESLintTodoCoreLike {
     return this.#todoCore.lint(...parameters);
   }
 
+  async readESLintConfig(
+    ...parameters: Parameters<ESLintTodoCore["readESLintConfig"]>
+  ): ReturnType<ESLintTodoCore["readESLintConfig"]> {
+    return this.#todoCore.readESLintConfig(...parameters);
+  }
+
   async readTodoModule(
     ...parameters: Parameters<
       ESLintTodoCore["_DO_NOT_USE_DIRECTLY_unsafeReadTodoModule"]

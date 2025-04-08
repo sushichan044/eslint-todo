@@ -1,7 +1,9 @@
 import type { CorrectModeConfig } from "../config/config";
-import type { TodoModuleV2 } from "../todofile/v2";
+import type { ESLintConfigSubset } from "../lib/eslint";
+import type { ESLintSuppressionsJson } from "../suppressions-json/types";
 
-import { isNonEmptyString } from "../utils/string";
+import { isRuleFixable } from "../lib/eslint";
+import { toRuleBasedSuppression } from "../suppressions-json/rule-based";
 
 type PartialRuleSelection = {
   /**
@@ -38,20 +40,29 @@ export type SelectionResult =
 
 /**
  * Selects a rule based on the given limit.
- * @param todoModule - Latest todo module.
- * @param limit - Limit to select the rule.
- * @param options - Options for the operation.
+ * @param suppressions - Suppressions.
+ * @param ruleMetaMap - ESLint config.
+ * @param correctConfig - Correct mode config.
  */
 export const selectRuleBasedOnLimit = (
-  todoModule: TodoModuleV2,
+  suppressions: ESLintSuppressionsJson,
+  eslintConfig: ESLintConfigSubset,
   correctConfig: CorrectModeConfig,
 ): SelectionResult => {
   switch (correctConfig.limit.type) {
     case "file": {
-      return selectRuleBasedOnFilesLimit(todoModule, correctConfig);
+      return selectRuleBasedOnFilesLimit(
+        suppressions,
+        eslintConfig,
+        correctConfig,
+      );
     }
     case "violation": {
-      return selectRuleBasedOnViolationsLimit(todoModule, correctConfig);
+      return selectRuleBasedOnViolationsLimit(
+        suppressions,
+        eslintConfig,
+        correctConfig,
+      );
     }
     default: {
       // exhaustive check
@@ -65,7 +76,8 @@ export const selectRuleBasedOnLimit = (
  * @package
  */
 export const selectRuleBasedOnFilesLimit = (
-  todoModule: TodoModuleV2,
+  suppressions: ESLintSuppressionsJson,
+  eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
 ): SelectionResult => {
   const {
@@ -83,15 +95,17 @@ export const selectRuleBasedOnFilesLimit = (
   let selectedTargetCount = 0;
   let partialSelectableRule: string | null = null;
 
-  for (const [ruleId, entry] of Object.entries(todoModule.todo)) {
-    if (autoFixableOnly && !entry.autoFix) {
+  const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
+
+  for (const [ruleId, entry] of Object.entries(ruleBasedSuppressions)) {
+    if (autoFixableOnly && !isRuleFixable(eslintConfig, ruleId)) {
       continue;
     }
     if (excludedRules.includes(ruleId)) {
       continue;
     }
 
-    const violatedFiles = Object.keys(entry.violations).length;
+    const violatedFiles = Object.keys(entry).length;
 
     if (violatedFiles > limitCount) {
       if (allowPartialSelection && partialSelectableRule == null) {
@@ -120,17 +134,17 @@ export const selectRuleBasedOnFilesLimit = (
 
   if (
     allowPartialSelection &&
-    isKeyOfTodoModuleV2(todoModule, partialSelectableRule)
+    partialSelectableRule != null &&
+    Object.hasOwn(ruleBasedSuppressions, partialSelectableRule)
   ) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const rule = todoModule.todo[partialSelectableRule]!;
-
-    const selectedPaths = Object.keys(rule.violations).slice(0, limitCount);
+    const rule = ruleBasedSuppressions[partialSelectableRule]!;
 
     const selectedViolations: Record<string, number> = {};
-    for (const file of selectedPaths) {
+    for (const file of Object.keys(rule).slice(0, limitCount)) {
+      // file is always key of rule. using non-null assertion is safe.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      selectedViolations[file] = rule.violations[file]!;
+      selectedViolations[file] = rule[file]!.count;
     }
 
     return {
@@ -150,7 +164,8 @@ export const selectRuleBasedOnFilesLimit = (
  * @package
  */
 export const selectRuleBasedOnViolationsLimit = (
-  todoModule: TodoModuleV2,
+  suppressions: ESLintSuppressionsJson,
+  eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
 ): SelectionResult => {
   const {
@@ -168,16 +183,18 @@ export const selectRuleBasedOnViolationsLimit = (
   let selectedTargetCount = 0;
   let partialSelectableRule: string | null = null;
 
-  for (const [ruleId, entry] of Object.entries(todoModule.todo)) {
-    if (autoFixableOnly && !entry.autoFix) {
+  const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
+
+  for (const [ruleId, entry] of Object.entries(ruleBasedSuppressions)) {
+    if (autoFixableOnly && !isRuleFixable(eslintConfig, ruleId)) {
       continue;
     }
     if (excludedRules.includes(ruleId)) {
       continue;
     }
 
-    const totalViolationCount = Object.values(entry.violations).reduce(
-      (sum, count) => sum + count,
+    const totalViolationCount = Object.values(entry).reduce(
+      (sum, count) => sum + count.count,
       0,
     );
 
@@ -208,15 +225,16 @@ export const selectRuleBasedOnViolationsLimit = (
 
   if (
     allowPartialSelection &&
-    isKeyOfTodoModuleV2(todoModule, partialSelectableRule)
+    partialSelectableRule != null &&
+    Object.hasOwn(ruleBasedSuppressions, partialSelectableRule)
   ) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const rule = todoModule.todo[partialSelectableRule]!;
+    const rule = ruleBasedSuppressions[partialSelectableRule]!;
 
     let selectedCount = 0;
     const selectedViolations: Record<string, number> = {};
 
-    for (const [file, count] of Object.entries(rule.violations)) {
+    for (const [file, { count }] of Object.entries(rule)) {
       if (selectedCount + count > limitCount) {
         break;
       }
@@ -252,11 +270,4 @@ export const selectRuleBasedOnViolationsLimit = (
   }
 
   return { success: false };
-};
-
-const isKeyOfTodoModuleV2 = (
-  todoModule: TodoModuleV2,
-  ruleId: string | null,
-): ruleId is keyof TodoModuleV2["todo"] => {
-  return isNonEmptyString(ruleId) && Object.hasOwn(todoModule.todo, ruleId);
 };

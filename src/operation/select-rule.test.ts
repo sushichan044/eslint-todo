@@ -4,10 +4,12 @@ import type {
   CorrectModeConfig,
   CorrectModeUserConfig,
 } from "../config/config";
+import type { ESLintConfigSubset } from "../lib/eslint";
 import type { TodoModuleV2 } from "../todofile/v2";
 import type { SelectionResult } from "./select-rule";
 
 import { configWithDefault } from "../config/config";
+import { SuppressionsJsonGenerator } from "../suppressions-json";
 import {
   selectRuleBasedOnFilesLimit,
   selectRuleBasedOnLimit,
@@ -30,15 +32,34 @@ const createConfigBuilder =
     }).correct;
   };
 
+const createESLintConfigSubset = (
+  input: Partial<ESLintConfigSubset> = {},
+): ESLintConfigSubset => {
+  return {
+    rules: {
+      ...input.rules,
+    },
+  };
+};
+
 describe("selectRuleBasedOnLimit", () => {
   const todoModule = createTodoModuleV2({});
+  const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
   const createCorrectConfig = createConfigBuilder();
 
   it("should call selectRuleBasedOnFilesLimit when limit type is file", () => {
     const config = createCorrectConfig({ limit: { count: 10, type: "file" } });
 
-    const subject = selectRuleBasedOnLimit(todoModule, config);
-    const expected = selectRuleBasedOnFilesLimit(todoModule, config);
+    const subject = selectRuleBasedOnLimit(
+      suppressions,
+      createESLintConfigSubset(),
+      config,
+    );
+    const expected = selectRuleBasedOnFilesLimit(
+      suppressions,
+      createESLintConfigSubset(),
+      config,
+    );
 
     expect(subject).toStrictEqual(expected);
   });
@@ -48,8 +69,16 @@ describe("selectRuleBasedOnLimit", () => {
       limit: { count: 10, type: "violation" },
     });
 
-    const subject = selectRuleBasedOnLimit(todoModule, config);
-    const expected = selectRuleBasedOnViolationsLimit(todoModule, config);
+    const subject = selectRuleBasedOnLimit(
+      suppressions,
+      createESLintConfigSubset(),
+      config,
+    );
+    const expected = selectRuleBasedOnViolationsLimit(
+      suppressions,
+      createESLintConfigSubset(),
+      config,
+    );
 
     expect(subject).toStrictEqual(expected);
   });
@@ -59,9 +88,9 @@ describe("selectRuleBasedOnLimit", () => {
       // @ts-expect-error 意図的に型に合わない引数を渡してエラーを発生させる
       limit: { count: 10, type: "unknown" },
     });
-    expect(() => selectRuleBasedOnLimit(todoModule, config)).toThrowError(
-      "Got unknown limit",
-    );
+    expect(() =>
+      selectRuleBasedOnLimit(suppressions, createESLintConfigSubset(), config),
+    ).toThrowError("Got unknown limit");
   });
 });
 
@@ -90,6 +119,13 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+            rule2: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: {
             count: 4,
@@ -101,7 +137,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -126,6 +166,13 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+            rule2: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 4, type: "file" },
         });
@@ -134,7 +181,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -149,12 +200,22 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 2, type: "file" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -167,23 +228,38 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: false },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 1, type: "file" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
         const config = createCorrectConfig({
           limit: { count: 1, type: "file" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          createESLintConfigSubset(),
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
     });
@@ -215,6 +291,13 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+            rule2: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 3, type: "file" },
         });
@@ -226,7 +309,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -249,6 +336,13 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+            rule2: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 2, type: "file" },
         });
@@ -264,18 +358,27 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
         const config = createCorrectConfig({
           limit: { count: 1, type: "file" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          createESLintConfigSubset(),
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
     });
@@ -307,6 +410,13 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+            rule2: { fixable: false },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 4, type: "file" },
         });
@@ -315,7 +425,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -340,6 +454,13 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: false },
+            rule2: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 4, type: "file" },
         });
@@ -348,7 +469,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -363,24 +488,39 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: false },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 2, type: "file" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
         const config = createCorrectConfig({
           autoFixableOnly: false,
           limit: { count: 1, type: "file" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          createESLintConfigSubset(),
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
     });
@@ -413,6 +553,13 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: false },
+            rule2: { fixable: false },
+          },
+        });
         const config = createCorrectConfig({
           autoFixableOnly: false,
           limit: { count: 3, type: "file" },
@@ -426,7 +573,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -449,6 +600,13 @@ describe("selectRuleBasedOnFilesLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: false },
+            rule2: { fixable: false },
+          },
+        });
         const config = createCorrectConfig({
           autoFixableOnly: false,
           limit: { count: 2, type: "file" },
@@ -466,12 +624,17 @@ describe("selectRuleBasedOnFilesLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
         const config = createCorrectConfig({
           autoFixableOnly: false,
           limit: { count: 1, type: "file" },
@@ -479,7 +642,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnFilesLimit(todoModule, config);
+        const result = selectRuleBasedOnFilesLimit(
+          suppressions,
+          createESLintConfigSubset(),
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
     });
@@ -507,6 +674,13 @@ describe("selectRuleBasedOnFilesLimit", () => {
           },
         },
       });
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+      const eslintConfig = createESLintConfigSubset({
+        rules: {
+          rule1: { fixable: false },
+          rule2: { fixable: false },
+        },
+      });
       const config = createCorrectConfig({
         autoFixableOnly: false,
         exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
@@ -517,7 +691,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
         success: true,
       };
 
-      const result = selectRuleBasedOnFilesLimit(todoModule, config);
+      const result = selectRuleBasedOnFilesLimit(
+        suppressions,
+        eslintConfig,
+        config,
+      );
       expect(result).toStrictEqual(expected);
     });
 
@@ -541,6 +719,13 @@ describe("selectRuleBasedOnFilesLimit", () => {
           },
         },
       });
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+      const eslintConfig = createESLintConfigSubset({
+        rules: {
+          rule1: { fixable: false },
+          rule2: { fixable: true },
+        },
+      });
       const config = createCorrectConfig({
         autoFixableOnly: false,
         exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
@@ -548,7 +733,11 @@ describe("selectRuleBasedOnFilesLimit", () => {
       });
       const expected: SelectionResult = { success: false };
 
-      const result = selectRuleBasedOnFilesLimit(todoModule, config);
+      const result = selectRuleBasedOnFilesLimit(
+        suppressions,
+        eslintConfig,
+        config,
+      );
       expect(result).toStrictEqual(expected);
     });
   });
@@ -558,10 +747,15 @@ describe("selectRuleBasedOnFilesLimit", () => {
 
     it("should throw an error if limit count is lte 0", () => {
       const todoModule = createTodoModuleV2({});
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const config = createCorrectConfig({ limit: { count: 0, type: "file" } });
 
       expect(() =>
-        selectRuleBasedOnFilesLimit(todoModule, config),
+        selectRuleBasedOnFilesLimit(
+          suppressions,
+          createESLintConfigSubset(),
+          config,
+        ),
       ).toThrowError("The file limit must be greater than 0");
     });
   });
@@ -591,6 +785,13 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+            rule2: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 5, type: "violation" },
         });
@@ -599,7 +800,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -620,6 +825,13 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+            rule2: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 4, type: "violation" },
         });
@@ -628,7 +840,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -642,12 +858,22 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 5, type: "violation" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -660,23 +886,38 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: false },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 4, type: "violation" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
         const config = createCorrectConfig({
           limit: { count: 1, type: "violation" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          createESLintConfigSubset(),
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
     });
@@ -708,6 +949,13 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+            rule2: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 3, type: "violation" },
         });
@@ -719,7 +967,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -742,6 +994,13 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+            rule2: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 4, type: "violation" },
         });
@@ -757,7 +1016,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -770,17 +1033,28 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 2, type: "violation" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
         const config = createCorrectConfig({
           limit: {
             count: 1,
@@ -789,7 +1063,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          createESLintConfigSubset(),
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
     });
@@ -820,6 +1098,13 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: true },
+            rule2: { fixable: false },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 5, type: "violation" },
         });
@@ -828,7 +1113,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -849,6 +1138,13 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: false },
+            rule2: { fixable: true },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 4, type: "violation" },
         });
@@ -857,7 +1153,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -870,23 +1170,38 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: false },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 4, type: "violation" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
         const config = createCorrectConfig({
           limit: { count: 1, type: "violation" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          createESLintConfigSubset(),
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
     });
@@ -919,6 +1234,13 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: false },
+            rule2: { fixable: false },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 3, type: "violation" },
         });
@@ -930,7 +1252,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -953,6 +1279,13 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: false },
+            rule2: { fixable: false },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 4, type: "violation" },
         });
@@ -968,7 +1301,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           success: true,
         };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
@@ -981,23 +1318,38 @@ describe("selectRuleBasedOnViolationsLimit", () => {
             },
           },
         });
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+        const eslintConfig = createESLintConfigSubset({
+          rules: {
+            rule1: { fixable: false },
+          },
+        });
         const config = createCorrectConfig({
           limit: { count: 2, type: "violation" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          eslintConfig,
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
 
       it("should return success: false if todo is empty", () => {
         const todoModule = createTodoModuleV2({});
+        const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
         const config = createCorrectConfig({
           limit: { count: 1, type: "violation" },
         });
         const expected: SelectionResult = { success: false };
 
-        const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+        const result = selectRuleBasedOnViolationsLimit(
+          suppressions,
+          createESLintConfigSubset(),
+          config,
+        );
         expect(result).toStrictEqual(expected);
       });
     });
@@ -1023,6 +1375,13 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           },
         },
       });
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+      const eslintConfig = createESLintConfigSubset({
+        rules: {
+          rule1: { fixable: false },
+          rule2: { fixable: false },
+        },
+      });
       const config = createCorrectConfig({
         autoFixableOnly: false,
         exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
@@ -1033,7 +1392,11 @@ describe("selectRuleBasedOnViolationsLimit", () => {
         success: true,
       };
 
-      const result = selectRuleBasedOnViolationsLimit(todoModule, config);
+      const result = selectRuleBasedOnViolationsLimit(
+        suppressions,
+        eslintConfig,
+        config,
+      );
       expect(result).toStrictEqual(expected);
     });
 
@@ -1053,14 +1416,25 @@ describe("selectRuleBasedOnViolationsLimit", () => {
           },
         },
       });
-      const options = createCorrectConfig({
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+      const eslintConfig = createESLintConfigSubset({
+        rules: {
+          rule1: { fixable: false },
+          rule2: { fixable: true },
+        },
+      });
+      const config = createCorrectConfig({
         autoFixableOnly: false,
         exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
         limit: { count: 1, type: "violation" },
       });
       const expected: SelectionResult = { success: false };
 
-      const result = selectRuleBasedOnViolationsLimit(todoModule, options);
+      const result = selectRuleBasedOnViolationsLimit(
+        suppressions,
+        eslintConfig,
+        config,
+      );
       expect(result).toStrictEqual(expected);
     });
   });
@@ -1070,12 +1444,17 @@ describe("selectRuleBasedOnViolationsLimit", () => {
 
     it("should throw an error if limit count is lte 0", () => {
       const todoModule = createTodoModuleV2({});
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const config = createCorrectConfig({
         limit: { count: 0, type: "violation" },
       });
 
       expect(() =>
-        selectRuleBasedOnViolationsLimit(todoModule, config),
+        selectRuleBasedOnViolationsLimit(
+          suppressions,
+          createESLintConfigSubset(),
+          config,
+        ),
       ).toThrowError("The violation limit must be greater than 0");
     });
   });
