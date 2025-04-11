@@ -7,10 +7,10 @@ import type { MaybePromise } from "../utils/types";
 import type { Action } from "./index";
 
 import { configWithDefault } from "../config/config";
-import { launchRemoteESLintTodoCore } from "../remote/client";
+import { launchRemoteESLintTodoCore } from "../worker/core/client";
 import { defineAction, prepareAction } from "./index";
 
-vi.mock("../remote/client", () => ({
+vi.mock("../worker/core/client", () => ({
   launchRemoteESLintTodoCore: vi.fn(),
 }));
 
