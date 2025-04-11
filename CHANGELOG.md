@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Implement MCP server &nbsp;-&nbsp; by **sushichan044** [<samp>(d133c)</samp>](https://github.com/sushichan044/eslint-todo/commit/d133cfc)
+- Add `--mcp` flag to use CLI as MCP server &nbsp;-&nbsp; by **sushichan044** [<samp>(4ae30)</samp>](https://github.com/sushichan044/eslint-todo/commit/4ae3032)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.1.3...0.1.4)
+
 ## 0.1.3
 
 ### &nbsp;&nbsp;&nbsp;Features
