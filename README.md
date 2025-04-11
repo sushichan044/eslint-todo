@@ -8,6 +8,7 @@ Simple tool to temporarily disable existing ESLint violations like `.rubocop_tod
 It also has a utility that helps reducing ignored violations at your pace.
 
 This tool is designed to work with AI Agents such as [Devin](https://devin.ai/).
+
 And now eslint-todo also provides MCP server! [See: Use as MCP server](#use-as-mcp-server-experimental)
 
 > [!NOTE]
