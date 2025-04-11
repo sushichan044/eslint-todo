@@ -36,7 +36,7 @@ export type Action<
     : (api: ActionAPI<Hooks>, input: Input) => MaybePromise<Return>;
 
 /**
- * Define a action.
+ * Define an action.
  *
  * @package
  */
