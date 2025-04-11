@@ -3,7 +3,10 @@ import { createConsola } from "consola";
 import { colorize } from "consola/utils";
 import { relative } from "pathe";
 
-import { version as packageVersion } from "../../package.json";
+import {
+  name as packageName,
+  version as packageVersion,
+} from "../../package.json";
 import { prepareAction } from "../action";
 import { deleteRuleAction } from "../action/delete-rule";
 import { genAction } from "../action/gen";
@@ -11,6 +14,7 @@ import { selectRulesToFixAction } from "../action/select-rule";
 import { resolveConfig } from "../config/resolve";
 import { ESLintTodoCore } from "../index";
 import { createESLintConfigSubset, readESLintConfig } from "../lib/eslint";
+import { startMcpServerWithStdio } from "../mcp/stdio";
 import { parseArguments } from "./arguments";
 
 const consola = createConsola({ formatOptions: { date: false } });
@@ -44,6 +48,12 @@ const cli = defineCommand({
     "correct": {
       default: false,
       description: "Launch the correct mode (default: false)",
+      required: false,
+      type: "boolean",
+    },
+    "mcp": {
+      default: false,
+      description: "Launch the MCP server.",
       required: false,
       type: "boolean",
     },
@@ -123,6 +133,7 @@ const cli = defineCommand({
       },
       mode: {
         correct: args.correct,
+        mcp: args.mcp,
       },
       root: args.root as string | undefined,
       todoFile: args.todoFile as string | undefined,
@@ -140,6 +151,25 @@ const cli = defineCommand({
       cliCwd,
       eslintTodoCore.getTodoModulePath().absolute,
     );
+
+    if (context.mode === "mcp") {
+      const stopMcpServer = await startMcpServerWithStdio({
+        config,
+        eslintConfig: eslintConfigSubset,
+      });
+
+      process.on("SIGINT", () => {
+        stopMcpServer()
+          .then(() => {
+            process.exitCode = 0;
+          })
+          .catch((error) => {
+            consola.error(error);
+            process.exitCode = 1;
+          });
+      });
+      return;
+    }
 
     if (context.mode === "generate") {
       const genActionExecutor = prepareAction(genAction, {
@@ -263,7 +293,10 @@ If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
     throw new Error(`Unknown mode: ${JSON.stringify(context.mode)}`);
   },
   setup({ args }) {
-    consola.info(`eslint-todo CLI ${packageVersion}`);
+    if (!args.mcp) {
+      // When used as MCP server, we should not output anything not satisfies MCP transport protocol.
+      consola.info(`${packageName} CLI ${packageVersion}`);
+    }
 
     switch (true) {
       case args.debug: {

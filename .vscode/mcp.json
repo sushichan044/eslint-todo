@@ -1,0 +1,14 @@
+{
+  "servers": {
+    "eslint-todo": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/bin/eslint-todo.mjs",
+        "--mcp",
+        "--root",
+        "${workspaceFolder}"
+      ]
+    }
+  }
+}
