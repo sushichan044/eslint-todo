@@ -3,14 +3,14 @@ import type { Mock } from "vitest";
 import { Hookable } from "hookable";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { MaybePromise } from "../../utils/types";
-import type { CLIAction } from "./index";
+import type { MaybePromise } from "../utils/types";
+import type { Action } from "./index";
 
-import { configWithDefault } from "../../config/config";
-import { launchRemoteESLintTodoCore } from "../../remote/client";
+import { configWithDefault } from "../config/config";
+import { launchRemoteESLintTodoCore } from "../remote/client";
 import { defineAction, prepareAction } from "./index";
 
-vi.mock("../../remote/client", () => ({
+vi.mock("../remote/client", () => ({
   launchRemoteESLintTodoCore: vi.fn(),
 }));
 
@@ -35,7 +35,7 @@ describe("prepareAction", () => {
 
   describe("Prepared Action Input and Output", () => {
     it("should not accept input if action has no input", async () => {
-      const actionWithNoInputs = vi.fn<CLIAction<never>>();
+      const actionWithNoInputs = vi.fn<Action<never>>();
       const config = configWithDefault();
 
       const preparedAction = prepareAction(actionWithNoInputs, {
@@ -56,7 +56,7 @@ describe("prepareAction", () => {
 
     it("should accept input of action and return output of action", async () => {
       const actionWithInputs = vi
-        .fn<CLIAction<"input", "result">>()
+        .fn<Action<"input", "result">>()
         .mockResolvedValue("result");
       const config = configWithDefault();
 
@@ -83,7 +83,7 @@ describe("prepareAction", () => {
 
   describe("When action is succeed", () => {
     it("should call remoteService.terminate after action is resolved", async () => {
-      const action = vi.fn<CLIAction<never, null>>().mockResolvedValue(null);
+      const action = vi.fn<Action<never, null>>().mockResolvedValue(null);
 
       const preparedAction = prepareAction(action, {
         config: configWithDefault(),
@@ -96,9 +96,7 @@ describe("prepareAction", () => {
 
   describe("When action is failed", () => {
     it("should rethrow error and call remoteService.terminate", async () => {
-      const action = vi
-        .fn<CLIAction<never>>()
-        .mockRejectedValue(new TestError());
+      const action = vi.fn<Action<never>>().mockRejectedValue(new TestError());
 
       const preparedAction = prepareAction(action, {
         config: configWithDefault(),
