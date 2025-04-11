@@ -5,10 +5,10 @@ import { createHooks } from "hookable";
 
 import type { Config } from "../config";
 import type { ESLintConfigSubset } from "../lib/eslint";
-import type { RemoteESLintTodoCore } from "../remote/core";
 import type { DeepPartial, IsNever, MaybePromise } from "../utils/types";
+import type { RemoteESLintTodoCore } from "../worker/core";
 
-import { launchRemoteESLintTodoCore } from "../remote/client";
+import { launchRemoteESLintTodoCore } from "../worker/core/client";
 
 type HookHandlers<Hooks extends Record<string, HookCallback>> = {
   [K in HookKeys<Hooks>]: Hooks[K];

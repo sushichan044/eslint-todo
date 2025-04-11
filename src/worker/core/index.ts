@@ -3,10 +3,10 @@ import * as Comlink from "comlink";
 import nodeEndpoint from "comlink/dist/esm/node-adapter.mjs";
 import { parentPort } from "node:worker_threads";
 
-import type { UserConfig } from "../config";
-import type { IESLintTodoCoreLike } from "../types";
+import type { UserConfig } from "../../config";
+import type { IESLintTodoCoreLike } from "../../types";
 
-import { ESLintTodoCore } from "../index";
+import { ESLintTodoCore } from "../../index";
 
 if (parentPort == null)
   throw new Error("This module must be run in a worker thread.");

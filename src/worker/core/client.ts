@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { Worker } from "node:worker_threads";
 import { dirname, join } from "pathe";
 
-import type { RemoteESLintTodoCore } from "./core";
+import type { RemoteESLintTodoCore } from ".";
 
 type RemoteCore = {
   RemoteESLintTodoCore: Comlink.Remote<typeof RemoteESLintTodoCore>;
@@ -28,7 +28,7 @@ type RemoteCore = {
  */
 export const launchRemoteESLintTodoCore = (): RemoteCore => {
   const worker = new Worker(
-    fileURLToPath(join(dirname(import.meta.url), "core.mjs")),
+    fileURLToPath(join(dirname(import.meta.url), "index.mjs")),
   );
 
   const remoteCore = Comlink.wrap<typeof RemoteESLintTodoCore>(
