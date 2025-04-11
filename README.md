@@ -49,7 +49,7 @@ Requires:
 2. Run `eslint-todo` to generate ESLint Todo file at the directory where `eslint.config.js` is placed.
 
     ```bash
-    npx eslint-todo
+    npx @sushichan044/eslint-todo
     ```
 
 ## Usage
