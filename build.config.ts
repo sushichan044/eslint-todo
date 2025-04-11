@@ -26,6 +26,7 @@ export default defineBuildConfig({
       );
     },
     "build:done": async () => {
+      // we must build json schema via npm script since the script requires vite-node runtime.
       await sh(["pnpm", "run", "build:json-schema"]);
     },
     "rollup:options": (_, options) => {
