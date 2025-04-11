@@ -144,15 +144,26 @@ const cli = defineCommand({
 
     const updateActionExecutor = prepareAction(updateAction, {
       config,
-      consola,
       eslintConfig: eslintConfigSubset,
+      hooks: {
+        "after:update": () => {
+          consola.success("ESLint todo file updated!");
+        },
+        "before:update": () => {
+          consola.start(
+            "Detected old version of todo file. Automatically upgrading ...",
+          );
+        },
+        "warn:no-upgrade-available": () => {
+          consola.warn("No upgrade available!");
+        },
+      },
     });
     await updateActionExecutor();
 
     if (context.mode === "generate") {
       const genActionExecutor = prepareAction(genAction, {
         config,
-        consola,
         eslintConfig: eslintConfigSubset,
         hooks: {
           "after:lint": () => {
@@ -196,7 +207,6 @@ If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
 
       const selectRulesToFixExecutor = prepareAction(selectRulesToFixAction, {
         config,
-        consola,
         eslintConfig: eslintConfigSubset,
         hooks: {
           "before:select-rule": () => {
@@ -223,7 +233,6 @@ If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
 
       const deleteRuleExecutor = prepareAction(deleteRuleAction, {
         config,
-        consola,
         eslintConfig: eslintConfigSubset,
         hooks: {
           "after:delete-and-write": () => {
