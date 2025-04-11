@@ -3,22 +3,29 @@
 import { TodoModuleV1Handler } from "../../todofile/v1";
 import { defineAction } from "./index";
 
-export const updateAction = defineAction(async ({ core, logger }) => {
-  const currentModule = await core.readTodoModule();
-  if (!TodoModuleV1Handler.isVersion(currentModule)) {
-    return;
-  }
+type Hooks = {
+  "before:update": () => void;
 
-  logger.start(
-    "Detected old version of todo file. Automatically upgrading ...",
-  );
+  "after:update": () => void;
+  "warn:no-upgrade-available": () => void;
+};
 
-  const nextModule = TodoModuleV1Handler.upgradeToNextVersion(currentModule);
-  if (nextModule === false) {
-    logger.error("Upgrade failed!");
-    return;
-  }
+export const updateAction = defineAction<void, void, Hooks>(
+  async ({ core, hooks }) => {
+    const currentModule = await core.readTodoModule();
+    if (!TodoModuleV1Handler.isVersion(currentModule)) {
+      return;
+    }
 
-  await core.writeTodoModule(nextModule);
-  logger.success("Upgrade finished!");
-});
+    await hooks.callHook("before:update");
+
+    const nextModule = TodoModuleV1Handler.upgradeToNextVersion(currentModule);
+    if (nextModule === false) {
+      await hooks.callHook("warn:no-upgrade-available");
+      return;
+    }
+
+    await core.writeTodoModule(nextModule);
+    await hooks.callHook("after:update");
+  },
+);

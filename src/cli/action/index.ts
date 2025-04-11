@@ -1,5 +1,4 @@
 import type { Remote } from "comlink";
-import type { ConsolaInstance } from "consola";
 import type { Hookable, HookCallback, HookKeys } from "hookable";
 
 import { createHooks } from "hookable";
@@ -22,7 +21,6 @@ type ActionAPI<
   core: Remote<RemoteESLintTodoCore>;
   eslintConfig: ESLintConfigSubset;
   hooks: Hookable<Hooks>;
-  logger: ConsolaInstance;
 };
 
 /**
@@ -56,7 +54,6 @@ type ActionRunnerOptions<
   Hooks extends Record<string, HookCallback> = Record<string, never>,
 > = {
   config: Config;
-  consola: ConsolaInstance;
   eslintConfig: ESLintConfigSubset;
   hooks?: DeepPartial<HookHandlers<Hooks>>;
 };
@@ -97,7 +94,6 @@ export function prepareAction<
       core: remoteCore,
       eslintConfig: options.eslintConfig,
       hooks,
-      logger: options.consola,
     } satisfies ActionAPI<Hooks>;
 
     try {

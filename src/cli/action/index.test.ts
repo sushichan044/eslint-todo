@@ -1,6 +1,5 @@
 import type { Mock } from "vitest";
 
-import consola from "consola";
 import { Hookable } from "hookable";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -10,8 +9,6 @@ import type { CLIAction } from "./index";
 import { configWithDefault } from "../../config/config";
 import { launchRemoteESLintTodoCore } from "../../remote/client";
 import { defineAction, prepareAction } from "./index";
-
-consola.mockTypes(() => vi.fn());
 
 vi.mock("../../remote/client", () => ({
   launchRemoteESLintTodoCore: vi.fn(),
@@ -43,7 +40,6 @@ describe("prepareAction", () => {
 
       const preparedAction = prepareAction(actionWithNoInputs, {
         config,
-        consola,
         eslintConfig: { rules: {} },
       });
       await preparedAction();
@@ -55,7 +51,6 @@ describe("prepareAction", () => {
         // We are not testing hooks here, so we can safely assign any value to it
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         hooks: expect.any(Hookable),
-        logger: consola,
       });
     });
 
@@ -67,7 +62,6 @@ describe("prepareAction", () => {
 
       const preparedAction = prepareAction(actionWithInputs, {
         config,
-        consola,
         eslintConfig: { rules: {} },
       });
 
@@ -80,7 +74,6 @@ describe("prepareAction", () => {
           // We are not testing hooks here, so we can safely assign any value to it
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           hooks: expect.any(Hookable),
-          logger: consola,
         },
         "input",
       );
@@ -94,7 +87,6 @@ describe("prepareAction", () => {
 
       const preparedAction = prepareAction(action, {
         config: configWithDefault(),
-        consola,
         eslintConfig: { rules: {} },
       });
       await preparedAction();
@@ -110,7 +102,6 @@ describe("prepareAction", () => {
 
       const preparedAction = prepareAction(action, {
         config: configWithDefault(),
-        consola,
         eslintConfig: { rules: {} },
       });
       await expect(preparedAction()).rejects.toThrow(TestError);
@@ -141,7 +132,6 @@ describe("prepareAction", () => {
 
       const preparedAction = prepareAction(action, {
         config: configWithDefault(),
-        consola,
         eslintConfig: { rules: {} },
         hooks: {
           after: afterHook,
