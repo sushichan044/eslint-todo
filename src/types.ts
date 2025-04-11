@@ -1,6 +1,5 @@
 import type { ESLint } from "eslint";
 
-import type { ESLintConfig } from "./lib/eslint";
 import type { TodoFilePath } from "./path";
 import type { TodoModuleLike } from "./todofile";
 import type { TodoModuleV2 } from "./todofile/v2";
@@ -32,11 +31,6 @@ interface ESLintTodoCoreLike {
    * @returns LintResults from ESLint
    */
   lint(): Promise<ESLint.LintResult[]>;
-
-  /**
-   * Read the ESLint config with resolved rule metadata.
-   */
-  readESLintConfig(): Promise<ESLintConfig>;
 
   /**
    * Empty the todo module and reset to the default.

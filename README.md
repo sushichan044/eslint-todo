@@ -8,11 +8,13 @@ Simple tool to temporarily disable existing ESLint violations like `.rubocop_tod
 It also has a utility that helps reducing ignored violations at your pace.
 
 This tool is designed to work with AI Agents such as [Devin](https://devin.ai/).
+And now eslint-todo also provides MCP server! [See: Use as MCP server](#use-as-mcp-server-experimental)
 
 > [!NOTE]
 > This tool only supports ESLint Flat Config with ES Module.
 >
 > If you want to use this tool to supress ESLint errors when migrating to ESLint Flat Config,
+>
 > you first need to create Flat Config and then use this tool. Maybe utilities like [@eslint/compat](https://github.com/eslint/rewrite/tree/main/packages/compat) can help you.
 
 ## Installation
@@ -54,7 +56,7 @@ Requires:
 ### Generate ESLint Todo file
 
 ```bash
-npx eslint-todo
+npx @sushichan044/eslint-todo
 ```
 
 ### Correct ignored errors
@@ -117,6 +119,33 @@ Use `npx eslint-todo --help` to see all available options.
 > [!WARNING]
 > Config from CLI flag overwrites the one in the configuration file.
 > See the [unjs/defu documentation](https://github.com/unjs/defu) for the actual overwriting behavior.
+
+## Use as MCP server (Experimental)
+
+eslint-todo provides some useful tools to AI Agents via MCP.
+
+You mus specify `--mcp` and `--root <root path>`.
+
+### Setup for VSCode
+
+update `.vscode/mcp.json` in your workspace:
+
+```json
+{
+  "servers": {
+    "eslint-todo": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@sushichan044/eslint-todo",
+        "--mcp",
+        "--root",
+        "${workspaceFolder}"
+      ]
+    }
+  }
+}
+```
 
 ## Misc
 

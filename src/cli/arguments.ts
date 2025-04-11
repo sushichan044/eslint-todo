@@ -18,6 +18,7 @@ type Input = {
   };
   mode: {
     correct: boolean;
+    mcp: boolean;
   };
   root: string | undefined;
   todoFile: string | undefined;
@@ -25,7 +26,7 @@ type Input = {
 
 type ParsedCLIInput = {
   context: {
-    mode: "correct" | "generate";
+    mode: "correct" | "generate" | "mcp";
   };
   userConfig: UserConfig;
 };
@@ -40,9 +41,19 @@ type ParsedCLIInput = {
 export const parseArguments = (input: Input): ParsedCLIInput => {
   // const relativeTodoFilePath = relative(input.root, input.todoFileAbsolutePath);
 
+  const mode = (() => {
+    if (input.mode.correct) {
+      return "correct";
+    }
+    if (input.mode.mcp) {
+      return "mcp";
+    }
+    return "generate";
+  })();
+
   return {
     context: {
-      mode: input.mode.correct ? "correct" : "generate",
+      mode,
     },
     userConfig: {
       correct: parseCorrectMode(input.correct),

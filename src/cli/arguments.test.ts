@@ -14,6 +14,7 @@ describe("CLI Arguments", () => {
       },
       mode: {
         correct: true,
+        mcp: false,
       },
       root: undefined,
       todoFile: "custom-todo.json",
@@ -35,6 +36,7 @@ describe("CLI Arguments", () => {
       },
       mode: {
         correct: false,
+        mcp: false,
       },
       root: "/custom/root",
       todoFile: undefined,
@@ -42,6 +44,26 @@ describe("CLI Arguments", () => {
 
     expect(result.context.mode).toBe("generate");
     expect(result.userConfig.root).toBe("/custom/root");
+  });
+
+  it("parseArguments should handle mcp mode", () => {
+    const result = parseArguments({
+      correct: {
+        "autoFixableOnly": undefined,
+        "exclude.rules": undefined,
+        "limit.count": undefined,
+        "limit.type": undefined,
+        "partialSelection": undefined,
+      },
+      mode: {
+        correct: false,
+        mcp: true,
+      },
+      root: undefined,
+      todoFile: undefined,
+    });
+
+    expect(result.context.mode).toBe("mcp");
   });
 
   it("parseArguments should handle exclude.rules", () => {
@@ -55,6 +77,7 @@ describe("CLI Arguments", () => {
       },
       mode: {
         correct: true,
+        mcp: false,
       },
       root: undefined,
       todoFile: undefined,

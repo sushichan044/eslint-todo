@@ -11,6 +11,7 @@ export default defineBuildConfig({
     "src/cli/index.ts",
     "src/config/index.ts",
     "src/eslint/index.ts",
+    "src/mcp/index.ts",
     "src/remote/core.ts",
     "src/remote/client.ts",
   ],
