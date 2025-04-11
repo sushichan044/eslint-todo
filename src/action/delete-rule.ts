@@ -1,7 +1,7 @@
-import type { RuleSelection } from "../../operation/select-rule";
+import type { RuleSelection } from "../operation/select-rule";
 
-import { deleteRule } from "../../operation/delete-rule";
-import { TodoModuleV2Handler } from "../../todofile/v2";
+import { deleteRule } from "../operation/delete-rule";
+import { TodoModuleV2Handler } from "../todofile/v2";
 import { defineAction } from "./index";
 
 type Input = RuleSelection;

@@ -4,14 +4,14 @@ import { colorize } from "consola/utils";
 import { relative } from "pathe";
 
 import { version as packageVersion } from "../../package.json";
+import { prepareAction } from "../action";
+import { deleteRuleAction } from "../action/delete-rule";
+import { genAction } from "../action/gen";
+import { selectRulesToFixAction } from "../action/select-rule";
+import { updateAction } from "../action/update";
 import { resolveConfig } from "../config/resolve";
 import { ESLintTodoCore } from "../index";
 import { createESLintConfigSubset, readESLintConfig } from "../lib/eslint";
-import { prepareAction } from "./action";
-import { deleteRuleAction } from "./action/delete-rule";
-import { genAction } from "./action/gen";
-import { selectRulesToFixAction } from "./action/select-rule";
-import { updateAction } from "./action/update";
 import { parseArguments } from "./arguments";
 
 const consola = createConsola({ formatOptions: { date: false } });

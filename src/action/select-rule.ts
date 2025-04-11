@@ -1,8 +1,8 @@
-import type { SelectionResult } from "../../operation/select-rule";
+import type { SelectionResult } from "../operation/select-rule";
 
-import { selectRuleBasedOnLimit } from "../../operation/select-rule";
-import { SuppressionsJsonGenerator } from "../../suppressions-json";
-import { TodoModuleV2Handler } from "../../todofile/v2";
+import { selectRuleBasedOnLimit } from "../operation/select-rule";
+import { SuppressionsJsonGenerator } from "../suppressions-json";
+import { TodoModuleV2Handler } from "../todofile/v2";
 import { defineAction } from "./index";
 
 type Hooks = {

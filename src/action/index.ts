@@ -3,12 +3,12 @@ import type { Hookable, HookCallback, HookKeys } from "hookable";
 
 import { createHooks } from "hookable";
 
-import type { Config } from "../../config";
-import type { ESLintConfigSubset } from "../../lib/eslint";
-import type { RemoteESLintTodoCore } from "../../remote/core";
-import type { DeepPartial, IsNever, MaybePromise } from "../../utils/types";
+import type { Config } from "../config";
+import type { ESLintConfigSubset } from "../lib/eslint";
+import type { RemoteESLintTodoCore } from "../remote/core";
+import type { DeepPartial, IsNever, MaybePromise } from "../utils/types";
 
-import { launchRemoteESLintTodoCore } from "../../remote/client";
+import { launchRemoteESLintTodoCore } from "../remote/client";
 
 type HookHandlers<Hooks extends Record<string, HookCallback>> = {
   [K in HookKeys<Hooks>]: Hooks[K];
@@ -26,7 +26,7 @@ type ActionAPI<
 /**
  * @package
  */
-export type CLIAction<
+export type Action<
   Input = unknown,
   Return = unknown,
   Hooks extends Record<string, HookCallback> = Record<string, never>,
@@ -36,7 +36,7 @@ export type CLIAction<
     : (api: ActionAPI<Hooks>, input: Input) => MaybePromise<Return>;
 
 /**
- * Define a CLI action.
+ * Define a action.
  *
  * @package
  */
@@ -45,7 +45,7 @@ export const defineAction = <
   Return = unknown,
   Hooks extends Record<string, HookCallback> = Record<string, never>,
 >(
-  action: CLIAction<Input, Return, Hooks>,
+  action: Action<Input, Return, Hooks>,
 ) => {
   return action;
 };
@@ -70,7 +70,7 @@ export function prepareAction<
   Return = unknown,
   Hooks extends Record<string, HookCallback> = Record<string, never>,
 >(
-  action: CLIAction<Input, Return, Hooks>,
+  action: Action<Input, Return, Hooks>,
   options: ActionRunnerOptions<Hooks>,
 ): IsNever<Input> extends true
   ? () => Promise<Return>
@@ -99,7 +99,7 @@ export function prepareAction<
     try {
       const result =
         input === undefined
-          ? await (action as CLIAction<never, Return, Hooks>)(actionApi)
+          ? await (action as Action<never, Return, Hooks>)(actionApi)
           : await action(actionApi, input);
 
       return result;
