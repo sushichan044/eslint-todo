@@ -8,7 +8,6 @@ import { prepareAction } from "../action";
 import { deleteRuleAction } from "../action/delete-rule";
 import { genAction } from "../action/gen";
 import { selectRulesToFixAction } from "../action/select-rule";
-import { updateAction } from "../action/update";
 import { resolveConfig } from "../config/resolve";
 import { ESLintTodoCore } from "../index";
 import { createESLintConfigSubset, readESLintConfig } from "../lib/eslint";
@@ -141,25 +140,6 @@ const cli = defineCommand({
       cliCwd,
       eslintTodoCore.getTodoModulePath().absolute,
     );
-
-    const updateActionExecutor = prepareAction(updateAction, {
-      config,
-      eslintConfig: eslintConfigSubset,
-      hooks: {
-        "after:update": () => {
-          consola.success("ESLint todo file updated!");
-        },
-        "before:update": () => {
-          consola.start(
-            "Detected old version of todo file. Automatically upgrading ...",
-          );
-        },
-        "warn:no-upgrade-available": () => {
-          consola.warn("No upgrade available!");
-        },
-      },
-    });
-    await updateActionExecutor();
 
     if (context.mode === "generate") {
       const genActionExecutor = prepareAction(genAction, {
