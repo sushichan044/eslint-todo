@@ -9,9 +9,9 @@ import type { TodoModuleLike } from "./todofile";
 import type { TodoModuleV2 } from "./todofile/v2";
 import type { ESLintInitializeOptions, IESLintTodoCoreLike } from "./types";
 
-import { generateTodoModuleCode } from "./codegen";
 import { configWithDefault } from "./config/config";
 import { resolveTodoModulePath } from "./path";
+import { TodoModuleSerializer } from "./serializer";
 import { TodoModuleV2Handler } from "./todofile/v2";
 import { initGitUtility } from "./utils/git";
 import { importDefault } from "./utils/import";
@@ -76,7 +76,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
 
     await writeFile(
       this.#todoFilePath.absolute,
-      generateTodoModuleCode(TodoModuleV2Handler.getDefaultTodo()),
+      TodoModuleSerializer.fromV2(TodoModuleV2Handler.getDefaultTodo()),
     );
   }
 
@@ -87,8 +87,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
     });
   }
 
-  async writeTodoModule(todo: TodoModuleLike): Promise<void> {
-    const todoModule = generateTodoModuleCode(todo);
+  async writeTodoModule(todoModule: string): Promise<void> {
     await writeFile(this.#todoFilePath.absolute, todoModule);
   }
 }

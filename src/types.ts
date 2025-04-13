@@ -1,7 +1,6 @@
 import type { ESLint } from "eslint";
 
 import type { TodoFilePath } from "./path";
-import type { TodoModuleLike } from "./todofile";
 import type { TodoModuleV2 } from "./todofile/v2";
 import type { MaybePromisifyAllMethods } from "./utils/types";
 
@@ -42,5 +41,5 @@ interface ESLintTodoCoreLike {
    */
   todoModuleHasUncommittedChanges(): Promise<boolean>;
 
-  writeTodoModule(todo: TodoModuleLike): Promise<void>;
+  writeTodoModule(todoModule: string): Promise<void>;
 }

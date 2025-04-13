@@ -1,14 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import type { TodoModuleLike } from "./todofile";
 // TODO: ここでは本当に TodoModuleV1Handler が必要
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { TodoModuleV1 } from "./todofile/v1";
 import type { TodoModuleV2 } from "./todofile/v2";
 
-import { generateTodoModuleCode } from "./codegen";
+import { TodoModuleSerializer } from "./serializer";
 
-describe("generateESLintTodoModule", () => {
+describe("TodoModuleSerializer", () => {
   it("can generate a TodoModule v1 JavaScript module", () => {
     const eslintTodo: TodoModuleV1 = {
       "no-console": {
@@ -21,7 +20,7 @@ describe("generateESLintTodoModule", () => {
       },
     };
 
-    const result = generateTodoModuleCode(eslintTodo);
+    const result = TodoModuleSerializer.fromV1(eslintTodo);
 
     expect(result).toMatchInlineSnapshot(`
       "/* eslint-disable */
@@ -61,7 +60,7 @@ describe("generateESLintTodoModule", () => {
       },
     };
 
-    const result = generateTodoModuleCode(eslintTodo);
+    const result = TodoModuleSerializer.fromV2(eslintTodo);
 
     expect(result).toMatchInlineSnapshot(`
       "/* eslint-disable */
@@ -86,24 +85,6 @@ describe("generateESLintTodoModule", () => {
           }
         }
       };
-      "
-    `);
-  });
-
-  it("should generate an empty JavaScript module if the module is empty", () => {
-    const eslintTodo: TodoModuleLike = {};
-
-    const result = generateTodoModuleCode(eslintTodo);
-
-    expect(result).toMatchInlineSnapshot(`
-      "/* eslint-disable */
-      /**
-       * Auto generated file by eslint-todo. DO NOT EDIT MANUALLY.
-       */
-
-      /* prettier-ignore */
-      // biome-ignore format: this is an auto-generated file
-      export default {};
       "
     `);
   });
