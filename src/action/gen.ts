@@ -1,3 +1,4 @@
+import { TodoModuleSerializer } from "../serializer";
 import { defineAction } from "./index";
 
 type Hooks = {
@@ -32,7 +33,7 @@ export const genAction = defineAction<never, void, Hooks>(
     const todo = await core.buildTodoFromLintResults(lintResults);
 
     await hooks.callHook("before:write");
-    await core.writeTodoModule(todo);
+    await core.writeTodoModule(TodoModuleSerializer.fromV2(todo));
     await hooks.callHook("after:write");
   },
 );

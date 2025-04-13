@@ -1,9 +1,9 @@
 import type { RuleSelection } from "../operation/select-rule";
 
 import { deleteRule } from "../operation/delete-rule";
+import { TodoModuleSerializer } from "../serializer";
 import { TodoModuleV2Handler } from "../todofile/v2";
 import { defineAction } from "./index";
-
 type Input = RuleSelection;
 
 type Hooks = {
@@ -31,7 +31,7 @@ export const deleteRuleAction = defineAction<Input, void, Hooks>(
     await hooks.callHook("before:delete-and-write");
 
     const newModule = deleteRule(currentModule, input);
-    await core.writeTodoModule(newModule);
+    await core.writeTodoModule(TodoModuleSerializer.fromV2(newModule));
 
     await hooks.callHook("after:delete-and-write");
   },
