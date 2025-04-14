@@ -66,8 +66,8 @@ importers:
         version: 3.24.2
     devDependencies:
       '@ryoppippi/unplugin-typia':
-        specifier: 2.1.4
-        version: 2.1.4(rollup@4.34.9)(typescript@5.8.3)(typia@9.1.1(@samchon/openapi@4.1.0)(typescript@5.8.3))(vite@6.2.6(@types/node@22.14.0)(jiti@2.4.2)(yaml@2.7.0))
+        specifier: 2.2.0
+        version: 2.2.0(rollup@4.34.9)(typescript@5.8.3)(typia@9.1.1(@samchon/openapi@4.1.0)(typescript@5.8.3))(vite@6.2.6(@types/node@22.14.0)(jiti@2.4.2)(yaml@2.7.0))
       '@samchon/openapi':
         specifier: 4.1.0
         version: 4.1.0
@@ -882,12 +882,12 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ryoppippi/unplugin-typia@2.1.4':
-    resolution: {integrity: sha512-pZtB5YhX0Egm4agc1gOn11IQiR4NnCmwvaea9kbwBImsCpR84gGayenzFDIJxkzv0U9iEBxZGUojuKnuzfpejg==}
+  '@ryoppippi/unplugin-typia@2.2.0':
+    resolution: {integrity: sha512-Qv3g1PNi/0XVx2v6I0NdtvNmqkVAmtDELXvL7KEULp/1AR7Lvo7zTRpd9FScJsnuupZxr7C9O+309V2Wx2/FvQ==}
     peerDependencies:
       svelte: ^5.25.2
       typescript: '>=4.8.0 <5.9.0'
-      typia: '>=8.0.0 <9.0.0'
+      typia: '>=8.0.0'
       vite: '>=3.0.0'
     peerDependenciesMeta:
       svelte:
@@ -5180,7 +5180,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.34.9':
     optional: true
 
-  '@ryoppippi/unplugin-typia@2.1.4(rollup@4.34.9)(typescript@5.8.3)(typia@9.1.1(@samchon/openapi@4.1.0)(typescript@5.8.3))(vite@6.2.6(@types/node@22.14.0)(jiti@2.4.2)(yaml@2.7.0))':
+  '@ryoppippi/unplugin-typia@2.2.0(rollup@4.34.9)(typescript@5.8.3)(typia@9.1.1(@samchon/openapi@4.1.0)(typescript@5.8.3))(vite@6.2.6(@types/node@22.14.0)(jiti@2.4.2)(yaml@2.7.0))':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.34.9)
       consola: 3.4.2
@@ -5775,7 +5775,7 @@ snapshots:
       chalk: 5.4.1
       cli-boxes: 3.0.0
       string-width: 7.2.0
-      type-fest: 4.36.0
+      type-fest: 4.38.0
       widest-line: 5.0.0
       wrap-ansi: 9.0.0
 
@@ -7951,7 +7951,7 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.26.2
       index-to-position: 0.1.2
-      type-fest: 4.36.0
+      type-fest: 4.38.0
 
   parse-ms@4.0.0: {}
 
@@ -8360,7 +8360,7 @@ snapshots:
       '@types/normalize-package-data': 2.4.4
       normalize-package-data: 6.0.2
       parse-json: 8.1.0
-      type-fest: 4.36.0
+      type-fest: 4.38.0
       unicorn-magic: 0.1.0
 
   readable-stream@3.6.2:
