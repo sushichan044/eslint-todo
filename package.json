@@ -114,7 +114,7 @@
       "typia"
     ],
     "overrides": {
-      "esbuild": "0.25.2"
+      "esbuild": "0.25.3"
     },
     "patchedDependencies": {
       "find-up@7.0.0": "patches/find-up@7.0.0.patch"
