@@ -71,7 +71,7 @@
     "mlly": "1.7.4",
     "pathe": "2.0.3",
     "tinyexec": "1.0.1",
-    "zod": "3.24.3"
+    "zod": "3.24.4"
   },
   "devDependencies": {
     "@ryoppippi/unplugin-typia": "2.5.0",
