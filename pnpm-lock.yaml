@@ -69,8 +69,8 @@ importers:
         version: 3.24.4
     devDependencies:
       '@ryoppippi/unplugin-typia':
-        specifier: 2.5.0
-        version: 2.5.0(rollup@4.34.9)(typescript@5.8.3)(typia@9.1.1(@samchon/openapi@4.2.0)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.3)(jiti@2.4.2)(yaml@2.7.0))
+        specifier: 2.6.2
+        version: 2.6.2(rollup@4.34.9)(typescript@5.8.3)(typia@9.1.1(@samchon/openapi@4.2.0)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.3)(jiti@2.4.2)(yaml@2.7.0))
       '@samchon/openapi':
         specifier: 4.2.0
         version: 4.2.0
@@ -870,12 +870,12 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ryoppippi/unplugin-typia@2.5.0':
-    resolution: {integrity: sha512-eQ/5aLiUNFyC8zni1ox6ZoLufmlOWjj/M5Nj/ZZ1KmHQXgCEbGwATIVuSRcAuYFKkHW6BC6ZZ/azoQWM1tSKhg==}
+  '@ryoppippi/unplugin-typia@2.6.2':
+    resolution: {integrity: sha512-nPhcmjKd2N7yijSjmxJaTlIyA1uka2SkvFtsvrMY8aaAW/ml8FeqaPCYOov7z/PMvbNkqI3OmEQ0EkECKUYOVg==}
     peerDependencies:
       svelte: ^5.28.2
       typescript: '>=4.8.0 <5.9.0'
-      typia: '>=9.1.1'
+      typia: '>=9.2.0'
       vite: '>=3.0.0'
     peerDependenciesMeta:
       svelte:
@@ -1521,9 +1521,6 @@ packages:
   confbox@0.1.8:
     resolution: {integrity: sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w==}
 
-  confbox@0.2.1:
-    resolution: {integrity: sha512-hkT3yDPFbs95mNCy1+7qNKC6Pro+/ibzYxtM2iqEigpf0sVw+bg4Zh9/snjsBcf990vfIsg5+1U7VyiyBb3etg==}
-
   confbox@0.2.2:
     resolution: {integrity: sha512-1NB+BKqhtNipMsov4xI/NnhCKp9XG9NamYp5PVm9klAT0fsrNPjaFICsCFhNhwZJKNh7zB/3q8qXz0E9oaMNtQ==}
 
@@ -2018,9 +2015,6 @@ packages:
   express@5.1.0:
     resolution: {integrity: sha512-DT9ck5YIRU+8GYzzU5kT3eHGA5iL+1Zd0EutOmTE9Dtk+Tvuzd23VBU+ec7HPNSTxXYO55gPV/hq4pSBJDjFpA==}
     engines: {node: '>= 18'}
-
-  exsolve@1.0.1:
-    resolution: {integrity: sha512-Smf0iQtkQVJLaph8r/qS8C8SWfQkaq9Q/dFcD44MLbJj6DNhlWefVuaS21SjfqOsBbjVlKtbCj6L9ekXK6EZUg==}
 
   exsolve@1.0.5:
     resolution: {integrity: sha512-pz5dvkYYKQ1AHVrgOzBKWeP4u4FRb3a6DNK2ucr0OoNwYIU4QWsJ+NM36LLzORT+z845MzKHHhpXiUF5nvQoJg==}
@@ -4854,7 +4848,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.34.9':
     optional: true
 
-  '@ryoppippi/unplugin-typia@2.5.0(rollup@4.34.9)(typescript@5.8.3)(typia@9.1.1(@samchon/openapi@4.2.0)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.3)(jiti@2.4.2)(yaml@2.7.0))':
+  '@ryoppippi/unplugin-typia@2.6.2(rollup@4.34.9)(typescript@5.8.3)(typia@9.1.1(@samchon/openapi@4.2.0)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.3)(jiti@2.4.2)(yaml@2.7.0))':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.34.9)
       consola: 3.4.2
@@ -5680,8 +5674,6 @@ snapshots:
 
   confbox@0.1.8: {}
 
-  confbox@0.2.1: {}
-
   confbox@0.2.2: {}
 
   consola@3.4.2: {}
@@ -6376,8 +6368,6 @@ snapshots:
       vary: 1.1.2
     transitivePeerDependencies:
       - supports-color
-
-  exsolve@1.0.1: {}
 
   exsolve@1.0.5: {}
 
@@ -7523,8 +7513,8 @@ snapshots:
 
   pkg-types@2.1.0:
     dependencies:
-      confbox: 0.2.1
-      exsolve: 1.0.1
+      confbox: 0.2.2
+      exsolve: 1.0.5
       pathe: 2.0.3
 
   pluralize@8.0.0: {}

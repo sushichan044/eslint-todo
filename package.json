@@ -74,7 +74,7 @@
     "zod": "3.24.4"
   },
   "devDependencies": {
-    "@ryoppippi/unplugin-typia": "2.5.0",
+    "@ryoppippi/unplugin-typia": "2.6.2",
     "@samchon/openapi": "4.2.0",
     "@types/cross-spawn": "6.0.6",
     "@types/fs-extra": "11.0.4",
