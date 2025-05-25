@@ -70,7 +70,7 @@ importers:
     devDependencies:
       '@ryoppippi/unplugin-typia':
         specifier: 2.6.2
-        version: 2.6.2(rollup@4.34.9)(typescript@5.8.3)(typia@9.1.1(@samchon/openapi@4.3.0)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.3)(jiti@2.4.2)(yaml@2.7.0))
+        version: 2.6.2(rollup@4.34.9)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.0)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.3)(jiti@2.4.2)(yaml@2.7.0))
       '@samchon/openapi':
         specifier: 4.3.0
         version: 4.3.0
@@ -144,8 +144,8 @@ importers:
         specifier: 8.31.1
         version: 8.31.1(eslint@9.26.0(jiti@2.4.2))(typescript@5.8.3)
       typia:
-        specifier: 9.1.1
-        version: 9.1.1(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        specifier: 9.3.1
+        version: 9.3.1(@samchon/openapi@4.3.0)(typescript@5.8.3)
       unbuild:
         specifier: 3.5.0
         version: 3.5.0(typescript@5.8.3)
@@ -892,6 +892,9 @@ packages:
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
+
+  '@standard-schema/spec@1.0.0':
+    resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
   '@stylistic/eslint-plugin-ts@4.2.0':
     resolution: {integrity: sha512-j2o2GvOx9v66x8hmp/HJ+0T+nOppiO5ycGsCkifh7JPGgjxEhpkGmIGx3RWsoxpWbad3VCX8e8/T8n3+7ze1Zg==}
@@ -3983,11 +3986,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typia@9.1.1:
-    resolution: {integrity: sha512-fMgrd2VLGZoDjZZwWlgriotUiG38UEzcMD0ToJOhQ0bPr966mit0ZEy5TnDhm2RidXfejZOqHb7iOoTG3VHd4w==}
+  typia@9.3.1:
+    resolution: {integrity: sha512-a3rqaWE3j5ynK3nmBPEMngLfVP7FH3OrgC4xO4A4QQdcgdVL/nxTxdEqYuEjRCdcOgZCIqOt3CNoQaorOITArg==}
     hasBin: true
     peerDependencies:
-      '@samchon/openapi': '>=4.0.0 <5.0.0'
+      '@samchon/openapi': '>=4.3.1 <5.0.0'
       typescript: '>=4.8.0 <5.9.0'
 
   ufo@1.5.4:
@@ -4850,7 +4853,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.34.9':
     optional: true
 
-  '@ryoppippi/unplugin-typia@2.6.2(rollup@4.34.9)(typescript@5.8.3)(typia@9.1.1(@samchon/openapi@4.3.0)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.3)(jiti@2.4.2)(yaml@2.7.0))':
+  '@ryoppippi/unplugin-typia@2.6.2(rollup@4.34.9)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.0)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.3)(jiti@2.4.2)(yaml@2.7.0))':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.34.9)
       consola: 3.4.2
@@ -4862,7 +4865,7 @@ snapshots:
       pkg-types: 2.1.0
       type-fest: 4.38.0
       typescript: 5.8.3
-      typia: 9.1.1(@samchon/openapi@4.3.0)(typescript@5.8.3)
+      typia: 9.3.1(@samchon/openapi@4.3.0)(typescript@5.8.3)
       unplugin: 2.2.2
     optionalDependencies:
       vite: 6.3.5(@types/node@22.15.3)(jiti@2.4.2)(yaml@2.7.0)
@@ -4874,6 +4877,8 @@ snapshots:
   '@sec-ant/readable-stream@0.4.1': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
+
+  '@standard-schema/spec@1.0.0': {}
 
   '@stylistic/eslint-plugin-ts@4.2.0(eslint@9.26.0(jiti@2.4.2))(typescript@5.8.3)':
     dependencies:
@@ -8460,9 +8465,10 @@ snapshots:
 
   typescript@5.8.3: {}
 
-  typia@9.1.1(@samchon/openapi@4.3.0)(typescript@5.8.3):
+  typia@9.3.1(@samchon/openapi@4.3.0)(typescript@5.8.3):
     dependencies:
       '@samchon/openapi': 4.3.0
+      '@standard-schema/spec': 1.0.0
       commander: 10.0.1
       comment-json: 4.2.5
       inquirer: 8.2.6
