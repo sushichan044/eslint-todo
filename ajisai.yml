@@ -1,0 +1,19 @@
+workspace:
+  imports:
+    sushichan044:
+      type: git
+      repository: https://github.com/sushichan044/ai-presets.git
+      include:
+        - essentials
+        - tdd
+        - typescript
+    local:
+      type: local
+      path: './.ai'
+      include:
+        - default
+  integrations:
+    cursor:
+      enabled: true
+    github-copilot:
+      enabled: true
