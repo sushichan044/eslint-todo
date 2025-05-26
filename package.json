@@ -75,7 +75,7 @@
   },
   "devDependencies": {
     "@ryoppippi/unplugin-typia": "2.6.2",
-    "@samchon/openapi": "4.3.0",
+    "@samchon/openapi": "4.3.3",
     "@types/cross-spawn": "6.0.6",
     "@types/fs-extra": "11.0.4",
     "@types/node": "22.15.3",
