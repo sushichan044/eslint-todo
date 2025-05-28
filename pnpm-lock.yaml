@@ -69,8 +69,8 @@ importers:
         version: 3.25.28
     devDependencies:
       '@ryoppippi/unplugin-typia':
-        specifier: 2.6.2
-        version: 2.6.2(rollup@4.34.9)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.21)(jiti@2.4.2)(yaml@2.7.0))
+        specifier: 2.6.4
+        version: 2.6.4(rollup@4.34.9)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.21)(jiti@2.4.2)(yaml@2.7.0))
       '@samchon/openapi':
         specifier: 4.3.3
         version: 4.3.3
@@ -870,12 +870,12 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ryoppippi/unplugin-typia@2.6.2':
-    resolution: {integrity: sha512-nPhcmjKd2N7yijSjmxJaTlIyA1uka2SkvFtsvrMY8aaAW/ml8FeqaPCYOov7z/PMvbNkqI3OmEQ0EkECKUYOVg==}
+  '@ryoppippi/unplugin-typia@2.6.4':
+    resolution: {integrity: sha512-dQuZkz3BpSk59PMyJsWXEAose2u0eXFy5rA6EC3j/LtcELHIkyx1ebbk/CfjsQJaKCkkXdY0UeOrcHMAHjHkcQ==}
     peerDependencies:
       svelte: ^5.28.2
       typescript: '>=4.8.0 <5.9.0'
-      typia: '>=9.2.0'
+      typia: '>=9.3.0'
       vite: '>=3.0.0'
     peerDependenciesMeta:
       svelte:
@@ -1331,6 +1331,9 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  bun-only@0.0.1:
+    resolution: {integrity: sha512-eQdy3eKF3MPcrwhvDq/7BykQ9kpl9Lu/zJ9IcL1AsjZ4vct68Du8reZisptp7YL8b65iImMf9j06xmGUNsc2rQ==}
+
   bundle-name@4.1.0:
     resolution: {integrity: sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q==}
     engines: {node: '>=18'}
@@ -1522,9 +1525,6 @@ packages:
 
   confbox@0.1.8:
     resolution: {integrity: sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w==}
-
-  confbox@0.2.1:
-    resolution: {integrity: sha512-hkT3yDPFbs95mNCy1+7qNKC6Pro+/ibzYxtM2iqEigpf0sVw+bg4Zh9/snjsBcf990vfIsg5+1U7VyiyBb3etg==}
 
   confbox@0.2.2:
     resolution: {integrity: sha512-1NB+BKqhtNipMsov4xI/NnhCKp9XG9NamYp5PVm9klAT0fsrNPjaFICsCFhNhwZJKNh7zB/3q8qXz0E9oaMNtQ==}
@@ -2020,9 +2020,6 @@ packages:
   express@5.1.0:
     resolution: {integrity: sha512-DT9ck5YIRU+8GYzzU5kT3eHGA5iL+1Zd0EutOmTE9Dtk+Tvuzd23VBU+ec7HPNSTxXYO55gPV/hq4pSBJDjFpA==}
     engines: {node: '>= 18'}
-
-  exsolve@1.0.1:
-    resolution: {integrity: sha512-Smf0iQtkQVJLaph8r/qS8C8SWfQkaq9Q/dFcD44MLbJj6DNhlWefVuaS21SjfqOsBbjVlKtbCj6L9ekXK6EZUg==}
 
   exsolve@1.0.5:
     resolution: {integrity: sha512-pz5dvkYYKQ1AHVrgOzBKWeP4u4FRb3a6DNK2ucr0OoNwYIU4QWsJ+NM36LLzORT+z845MzKHHhpXiUF5nvQoJg==}
@@ -4853,9 +4850,10 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.34.9':
     optional: true
 
-  '@ryoppippi/unplugin-typia@2.6.2(rollup@4.34.9)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.21)(jiti@2.4.2)(yaml@2.7.0))':
+  '@ryoppippi/unplugin-typia@2.6.4(rollup@4.34.9)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3))(vite@6.3.5(@types/node@22.15.21)(jiti@2.4.2)(yaml@2.7.0))':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.34.9)
+      bun-only: 0.0.1
       consola: 3.4.2
       defu: 6.1.4
       diff-match-patch-es: 1.0.1
@@ -5463,6 +5461,8 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
+  bun-only@0.0.1: {}
+
   bundle-name@4.1.0:
     dependencies:
       run-applescript: 7.0.0
@@ -5682,8 +5682,6 @@ snapshots:
   concat-map@0.0.1: {}
 
   confbox@0.1.8: {}
-
-  confbox@0.2.1: {}
 
   confbox@0.2.2: {}
 
@@ -6379,8 +6377,6 @@ snapshots:
       vary: 1.1.2
     transitivePeerDependencies:
       - supports-color
-
-  exsolve@1.0.1: {}
 
   exsolve@1.0.5: {}
 
@@ -7526,8 +7522,8 @@ snapshots:
 
   pkg-types@2.1.0:
     dependencies:
-      confbox: 0.2.1
-      exsolve: 1.0.1
+      confbox: 0.2.2
+      exsolve: 1.0.5
       pathe: 2.0.3
 
   pluralize@8.0.0: {}
