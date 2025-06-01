@@ -4,6 +4,7 @@ import type { ESLintSuppressionsJson } from "../suppressions-json/types";
 
 import { isRuleFixable } from "../lib/eslint";
 import { toRuleBasedSuppression } from "../suppressions-json/rule-based";
+import { extractPathsByGlobs } from "../utils/glob";
 
 type PartialRuleSelection = {
   /**
@@ -81,8 +82,6 @@ export const selectRuleBasedOnFilesLimit = (
   config: CorrectModeConfig,
 ): SelectionResult => {
   const {
-    autoFixableOnly,
-    exclude: { rules: excludedRules },
     limit: { count: limitCount },
     partialSelection: allowPartialSelection,
   } = config;
@@ -98,16 +97,20 @@ export const selectRuleBasedOnFilesLimit = (
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
 
   for (const [ruleId, entry] of Object.entries(ruleBasedSuppressions)) {
-    if (autoFixableOnly && !isRuleFixable(eslintConfig, ruleId)) {
-      continue;
-    }
-    if (excludedRules.includes(ruleId)) {
+    const result = shouldCorrectRuleViolation(
+      ruleId,
+      Object.keys(entry),
+      eslintConfig,
+      config,
+    );
+
+    if (!result.shouldCorrect) {
       continue;
     }
 
-    const violatedFiles = Object.keys(entry).length;
+    const correctableViolatedFilesAmount = result.correctableFiles.length;
 
-    if (violatedFiles > limitCount) {
+    if (correctableViolatedFilesAmount > limitCount) {
       if (allowPartialSelection && partialSelectableRule == null) {
         // do partial selection only once since no need to compare with other rules exceeding the limit
         partialSelectableRule = ruleId;
@@ -116,9 +119,9 @@ export const selectRuleBasedOnFilesLimit = (
     }
 
     // update FullSelection rule if it has more violations
-    if (violatedFiles > selectedTargetCount) {
+    if (correctableViolatedFilesAmount > selectedTargetCount) {
       fullSelectableRule = ruleId;
-      selectedTargetCount = violatedFiles;
+      selectedTargetCount = correctableViolatedFilesAmount;
     }
   }
 
@@ -140,11 +143,26 @@ export const selectRuleBasedOnFilesLimit = (
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const rule = ruleBasedSuppressions[partialSelectableRule]!;
 
+    const result = shouldCorrectRuleViolation(
+      partialSelectableRule,
+      Object.keys(rule),
+      eslintConfig,
+      config,
+    );
+
+    if (!result.shouldCorrect) {
+      return { success: false };
+    }
+
     const selectedViolations: Record<string, number> = {};
-    for (const file of Object.keys(rule).slice(0, limitCount)) {
+    for (const file of result.correctableFiles.slice(0, limitCount)) {
       // file is always key of rule. using non-null assertion is safe.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       selectedViolations[file] = rule[file]!.count;
+    }
+
+    if (Object.keys(selectedViolations).length === 0) {
+      return { success: false };
     }
 
     return {
@@ -169,8 +187,6 @@ export const selectRuleBasedOnViolationsLimit = (
   config: CorrectModeConfig,
 ): SelectionResult => {
   const {
-    autoFixableOnly,
-    exclude: { rules: excludedRules },
     limit: { count: limitCount },
     partialSelection: allowPartialSelection,
   } = config;
@@ -186,17 +202,25 @@ export const selectRuleBasedOnViolationsLimit = (
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
 
   for (const [ruleId, entry] of Object.entries(ruleBasedSuppressions)) {
-    if (autoFixableOnly && !isRuleFixable(eslintConfig, ruleId)) {
-      continue;
-    }
-    if (excludedRules.includes(ruleId)) {
+    const result = shouldCorrectRuleViolation(
+      ruleId,
+      Object.keys(entry),
+      eslintConfig,
+      config,
+    );
+
+    if (!result.shouldCorrect) {
       continue;
     }
 
-    const totalViolationCount = Object.values(entry).reduce(
-      (sum, count) => sum + count.count,
-      0,
-    );
+    // Calculate total violation count for filtered files only
+    let totalViolationCount = 0;
+    for (const file of result.correctableFiles) {
+      const fileEntry = entry[file];
+      if (fileEntry) {
+        totalViolationCount += fileEntry.count;
+      }
+    }
 
     if (totalViolationCount > limitCount) {
       if (allowPartialSelection && partialSelectableRule == null) {
@@ -231,10 +255,26 @@ export const selectRuleBasedOnViolationsLimit = (
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const rule = ruleBasedSuppressions[partialSelectableRule]!;
 
+    const result = shouldCorrectRuleViolation(
+      partialSelectableRule,
+      Object.keys(rule),
+      eslintConfig,
+      config,
+    );
+
+    if (!result.shouldCorrect) {
+      return { success: false };
+    }
+
+    const filteredFiles = result.correctableFiles;
     let selectedCount = 0;
     const selectedViolations: Record<string, number> = {};
 
-    for (const [file, { count }] of Object.entries(rule)) {
+    for (const file of filteredFiles) {
+      const fileEntry = rule[file];
+      if (!fileEntry) continue;
+
+      const { count } = fileEntry;
       if (selectedCount + count > limitCount) {
         break;
       }
@@ -270,4 +310,56 @@ export const selectRuleBasedOnViolationsLimit = (
   }
 
   return { success: false };
+};
+
+/**
+ * Result of checking if a rule violation should be corrected.
+ */
+type ShouldCorrectRuleViolationResult =
+  | { correctableFiles: string[]; shouldCorrect: true }
+  | { shouldCorrect: false };
+
+/**
+ * Check if a rule violation should be corrected.
+ * @param ruleId - The rule ID to check
+ * @param violatedFiles - Array of all file paths for this rule
+ * @param eslintConfig - ESLint configuration
+ * @param config - Correct mode configuration
+ * @returns ShouldCorrectRuleViolationResult indicating whether to continue and filtered files
+ */
+const shouldCorrectRuleViolation = (
+  ruleId: string,
+  violatedFiles: string[],
+  eslintConfig: ESLintConfigSubset,
+  config: CorrectModeConfig,
+): ShouldCorrectRuleViolationResult => {
+  const {
+    autoFixableOnly,
+    exclude: { rules: excludedRules },
+    include: { files: includedFiles, rules: includedRules },
+  } = config;
+
+  // Check if rule is auto-fixable when required
+  if (autoFixableOnly && !isRuleFixable(eslintConfig, ruleId)) {
+    return { shouldCorrect: false };
+  }
+
+  // Check if rule is excluded
+  if (excludedRules.includes(ruleId)) {
+    return { shouldCorrect: false };
+  }
+
+  // Check if rule is included when include filter is specified
+  if (includedRules.length > 0 && !includedRules.includes(ruleId)) {
+    return { shouldCorrect: false };
+  }
+
+  // Apply file filtering based on include.files
+  const filteredFiles = extractPathsByGlobs(violatedFiles, includedFiles);
+
+  if (filteredFiles.length === 0) {
+    return { shouldCorrect: false };
+  }
+
+  return { correctableFiles: filteredFiles, shouldCorrect: true };
 };

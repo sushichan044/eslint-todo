@@ -47,6 +47,23 @@ export type CorrectModeConfig = {
      */
     rules: string[];
   };
+  /**
+   * Options for including todo items.
+   */
+  include: {
+    /**
+     * Glob patterns for files to include in the operation.
+     *
+     * @default []
+     */
+    files: string[];
+    /**
+     * List of rules to include in the operation.
+     *
+     * @default []
+     */
+    rules: string[];
+  };
   limit: {
     /**
      * Limit the number of violations or files to fix.
@@ -75,6 +92,10 @@ const DEFAULT_CONFIG = {
   correct: {
     autoFixableOnly: true,
     exclude: {
+      rules: [],
+    },
+    include: {
+      files: [],
       rules: [],
     },
     limit: {

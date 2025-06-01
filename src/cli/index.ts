@@ -72,6 +72,20 @@ const cli = defineCommand({
       type: "string",
       valueHint: "rule-id,rule-id",
     },
+    "correct.include.files": {
+      description:
+        "Glob patterns for files to include in the operation. Comma-separated.",
+      required: false,
+      type: "string",
+      valueHint: "glob,glob",
+    },
+    "correct.include.rules": {
+      description:
+        "List of rules to include in the operation. Comma-separated.",
+      required: false,
+      type: "string",
+      valueHint: "rule-id,rule-id",
+    },
     "correct.limit.count": {
       description:
         "Limit the number of violations or files to fix. Only works with --correct.",
@@ -125,6 +139,8 @@ const cli = defineCommand({
           | boolean
           | undefined,
         "exclude.rules": args["correct.exclude.rules"] as string | undefined,
+        "include.files": args["correct.include.files"] as string | undefined,
+        "include.rules": args["correct.include.rules"] as string | undefined,
         "limit.count": args["correct.limit.count"] as string | undefined,
         "limit.type": args["correct.limit.type"] as string | undefined,
         "partialSelection": args["correct.partialSelection"] as

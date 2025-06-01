@@ -8,6 +8,8 @@ describe("CLI Arguments", () => {
       correct: {
         "autoFixableOnly": true,
         "exclude.rules": undefined,
+        "include.files": undefined,
+        "include.rules": undefined,
         "limit.count": undefined,
         "limit.type": undefined,
         "partialSelection": undefined,
@@ -30,6 +32,8 @@ describe("CLI Arguments", () => {
       correct: {
         "autoFixableOnly": undefined,
         "exclude.rules": undefined,
+        "include.files": undefined,
+        "include.rules": undefined,
         "limit.count": undefined,
         "limit.type": undefined,
         "partialSelection": undefined,
@@ -51,6 +55,8 @@ describe("CLI Arguments", () => {
       correct: {
         "autoFixableOnly": undefined,
         "exclude.rules": undefined,
+        "include.files": undefined,
+        "include.rules": undefined,
         "limit.count": undefined,
         "limit.type": undefined,
         "partialSelection": undefined,
@@ -71,6 +77,8 @@ describe("CLI Arguments", () => {
       correct: {
         "autoFixableOnly": undefined,
         "exclude.rules": "no-console,no-unused-vars,",
+        "include.files": undefined,
+        "include.rules": undefined,
         "limit.count": undefined,
         "limit.type": undefined,
         "partialSelection": undefined,
@@ -84,9 +92,91 @@ describe("CLI Arguments", () => {
     });
 
     expect(result.context.mode).toBe("correct");
-    expect(result.userConfig.correct?.exclude?.rules).toEqual([
+    expect(result.userConfig.correct?.exclude?.rules).toStrictEqual([
       "no-console",
       "no-unused-vars",
+    ]);
+  });
+
+  it("parseArguments should handle include.files", () => {
+    const result = parseArguments({
+      correct: {
+        "autoFixableOnly": undefined,
+        "exclude.rules": undefined,
+        "include.files": "src/**/*.ts,app/**/*.tsx,",
+        "include.rules": undefined,
+        "limit.count": undefined,
+        "limit.type": undefined,
+        "partialSelection": undefined,
+      },
+      mode: {
+        correct: true,
+        mcp: false,
+      },
+      root: undefined,
+      todoFile: undefined,
+    });
+
+    expect(result.context.mode).toBe("correct");
+    expect(result.userConfig.correct?.include?.files).toStrictEqual([
+      "src/**/*.ts",
+      "app/**/*.tsx",
+    ]);
+  });
+
+  it("parseArguments should handle include.rules", () => {
+    const result = parseArguments({
+      correct: {
+        "autoFixableOnly": undefined,
+        "exclude.rules": undefined,
+        "include.files": undefined,
+        "include.rules": "no-console,@typescript-eslint/no-unused-vars,",
+        "limit.count": undefined,
+        "limit.type": undefined,
+        "partialSelection": undefined,
+      },
+      mode: {
+        correct: true,
+        mcp: false,
+      },
+      root: undefined,
+      todoFile: undefined,
+    });
+
+    expect(result.context.mode).toBe("correct");
+    expect(result.userConfig.correct?.include?.rules).toStrictEqual([
+      "no-console",
+      "@typescript-eslint/no-unused-vars",
+    ]);
+  });
+
+  it("parseArguments should handle both include.files and include.rules", () => {
+    const result = parseArguments({
+      correct: {
+        "autoFixableOnly": undefined,
+        "exclude.rules": undefined,
+        "include.files": "src/**/*.ts,app/**/*.tsx",
+        "include.rules": "no-console,@typescript-eslint/no-unused-vars",
+        "limit.count": undefined,
+        "limit.type": undefined,
+        "partialSelection": undefined,
+      },
+      mode: {
+        correct: true,
+        mcp: false,
+      },
+      root: undefined,
+      todoFile: undefined,
+    });
+
+    expect(result.context.mode).toBe("correct");
+    expect(result.userConfig.correct?.include?.files).toStrictEqual([
+      "src/**/*.ts",
+      "app/**/*.tsx",
+    ]);
+    expect(result.userConfig.correct?.include?.rules).toStrictEqual([
+      "no-console",
+      "@typescript-eslint/no-unused-vars",
     ]);
   });
 });
