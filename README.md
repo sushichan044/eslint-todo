@@ -81,7 +81,12 @@ You can config eslint-todo by passing a flag to the CLI.
 Use `npx eslint-todo --help` to see all available options.
 
 > [!WARNING]
-> If you specified any config via CLI flags, your config from file will be ignored completely.
+> If you specified any config via CLI flags, your config file will be ignored completely.
+>
+> Exceptionally, even when flags exclusive to these CLIs are passed, the config file will not be ignored.
+>
+> - `--correct`
+> - `--mcp`
 
 ### Configuration File (recommended)
 
