@@ -207,6 +207,8 @@ export const applyRuleAndFileFilters = (
  * @param allowPartialSelection - Whether partial selection is allowed.
  * @param limitType - Whether the limit is for files or violations.
  *
+ * @returns The result of the selection.
+ *
  * @package
  */
 export const selectOptimalRule = (
@@ -311,6 +313,8 @@ export type RuleCountInfo = {
  * @param eslintConfig - ESLint config.
  * @param config - Correct mode config.
  * @param countType - Whether to count files or violations.
+ *
+ * @returns Array of violation information for each rule.
  *
  * @package
  */
