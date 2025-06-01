@@ -122,7 +122,7 @@ const parseCorrectMode = (input: Input["correct"]): CorrectModeUserConfig => {
 /**
  * Parse a comma-separated string into an array of non-empty strings.
  * @param input The comma-separated string to parse
- * @returns Array of trimmed non-empty strings, or undefined if input is empty
+ * @returns Array of trimmed non-empty strings
  */
 const parseCommaSeparatedString = (input: string | undefined): string[] => {
   if (!isNonEmptyString(input)) {
