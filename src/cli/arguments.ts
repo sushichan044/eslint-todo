@@ -3,44 +3,48 @@ import type { CorrectModeUserConfig, UserConfig } from "../config/config";
 import { isNonEmptyString } from "../utils/string";
 
 type Input = {
-  correct: {
-    "autoFixableOnly": boolean | undefined;
-    /**
-     * Glob patterns for files to exclude from the operation.
-     */
-    "exclude.files": string | undefined;
-    /**
-     * Comma-separated list of rules to exclude from the operation.
-     */
-    "exclude.rules": string | undefined;
-    /**
-     * Glob patterns for files to include in the operation.
-     */
-    "include.files": string | undefined;
-    /**
-     * Comma-separated list of rules to include in the operation.
-     */
-    "include.rules": string | undefined;
-    /**
-     * Limit the number of violations or files to fix.
-     */
-    "limit.count": string | undefined;
-    "limit.type": string | undefined;
-    "partialSelection": boolean | undefined;
+  config: {
+    correct: {
+      "autoFixableOnly": boolean | undefined;
+      /**
+       * Glob patterns for files to exclude from the operation.
+       */
+      "exclude.files": string | undefined;
+      /**
+       * Comma-separated list of rules to exclude from the operation.
+       */
+      "exclude.rules": string | undefined;
+      /**
+       * Glob patterns for files to include in the operation.
+       */
+      "include.files": string | undefined;
+      /**
+       * Comma-separated list of rules to include in the operation.
+       */
+      "include.rules": string | undefined;
+      /**
+       * Limit the number of violations or files to fix.
+       */
+      "limit.count": string | undefined;
+      "limit.type": string | undefined;
+      "partialSelection": boolean | undefined;
+    };
+    root: string | undefined;
+    todoFile: string | undefined;
   };
+
   mode: {
     correct: boolean;
     mcp: boolean;
   };
-  root: string | undefined;
-  todoFile: string | undefined;
 };
 
 type ParsedCLIInput = {
   context: {
     mode: "correct" | "generate" | "mcp";
   };
-  userConfig: UserConfig;
+  inputConfig: UserConfig;
+  isConfigDirty: boolean;
 };
 
 /**
@@ -51,8 +55,6 @@ type ParsedCLIInput = {
  * @package
  */
 export const parseArguments = (input: Input): ParsedCLIInput => {
-  // const relativeTodoFilePath = relative(input.root, input.todoFileAbsolutePath);
-
   const mode = (() => {
     if (input.mode.correct) {
       return "correct";
@@ -63,15 +65,24 @@ export const parseArguments = (input: Input): ParsedCLIInput => {
     return "generate";
   })();
 
+  const parsedCorrectMode = parseCorrectMode(input.config.correct);
+
+  const isRootDirty = input.config.root !== undefined;
+  const isTodoFileDirty = input.config.todoFile !== undefined;
+  // We should check under `input.config` because `input.mode` or other keys are not in scope of dirty check.
+  const isConfigDirty =
+    isRootDirty || isTodoFileDirty || parsedCorrectMode.isConfigDirty;
+
   return {
     context: {
       mode,
     },
-    userConfig: {
-      correct: parseCorrectMode(input.correct),
-      root: input.root,
-      todoFile: input.todoFile,
+    inputConfig: {
+      correct: parsedCorrectMode.config,
+      root: input.config.root,
+      todoFile: input.config.todoFile,
     },
+    isConfigDirty,
   };
 };
 
@@ -79,7 +90,14 @@ const isValidLimitType = (input: string): input is "file" | "violation" => {
   return ["file", "violation"].includes(input);
 };
 
-const parseCorrectMode = (input: Input["correct"]): CorrectModeUserConfig => {
+type ParsedCorrectMode = {
+  config: CorrectModeUserConfig;
+  isConfigDirty: boolean;
+};
+
+const parseCorrectMode = (
+  input: Input["config"]["correct"],
+): ParsedCorrectMode => {
   const limitCount = isNonEmptyString(input["limit.count"])
     ? Number.parseInt(input["limit.count"])
     : undefined;
@@ -101,21 +119,34 @@ const parseCorrectMode = (input: Input["correct"]): CorrectModeUserConfig => {
   const includedFiles = parseCommaSeparatedString(input["include.files"]);
   const includedRules = parseCommaSeparatedString(input["include.rules"]);
 
+  const isDirty =
+    input.autoFixableOnly !== undefined ||
+    input["exclude.rules"] !== undefined ||
+    input["exclude.files"] !== undefined ||
+    input["include.files"] !== undefined ||
+    input["include.rules"] !== undefined ||
+    input["limit.count"] !== undefined ||
+    input["limit.type"] !== undefined ||
+    input.partialSelection !== undefined;
+
   return {
-    autoFixableOnly: input.autoFixableOnly,
-    exclude: {
-      files: excludedFiles,
-      rules: excludedRules,
+    config: {
+      autoFixableOnly: input.autoFixableOnly,
+      exclude: {
+        files: excludedFiles,
+        rules: excludedRules,
+      },
+      include: {
+        files: includedFiles,
+        rules: includedRules,
+      },
+      limit: {
+        count: limitCount,
+        type: input["limit.type"],
+      },
+      partialSelection: input.partialSelection,
     },
-    include: {
-      files: includedFiles,
-      rules: includedRules,
-    },
-    limit: {
-      count: limitCount,
-      type: input["limit.type"],
-    },
-    partialSelection: input.partialSelection,
+    isConfigDirty: isDirty,
   };
 };
 

@@ -5,7 +5,8 @@ import { cwd } from "node:process";
 import type { Config } from "../config";
 import type { DeepPartial } from "../utils/types";
 
-import { resolveConfig } from "../config/resolve";
+import { mergeUserConfig } from "../config";
+import { resolveFileConfig } from "../config/resolve";
 import { ESLintTodoCore } from "../index";
 import {
   buildESLintConfigWithSuppressionsJson,
@@ -30,7 +31,8 @@ const eslintConfigTodo = async (
   const todoFile = config?.todoFile;
 
   const cwdString = cwd();
-  const resolvedConfig = await resolveConfig(cwdString, {
+  const configFromFile = await resolveFileConfig(cwdString);
+  const resolvedConfig = mergeUserConfig(configFromFile, {
     root,
     todoFile,
   });

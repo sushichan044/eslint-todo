@@ -11,7 +11,8 @@ import { prepareAction } from "../action";
 import { deleteRuleAction } from "../action/delete-rule";
 import { genAction } from "../action/gen";
 import { selectRulesToFixAction } from "../action/select-rule";
-import { resolveConfig } from "../config/resolve";
+import { configWithDefault } from "../config/config";
+import { resolveFileConfig } from "../config/resolve";
 import { ESLintTodoCore } from "../index";
 import { createESLintConfigSubset, readESLintConfig } from "../lib/eslint";
 import { startMcpServerWithStdio } from "../mcp/stdio";
@@ -139,31 +140,48 @@ const cli = defineCommand({
   async run({ args }) {
     const cliCwd = process.cwd();
 
-    const { context, userConfig } = parseArguments({
+    const {
+      context,
+      inputConfig,
+      isConfigDirty: configPassedViaFlags,
+    } = parseArguments({
       // args from citty are always not nullable even if default is not set
-      correct: {
-        "autoFixableOnly": args["correct.autoFixableOnly"] as
-          | boolean
-          | undefined,
-        "exclude.files": args["correct.exclude.files"] as string | undefined,
-        "exclude.rules": args["correct.exclude.rules"] as string | undefined,
-        "include.files": args["correct.include.files"] as string | undefined,
-        "include.rules": args["correct.include.rules"] as string | undefined,
-        "limit.count": args["correct.limit.count"] as string | undefined,
-        "limit.type": args["correct.limit.type"] as string | undefined,
-        "partialSelection": args["correct.partialSelection"] as
-          | boolean
-          | undefined,
+      config: {
+        correct: {
+          "autoFixableOnly": args["correct.autoFixableOnly"] as
+            | boolean
+            | undefined,
+          "exclude.files": args["correct.exclude.files"] as string | undefined,
+          "exclude.rules": args["correct.exclude.rules"] as string | undefined,
+          "include.files": args["correct.include.files"] as string | undefined,
+          "include.rules": args["correct.include.rules"] as string | undefined,
+          "limit.count": args["correct.limit.count"] as string | undefined,
+          "limit.type": args["correct.limit.type"] as string | undefined,
+          "partialSelection": args["correct.partialSelection"] as
+            | boolean
+            | undefined,
+        },
+        root: args.root as string | undefined,
+        todoFile: args.todoFile as string | undefined,
       },
       mode: {
         correct: args.correct,
         mcp: args.mcp,
       },
-      root: args.root as string | undefined,
-      todoFile: args.todoFile as string | undefined,
     });
 
-    const config = await resolveConfig(cliCwd, userConfig);
+    if (configPassedViaFlags) {
+      consola.warn(
+        "Ignoring config file because config is passed via CLI flags.",
+      );
+    }
+    // Get partial config from CLI flags or config file.
+    // If any flag is passed, the config file is completely ignored.
+    const userConfig = configPassedViaFlags
+      ? inputConfig
+      : await resolveFileConfig(cliCwd);
+    // Apply default values to the partial config
+    const config = configWithDefault(userConfig);
 
     const eslintConfig = await readESLintConfig(config.root);
     const eslintConfigSubset = createESLintConfigSubset(eslintConfig);
