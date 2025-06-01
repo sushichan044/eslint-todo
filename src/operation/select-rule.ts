@@ -147,8 +147,10 @@ type RuleFilterResult =
  * @param eslintConfig - ESLint configuration
  * @param config - Correct mode configuration
  * @returns RuleFilterResult indicating whether rule is eligible and filtered files
+ *
+ * @package
  */
-const applyRuleAndFileFilters = (
+export const applyRuleAndFileFilters = (
   ruleId: string,
   violatedFiles: string[],
   eslintConfig: ESLintConfigSubset,
