@@ -299,14 +299,6 @@ If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
               `Unknown selection type: ${JSON.stringify(_exhaustiveCheck)}`,
             );
           },
-          "before:delete-and-write": () => {
-            consola.start(
-              `Deleting all violations of rule ${colorize(
-                "magenta",
-                result.selection.ruleId,
-              )} from the todo file ...`,
-            );
-          },
         },
       });
 
