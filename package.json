@@ -49,7 +49,8 @@
     "eslint:inspect": "eslint --inspect-config",
     "pkg-pr-new": "pkg-pr-new publish --compact --comment=update --pnpm",
     "check": "pnpm run build && pnpm run lint && pnpm run format:ci && pnpm run typecheck && pnpm run test:run",
-    "prepare": "ts-patch install"
+    "prepare": "ts-patch install",
+    "prepublishOnly": "pnpm run build"
   },
   "peerDependencies": {
     "eslint": "^8.57.0 || ^9.0.0"
