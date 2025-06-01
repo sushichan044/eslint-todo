@@ -108,9 +108,9 @@ export const selectRuleBasedOnFilesLimit = (
       continue;
     }
 
-    const correctableAmount = result.correctableFiles.length;
+    const correctableViolatedFilesAmount = result.correctableFiles.length;
 
-    if (correctableAmount > limitCount) {
+    if (correctableViolatedFilesAmount > limitCount) {
       if (allowPartialSelection && partialSelectableRule == null) {
         // do partial selection only once since no need to compare with other rules exceeding the limit
         partialSelectableRule = ruleId;
@@ -119,9 +119,9 @@ export const selectRuleBasedOnFilesLimit = (
     }
 
     // update FullSelection rule if it has more violations
-    if (correctableAmount > selectedTargetCount) {
+    if (correctableViolatedFilesAmount > selectedTargetCount) {
       fullSelectableRule = ruleId;
-      selectedTargetCount = correctableAmount;
+      selectedTargetCount = correctableViolatedFilesAmount;
     }
   }
 
