@@ -10,6 +10,14 @@ type Input = {
      */
     "exclude.rules": string | undefined;
     /**
+     * Glob patterns for files to include in the operation.
+     */
+    "include.files": string | undefined;
+    /**
+     * Comma-separated list of rules to include in the operation.
+     */
+    "include.rules": string | undefined;
+    /**
      * Limit the number of violations or files to fix.
      */
     "limit.count": string | undefined;
@@ -94,10 +102,34 @@ const parseCorrectMode = (input: Input["correct"]): CorrectModeUserConfig => {
       })
     : undefined;
 
+  const includedFiles = isNonEmptyString(input?.["include.files"])
+    ? input["include.files"].split(",").flatMap((element) => {
+        const trimmedElement = element.trim();
+        if (isNonEmptyString(trimmedElement)) {
+          return trimmedElement;
+        }
+        return [];
+      })
+    : undefined;
+
+  const includedRules = isNonEmptyString(input?.["include.rules"])
+    ? input["include.rules"].split(",").flatMap((element) => {
+        const trimmedElement = element.trim();
+        if (isNonEmptyString(trimmedElement)) {
+          return trimmedElement;
+        }
+        return [];
+      })
+    : undefined;
+
   return {
     autoFixableOnly: input.autoFixableOnly,
     exclude: {
       rules: excludedRules,
+    },
+    include: {
+      files: includedFiles,
+      rules: includedRules,
     },
     limit: {
       count: limitCount,
