@@ -14,6 +14,11 @@ attach: always
 Run `pnpm run check`
 </workflow-just-before-ending>
 
+## Command Guide
+
+- USE `pnpm run test:run`, NOT `pnpm run test`
+  - `run test` will not exit automatically, so you will stack.
+
 ## package scope isolation by eslint-plugin-import-access
 
 docs: <https://github.com/uhyo/eslint-plugin-import-access>
