@@ -1,5 +1,7 @@
 # @sushichan044/eslint-todo
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sushichan044/eslint-todo)
+
 > [!CAUTION]
 > This library will soon be subject to destructive changes based on [ESLint bulk suppressions](https://eslint.org/blog/2025/04/introducing-bulk-suppressions/#getting-started).
 
