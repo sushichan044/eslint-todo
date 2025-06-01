@@ -657,37 +657,36 @@ describe("selectRuleBasedOnFilesLimit", () => {
 
     it("should respect exclude.rules option", () => {
       const todoModule = createTodoModuleV2({
-        "@typescript-eslint/no-explicity-any": {
-          autoFix: false,
+        "no-console": {
+          autoFix: true,
           violations: {
-            "file1.js": 1,
-            "file2.js": 1,
-            "file3.js": 1,
+            "app/file3.tsx": 2,
+            "lib/file4.js": 1,
+            "src/file1.ts": 3,
+            "src/file2.ts": 2,
           },
         },
-        "rule2": {
-          autoFix: false,
+        "no-unused-vars": {
+          autoFix: true,
           violations: {
-            "file1.js": 1000,
-            "file2.js": 1000,
-            "file3.js": 1000,
+            "app/file3.tsx": 1,
+            "src/file1.ts": 1,
           },
         },
       });
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const eslintConfig = createESLintConfigSubset({
         rules: {
-          rule1: { fixable: false },
-          rule2: { fixable: false },
+          "no-console": { fixable: true },
+          "no-unused-vars": { fixable: true },
         },
       });
       const config = createCorrectConfig({
-        autoFixableOnly: false,
-        exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
-        limit: { count: 3, type: "file" },
+        include: { files: ["src/**/*.ts"] },
+        limit: { count: 10, type: "file" },
       });
       const expected: SelectionResult = {
-        selection: { ruleId: "rule2", type: "full" },
+        selection: { ruleId: "no-console", type: "full" },
         success: true,
       };
 
@@ -699,39 +698,190 @@ describe("selectRuleBasedOnFilesLimit", () => {
       expect(result).toStrictEqual(expected);
     });
 
-    it("should return success: false if no rule satisfies the limit AND exclude.rules", () => {
+    it("should respect include.rules option", () => {
       const todoModule = createTodoModuleV2({
-        "@typescript-eslint/no-explicity-any": {
-          autoFix: false,
-          violations: {
-            "file1.js": 1,
-            "file2.js": 1,
-            "file3.js": 1,
-          },
-        },
-        "rule2": {
+        "no-console": {
           autoFix: true,
           violations: {
-            "file1.js": 1,
-            "file2.js": 1,
-            "file3.js": 1,
-            "file4.js": 1,
+            "file1.ts": 5,
+            "file2.ts": 3,
+          },
+        },
+        "no-unused-vars": {
+          autoFix: true,
+          violations: {
+            "file1.ts": 2,
+            "file2.ts": 1,
           },
         },
       });
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const eslintConfig = createESLintConfigSubset({
         rules: {
-          rule1: { fixable: false },
-          rule2: { fixable: true },
+          "no-console": { fixable: true },
+          "no-unused-vars": { fixable: true },
         },
       });
       const config = createCorrectConfig({
-        autoFixableOnly: false,
-        exclude: { rules: ["@typescript-eslint/no-explicity-any"] },
-        limit: { count: 3, type: "file" },
+        include: { rules: ["no-unused-vars"] },
+        limit: { count: 10, type: "file" },
+      });
+      const expected: SelectionResult = {
+        selection: { ruleId: "no-unused-vars", type: "full" },
+        success: true,
+      };
+
+      const result = selectRuleBasedOnFilesLimit(
+        suppressions,
+        eslintConfig,
+        config,
+      );
+      expect(result).toStrictEqual(expected);
+    });
+
+    it("should respect both include.files and include.rules", () => {
+      const todoModule = createTodoModuleV2({
+        "no-console": {
+          autoFix: true,
+          violations: {
+            "app/file3.tsx": 2,
+            "src/file1.ts": 3,
+            "src/file2.ts": 2,
+          },
+        },
+        "no-unused-vars": {
+          autoFix: true,
+          violations: {
+            "app/file3.tsx": 1,
+            "src/file1.ts": 1,
+          },
+        },
+      });
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+      const eslintConfig = createESLintConfigSubset({
+        rules: {
+          "no-console": { fixable: true },
+          "no-unused-vars": { fixable: true },
+        },
+      });
+      const config = createCorrectConfig({
+        include: {
+          files: ["src/**/*.ts"],
+          rules: ["no-unused-vars"],
+        },
+        limit: { count: 10, type: "file" },
+      });
+      const expected: SelectionResult = {
+        selection: { ruleId: "no-unused-vars", type: "full" },
+        success: true,
+      };
+
+      const result = selectRuleBasedOnFilesLimit(
+        suppressions,
+        eslintConfig,
+        config,
+      );
+      expect(result).toStrictEqual(expected);
+    });
+
+    it("should return success: false if no files match include.files", () => {
+      const todoModule = createTodoModuleV2({
+        "no-console": {
+          autoFix: true,
+          violations: {
+            "app/file1.tsx": 2,
+            "lib/file2.js": 3,
+          },
+        },
+      });
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+      const eslintConfig = createESLintConfigSubset({
+        rules: {
+          "no-console": { fixable: true },
+        },
+      });
+      const config = createCorrectConfig({
+        include: { files: ["src/**/*.ts"] },
+        limit: { count: 10, type: "file" },
       });
       const expected: SelectionResult = { success: false };
+
+      const result = selectRuleBasedOnFilesLimit(
+        suppressions,
+        eslintConfig,
+        config,
+      );
+      expect(result).toStrictEqual(expected);
+    });
+
+    it("should return success: false if no rules match include.rules", () => {
+      const todoModule = createTodoModuleV2({
+        "no-console": {
+          autoFix: true,
+          violations: {
+            "file1.ts": 2,
+            "file2.ts": 3,
+          },
+        },
+      });
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+      const eslintConfig = createESLintConfigSubset({
+        rules: {
+          "no-console": { fixable: true },
+        },
+      });
+      const config = createCorrectConfig({
+        include: { rules: ["no-unused-vars"] },
+        limit: { count: 10, type: "file" },
+      });
+      const expected: SelectionResult = { success: false };
+
+      const result = selectRuleBasedOnFilesLimit(
+        suppressions,
+        eslintConfig,
+        config,
+      );
+      expect(result).toStrictEqual(expected);
+    });
+
+    it("should work with partial selection when include.files is specified", () => {
+      const todoModule = createTodoModuleV2({
+        "no-console": {
+          autoFix: true,
+          violations: {
+            "app/file4.tsx": 2,
+            "src/file1.ts": 3,
+            "src/file2.ts": 2,
+            "src/file3.ts": 1,
+            "src/file4.ts": 1,
+            "src/file5.ts": 1,
+            "src/file6.ts": 1,
+          },
+        },
+      });
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+      const eslintConfig = createESLintConfigSubset({
+        rules: {
+          "no-console": { fixable: true },
+        },
+      });
+      const config = createCorrectConfig({
+        include: { files: ["src/**/*.ts"] },
+        limit: { count: 3, type: "file" },
+        partialSelection: true,
+      });
+      const expected: SelectionResult = {
+        selection: {
+          ruleId: "no-console",
+          type: "partial",
+          violations: {
+            "src/file1.ts": 3,
+            "src/file2.ts": 2,
+            "src/file3.ts": 1,
+          },
+        },
+        success: true,
+      };
 
       const result = selectRuleBasedOnFilesLimit(
         suppressions,
