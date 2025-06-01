@@ -40,7 +40,8 @@ type ParsedCLIInput = {
   context: {
     mode: "correct" | "generate" | "mcp";
   };
-  userConfig: UserConfig;
+  inputConfig: UserConfig;
+  isDirty: boolean;
 };
 
 /**
@@ -63,15 +64,25 @@ export const parseArguments = (input: Input): ParsedCLIInput => {
     return "generate";
   })();
 
+  const isModeDirty = mode !== "generate";
+  const isRootDirty = input.root !== undefined;
+  const isTodoFileDirty = input.todoFile !== undefined;
+
+  const parsedCorrectMode = parseCorrectMode(input.correct);
+
+  const isDirty =
+    isModeDirty || isRootDirty || isTodoFileDirty || parsedCorrectMode.isDirty;
+
   return {
     context: {
       mode,
     },
-    userConfig: {
-      correct: parseCorrectMode(input.correct),
+    inputConfig: {
+      correct: parsedCorrectMode.config,
       root: input.root,
       todoFile: input.todoFile,
     },
+    isDirty,
   };
 };
 
@@ -79,7 +90,12 @@ const isValidLimitType = (input: string): input is "file" | "violation" => {
   return ["file", "violation"].includes(input);
 };
 
-const parseCorrectMode = (input: Input["correct"]): CorrectModeUserConfig => {
+type ParsedCorrectMode = {
+  config: CorrectModeUserConfig;
+  isDirty: boolean;
+};
+
+const parseCorrectMode = (input: Input["correct"]): ParsedCorrectMode => {
   const limitCount = isNonEmptyString(input["limit.count"])
     ? Number.parseInt(input["limit.count"])
     : undefined;
@@ -101,21 +117,34 @@ const parseCorrectMode = (input: Input["correct"]): CorrectModeUserConfig => {
   const includedFiles = parseCommaSeparatedString(input["include.files"]);
   const includedRules = parseCommaSeparatedString(input["include.rules"]);
 
+  const isDirty =
+    input.autoFixableOnly !== undefined ||
+    input["exclude.rules"] !== undefined ||
+    input["exclude.files"] !== undefined ||
+    input["include.files"] !== undefined ||
+    input["include.rules"] !== undefined ||
+    input["limit.count"] !== undefined ||
+    input["limit.type"] !== undefined ||
+    input.partialSelection !== undefined;
+
   return {
-    autoFixableOnly: input.autoFixableOnly,
-    exclude: {
-      files: excludedFiles,
-      rules: excludedRules,
+    config: {
+      autoFixableOnly: input.autoFixableOnly,
+      exclude: {
+        files: excludedFiles,
+        rules: excludedRules,
+      },
+      include: {
+        files: includedFiles,
+        rules: includedRules,
+      },
+      limit: {
+        count: limitCount,
+        type: input["limit.type"],
+      },
+      partialSelection: input.partialSelection,
     },
-    include: {
-      files: includedFiles,
-      rules: includedRules,
-    },
-    limit: {
-      count: limitCount,
-      type: input["limit.type"],
-    },
-    partialSelection: input.partialSelection,
+    isDirty,
   };
 };
 

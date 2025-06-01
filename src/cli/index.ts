@@ -11,7 +11,8 @@ import { prepareAction } from "../action";
 import { deleteRuleAction } from "../action/delete-rule";
 import { genAction } from "../action/gen";
 import { selectRulesToFixAction } from "../action/select-rule";
-import { resolveConfig } from "../config/resolve";
+import { configWithDefault } from "../config/config";
+import { resolveFileConfig } from "../config/resolve";
 import { ESLintTodoCore } from "../index";
 import { createESLintConfigSubset, readESLintConfig } from "../lib/eslint";
 import { startMcpServerWithStdio } from "../mcp/stdio";
@@ -139,7 +140,11 @@ const cli = defineCommand({
   async run({ args }) {
     const cliCwd = process.cwd();
 
-    const { context, userConfig } = parseArguments({
+    const {
+      context,
+      inputConfig,
+      isDirty: configPassedViaFlags,
+    } = parseArguments({
       // args from citty are always not nullable even if default is not set
       correct: {
         "autoFixableOnly": args["correct.autoFixableOnly"] as
@@ -163,7 +168,18 @@ const cli = defineCommand({
       todoFile: args.todoFile as string | undefined,
     });
 
-    const config = await resolveConfig(cliCwd, userConfig);
+    if (configPassedViaFlags) {
+      consola.warn(
+        "Ignoring config file because config is passed via CLI flags.",
+      );
+    }
+    // Get partial config from CLI flags or config file.
+    // If any flag is passed, the config file is completely ignored.
+    const userConfig = configPassedViaFlags
+      ? inputConfig
+      : await resolveFileConfig(cliCwd);
+    // Apply default values to the partial config
+    const config = configWithDefault(userConfig);
 
     const eslintConfig = await readESLintConfig(config.root);
     const eslintConfigSubset = createESLintConfigSubset(eslintConfig);
