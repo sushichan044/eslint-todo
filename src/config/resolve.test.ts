@@ -42,6 +42,10 @@ describe("resolveConfig", () => {
         exclude: {
           rules: [],
         },
+        include: {
+          files: [],
+          rules: [],
+        },
         limit: {
           count: 100,
           type: "violation",
@@ -72,6 +76,10 @@ describe("resolveConfig", () => {
       correct: {
         autoFixableOnly: false,
         exclude: {
+          rules: [],
+        },
+        include: {
+          files: [],
           rules: [],
         },
         limit: {
@@ -119,6 +127,10 @@ describe("resolveConfig", () => {
         exclude: {
           rules: [],
         },
+        include: {
+          files: [],
+          rules: [],
+        },
         limit: {
           count: 200,
           type: "file",
@@ -151,6 +163,10 @@ describe("resolveConfig", () => {
         autoFixableOnly: true,
         exclude: {
           rules: ["no-console"],
+        },
+        include: {
+          files: [],
+          rules: [],
         },
         limit: {
           count: 100,
@@ -200,6 +216,10 @@ describe("resolveConfig", () => {
         autoFixableOnly: true,
         exclude: {
           rules: ["rule3", "rule1", "rule2"],
+        },
+        include: {
+          files: [],
+          rules: [],
         },
         limit: {
           count: 25,

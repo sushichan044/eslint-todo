@@ -33,6 +33,30 @@ describe("UserConfigJsonSchema matches snapshot", () => {
                 "title": "Options for excluding todo items",
                 "type": "object",
               },
+              "include": {
+                "description": "Options for including todo items.",
+                "properties": {
+                  "files": {
+                    "description": "Glob patterns for files to include in the operation.",
+                    "items": {
+                      "type": "string",
+                    },
+                    "title": "Glob patterns for files to include in the operation",
+                    "type": "array",
+                  },
+                  "rules": {
+                    "description": "List of rules to include in the operation.",
+                    "items": {
+                      "type": "string",
+                    },
+                    "title": "List of rules to include in the operation",
+                    "type": "array",
+                  },
+                },
+                "required": [],
+                "title": "Options for including todo items",
+                "type": "object",
+              },
               "limit": {
                 "properties": {
                   "count": {
