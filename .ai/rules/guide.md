@@ -17,7 +17,7 @@ Run `pnpm run check`
 ## Command Guide
 
 - USE `pnpm run test:run`, NOT `pnpm run test`
-  - `run test` will not exit automatically, so you will stack.
+  - `run test` will not exit automatically, so the process will hang.
 
 ## package scope isolation by eslint-plugin-import-access
 
