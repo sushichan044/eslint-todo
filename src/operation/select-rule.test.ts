@@ -2035,6 +2035,60 @@ describe("filter-based limit checking", () => {
       expect(result).toStrictEqual(expected);
     });
 
+    it("should return partial selection when original files exceed limit even if filtered files are within limit", () => {
+      const todoModule = createTodoModuleV2({
+        rule1: {
+          autoFix: true,
+          violations: {
+            "dist/excluded1.js": 1,
+            "dist/excluded2.js": 1,
+            "dist/excluded3.js": 1,
+            "dist/excluded4.js": 1,
+            "dist/excluded5.js": 1,
+            "src/included1.ts": 1,
+            "src/included2.ts": 1,
+          },
+        },
+      });
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+      const eslintConfig = createESLintConfigSubset({
+        rules: {
+          rule1: { fixable: true },
+        },
+      });
+      const config = createCorrectConfig({
+        exclude: {
+          files: ["dist/**"],
+        },
+        limit: {
+          count: 3,
+          type: "file",
+        },
+        partialSelection: true,
+      });
+      // original total files: 7, exceeds limit of 3
+      // filtered total files: 2, within limit
+      // should return partial selection, not full, because original exceeds limit
+      const expected: SelectionResult = {
+        selection: {
+          ruleId: "rule1",
+          type: "partial",
+          violations: {
+            "src/included1.ts": 1,
+            "src/included2.ts": 1,
+          },
+        },
+        success: true,
+      };
+
+      const result = selectRuleBasedOnFilesLimit(
+        suppressions,
+        eslintConfig,
+        config,
+      );
+      expect(result).toStrictEqual(expected);
+    });
+
     it("should perform partial selection based on filtered violations when over limit", () => {
       const todoModule = createTodoModuleV2({
         rule1: {
@@ -2170,62 +2224,6 @@ describe("filter-based limit checking", () => {
       };
 
       const result = selectRuleBasedOnViolationsLimit(
-        suppressions,
-        eslintConfig,
-        config,
-      );
-      expect(result).toStrictEqual(expected);
-    });
-  });
-
-  describe("selectRuleBasedOnFilesLimit with filtered file count", () => {
-    it("should return partial selection when original files exceed limit even if filtered files are within limit", () => {
-      const todoModule = createTodoModuleV2({
-        rule1: {
-          autoFix: true,
-          violations: {
-            "dist/excluded1.js": 1,
-            "dist/excluded2.js": 1,
-            "dist/excluded3.js": 1,
-            "dist/excluded4.js": 1,
-            "dist/excluded5.js": 1,
-            "src/included1.ts": 1,
-            "src/included2.ts": 1,
-          },
-        },
-      });
-      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
-      const eslintConfig = createESLintConfigSubset({
-        rules: {
-          rule1: { fixable: true },
-        },
-      });
-      const config = createCorrectConfig({
-        exclude: {
-          files: ["dist/**"],
-        },
-        limit: {
-          count: 3,
-          type: "file",
-        },
-        partialSelection: true,
-      });
-      // original total files: 7, exceeds limit of 3
-      // filtered total files: 2, within limit
-      // should return partial selection, not full, because original exceeds limit
-      const expected: SelectionResult = {
-        selection: {
-          ruleId: "rule1",
-          type: "partial",
-          violations: {
-            "src/included1.ts": 1,
-            "src/included2.ts": 1,
-          },
-        },
-        success: true,
-      };
-
-      const result = selectRuleBasedOnFilesLimit(
         suppressions,
         eslintConfig,
         config,
