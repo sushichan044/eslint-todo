@@ -65,6 +65,13 @@ const cli = defineCommand({
       type: "boolean",
       valueHint: "boolean",
     },
+    "correct.exclude.files": {
+      description:
+        "Glob patterns for files to exclude from the operation. Comma-separated.",
+      required: false,
+      type: "string",
+      valueHint: "glob,glob",
+    },
     "correct.exclude.rules": {
       description:
         "List of rules to exclude from the operation. Comma-separated.",
@@ -138,6 +145,7 @@ const cli = defineCommand({
         "autoFixableOnly": args["correct.autoFixableOnly"] as
           | boolean
           | undefined,
+        "exclude.files": args["correct.exclude.files"] as string | undefined,
         "exclude.rules": args["correct.exclude.rules"] as string | undefined,
         "include.files": args["correct.include.files"] as string | undefined,
         "include.rules": args["correct.include.rules"] as string | undefined,
