@@ -97,6 +97,9 @@ export const selectRuleBasedOnFilesLimit = (
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
 
   for (const [ruleId, entry] of Object.entries(ruleBasedSuppressions)) {
+    // Check the original file count before filtering
+    const originalFileCount = Object.keys(entry).length;
+
     // First check basic rule-level filters (auto-fixable, exclude.rules, include.rules)
     const filterResult = applyRuleAndFileFilters(
       ruleId,
@@ -112,7 +115,8 @@ export const selectRuleBasedOnFilesLimit = (
     // Use filtered file count for limit check
     const filteredFileCount = filterResult.correctableFiles.length;
 
-    if (filteredFileCount > limitCount) {
+    // For full selection, check original file count, not filtered count
+    if (originalFileCount > limitCount) {
       if (allowPartialSelection && partialSelectableRule == null) {
         // do partial selection only once since no need to compare with other rules exceeding the limit
         partialSelectableRule = ruleId;
@@ -204,6 +208,12 @@ export const selectRuleBasedOnViolationsLimit = (
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
 
   for (const [ruleId, entry] of Object.entries(ruleBasedSuppressions)) {
+    // Calculate original total violation count before filtering
+    let originalTotalViolationCount = 0;
+    for (const [, fileEntry] of Object.entries(entry)) {
+      originalTotalViolationCount += fileEntry.count;
+    }
+
     // First check basic rule-level filters (auto-fixable, exclude.rules, include.rules)
     const filterResult = applyRuleAndFileFilters(
       ruleId,
@@ -225,7 +235,8 @@ export const selectRuleBasedOnViolationsLimit = (
       }
     }
 
-    if (filteredTotalViolationCount > limitCount) {
+    // For full selection, check original violation count, not filtered count
+    if (originalTotalViolationCount > limitCount) {
       if (allowPartialSelection && partialSelectableRule == null) {
         // do partial selection only once since no need to compare with other rules exceeding the limit
         partialSelectableRule = ruleId;
