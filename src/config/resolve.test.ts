@@ -40,6 +40,7 @@ describe("resolveConfig", () => {
       correct: {
         autoFixableOnly: true,
         exclude: {
+          files: [],
           rules: [],
         },
         include: {
@@ -76,6 +77,7 @@ describe("resolveConfig", () => {
       correct: {
         autoFixableOnly: false,
         exclude: {
+          files: [],
           rules: [],
         },
         include: {
@@ -125,6 +127,7 @@ describe("resolveConfig", () => {
       correct: {
         autoFixableOnly: false,
         exclude: {
+          files: [],
           rules: [],
         },
         include: {
@@ -162,6 +165,7 @@ describe("resolveConfig", () => {
       correct: {
         autoFixableOnly: true,
         exclude: {
+          files: [],
           rules: ["no-console"],
         },
         include: {
@@ -215,6 +219,7 @@ describe("resolveConfig", () => {
       correct: {
         autoFixableOnly: true,
         exclude: {
+          files: [],
           rules: ["rule3", "rule1", "rule2"],
         },
         include: {
