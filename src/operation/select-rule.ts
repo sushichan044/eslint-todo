@@ -335,7 +335,7 @@ const shouldCorrectRuleViolation = (
 ): ShouldCorrectRuleViolationResult => {
   const {
     autoFixableOnly,
-    exclude: { rules: excludedRules },
+    exclude: { files: excludedFiles, rules: excludedRules },
     include: { files: includedFiles, rules: includedRules },
   } = config;
 
@@ -354,8 +354,21 @@ const shouldCorrectRuleViolation = (
     return { shouldCorrect: false };
   }
 
-  // Apply file filtering based on include.files
-  const filteredFiles = extractPathsByGlobs(violatedFiles, includedFiles);
+  // Apply file filtering: first exclude files, then apply include filter
+  let filteredFiles: string[] = violatedFiles;
+
+  // Exclude files that match exclude.files patterns
+  if (excludedFiles.length > 0) {
+    const excludedMatches = extractPathsByGlobs(violatedFiles, excludedFiles);
+    filteredFiles = filteredFiles.filter(
+      (file) => !excludedMatches.includes(file),
+    );
+  }
+
+  // Apply include.files filtering
+  if (includedFiles.length > 0) {
+    filteredFiles = extractPathsByGlobs(filteredFiles, includedFiles);
+  }
 
   if (filteredFiles.length === 0) {
     return { shouldCorrect: false };
