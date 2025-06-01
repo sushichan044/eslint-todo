@@ -52,8 +52,6 @@ type ParsedCLIInput = {
  * @package
  */
 export const parseArguments = (input: Input): ParsedCLIInput => {
-  // const relativeTodoFilePath = relative(input.root, input.todoFileAbsolutePath);
-
   const mode = (() => {
     if (input.mode.correct) {
       return "correct";
