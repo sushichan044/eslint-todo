@@ -97,6 +97,9 @@ export const selectRuleBasedOnFilesLimit = (
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
 
   for (const [ruleId, entry] of Object.entries(ruleBasedSuppressions)) {
+    // Check the original file count before filtering
+    const originalFileCount = Object.keys(entry).length;
+
     // First check basic rule-level filters (auto-fixable, exclude.rules, include.rules)
     const filterResult = applyRuleAndFileFilters(
       ruleId,
@@ -109,10 +112,11 @@ export const selectRuleBasedOnFilesLimit = (
       continue;
     }
 
-    // Use original file count for limit check, not filtered count
-    const originalViolatedFiles = Object.keys(entry).length;
+    // Use filtered file count for limit check
+    const filteredFileCount = filterResult.correctableFiles.length;
 
-    if (originalViolatedFiles > limitCount) {
+    // For full selection, check original file count, not filtered count
+    if (originalFileCount > limitCount) {
       if (allowPartialSelection && partialSelectableRule == null) {
         // do partial selection only once since no need to compare with other rules exceeding the limit
         partialSelectableRule = ruleId;
@@ -120,13 +124,10 @@ export const selectRuleBasedOnFilesLimit = (
       continue;
     }
 
-    // For full selection, use filtered file count for comparison
-    const correctableFileCount = filterResult.correctableFiles.length;
-
     // update FullSelection rule if it has more violations
-    if (correctableFileCount > selectedTargetCount) {
+    if (filteredFileCount > selectedTargetCount) {
       fullSelectableRule = ruleId;
-      selectedTargetCount = correctableFileCount;
+      selectedTargetCount = filteredFileCount;
     }
   }
 
@@ -207,6 +208,12 @@ export const selectRuleBasedOnViolationsLimit = (
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
 
   for (const [ruleId, entry] of Object.entries(ruleBasedSuppressions)) {
+    // Calculate original total violation count before filtering
+    let originalTotalViolationCount = 0;
+    for (const [, fileEntry] of Object.entries(entry)) {
+      originalTotalViolationCount += fileEntry.count;
+    }
+
     // First check basic rule-level filters (auto-fixable, exclude.rules, include.rules)
     const filterResult = applyRuleAndFileFilters(
       ruleId,
@@ -219,12 +226,16 @@ export const selectRuleBasedOnViolationsLimit = (
       continue;
     }
 
-    // Use original violation count for limit check, not filtered count
-    const originalTotalViolationCount = Object.values(entry).reduce(
-      (sum, count) => sum + count.count,
-      0,
-    );
+    // Calculate total violation count for filtered files only
+    let filteredTotalViolationCount = 0;
+    for (const file of filterResult.correctableFiles) {
+      const fileEntry = entry[file];
+      if (fileEntry) {
+        filteredTotalViolationCount += fileEntry.count;
+      }
+    }
 
+    // For full selection, check original violation count, not filtered count
     if (originalTotalViolationCount > limitCount) {
       if (allowPartialSelection && partialSelectableRule == null) {
         // do partial selection only once since no need to compare with other rules exceeding the limit
@@ -233,19 +244,10 @@ export const selectRuleBasedOnViolationsLimit = (
       continue;
     }
 
-    // Calculate total violation count for filtered files only for comparison
-    let totalViolationCount = 0;
-    for (const file of filterResult.correctableFiles) {
-      const fileEntry = entry[file];
-      if (fileEntry) {
-        totalViolationCount += fileEntry.count;
-      }
-    }
-
     // update FullSelection rule if it has more violations
-    if (totalViolationCount > selectedTargetCount) {
+    if (filteredTotalViolationCount > selectedTargetCount) {
       fullSelectableRule = ruleId;
-      selectedTargetCount = totalViolationCount;
+      selectedTargetCount = filteredTotalViolationCount;
     }
   }
 
@@ -295,18 +297,6 @@ export const selectRuleBasedOnViolationsLimit = (
       selectedViolations[file] = count;
     }
 
-    // todo: {
-    //   rule1: {
-    //     autoFix: true,
-    //     violations: {
-    //       "file1.js": 3,
-    //     },
-    //   },
-    // }
-    // { limit: 2 }
-    //
-    // when this kind of situation occurs, no partial selection could be made
-    // so we should return { success: false }
     if (Object.keys(selectedViolations).length === 0) {
       return { success: false };
     }
