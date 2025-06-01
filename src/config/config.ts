@@ -41,6 +41,12 @@ export type CorrectModeConfig = {
    */
   exclude: {
     /**
+     * Glob patterns for files to exclude from the operation.
+     *
+     * @default []
+     */
+    files: string[];
+    /**
      * List of rules to exclude from the operation. Comma-separated string.
      *
      * @default []
@@ -92,6 +98,7 @@ const DEFAULT_CONFIG = {
   correct: {
     autoFixableOnly: true,
     exclude: {
+      files: [],
       rules: [],
     },
     include: {

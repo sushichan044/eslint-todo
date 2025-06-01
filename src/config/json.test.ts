@@ -20,6 +20,14 @@ describe("UserConfigJsonSchema matches snapshot", () => {
               "exclude": {
                 "description": "Options for excluding todo items.",
                 "properties": {
+                  "files": {
+                    "description": "Glob patterns for files to exclude from the operation.",
+                    "items": {
+                      "type": "string",
+                    },
+                    "title": "Glob patterns for files to exclude from the operation",
+                    "type": "array",
+                  },
                   "rules": {
                     "description": "List of rules to exclude from the operation. Comma-separated string.",
                     "items": {

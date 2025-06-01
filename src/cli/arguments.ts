@@ -6,6 +6,10 @@ type Input = {
   correct: {
     "autoFixableOnly": boolean | undefined;
     /**
+     * Glob patterns for files to exclude from the operation.
+     */
+    "exclude.files": string | undefined;
+    /**
      * Comma-separated list of rules to exclude from the operation.
      */
     "exclude.rules": string | undefined;
@@ -92,39 +96,15 @@ const parseCorrectMode = (input: Input["correct"]): CorrectModeUserConfig => {
     );
   }
 
-  const excludedRules = isNonEmptyString(input?.["exclude.rules"])
-    ? input["exclude.rules"].split(",").flatMap((element) => {
-        const trimmedElement = element.trim();
-        if (isNonEmptyString(trimmedElement)) {
-          return trimmedElement;
-        }
-        return [];
-      })
-    : undefined;
-
-  const includedFiles = isNonEmptyString(input?.["include.files"])
-    ? input["include.files"].split(",").flatMap((element) => {
-        const trimmedElement = element.trim();
-        if (isNonEmptyString(trimmedElement)) {
-          return trimmedElement;
-        }
-        return [];
-      })
-    : undefined;
-
-  const includedRules = isNonEmptyString(input?.["include.rules"])
-    ? input["include.rules"].split(",").flatMap((element) => {
-        const trimmedElement = element.trim();
-        if (isNonEmptyString(trimmedElement)) {
-          return trimmedElement;
-        }
-        return [];
-      })
-    : undefined;
+  const excludedRules = parseCommaSeparatedString(input["exclude.rules"]);
+  const excludedFiles = parseCommaSeparatedString(input["exclude.files"]);
+  const includedFiles = parseCommaSeparatedString(input["include.files"]);
+  const includedRules = parseCommaSeparatedString(input["include.rules"]);
 
   return {
     autoFixableOnly: input.autoFixableOnly,
     exclude: {
+      files: excludedFiles,
       rules: excludedRules,
     },
     include: {
@@ -137,4 +117,23 @@ const parseCorrectMode = (input: Input["correct"]): CorrectModeUserConfig => {
     },
     partialSelection: input.partialSelection,
   };
+};
+
+/**
+ * Parse a comma-separated string into an array of non-empty strings.
+ * @param input The comma-separated string to parse
+ * @returns Array of trimmed non-empty strings
+ */
+const parseCommaSeparatedString = (input: string | undefined): string[] => {
+  if (!isNonEmptyString(input)) {
+    return [];
+  }
+
+  return input.split(",").flatMap((element) => {
+    const trimmedElement = element.trim();
+    if (isNonEmptyString(trimmedElement)) {
+      return trimmedElement;
+    }
+    return [];
+  });
 };
