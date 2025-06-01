@@ -75,6 +75,14 @@ By default, it searches for rules that can be automatically fixed and have less 
 
 ## Configuration
 
+### Configuration via CLI flags
+
+You can config eslint-todo by passing a flag to the CLI.
+Use `npx eslint-todo --help` to see all available options.
+
+> [!WARNING]
+> If you specified any config via CLI flags, your config from file will be ignored completely.
+
 ### Configuration File (recommended)
 
 Just create `eslint-todo.config.{js,ts}`:
@@ -113,15 +121,6 @@ Sure!
 ```
 
 </details>
-
-### Configuration via CLI flags
-
-You can also set eslint-todo by passing a flag to the CLI.
-Use `npx eslint-todo --help` to see all available options.
-
-> [!WARNING]
-> Config from CLI flag overwrites the one in the configuration file.
-> See the [unjs/defu documentation](https://github.com/unjs/defu) for the actual overwriting behavior.
 
 ## Use as MCP server (Experimental)
 
