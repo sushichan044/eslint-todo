@@ -97,20 +97,22 @@ export const selectRuleBasedOnFilesLimit = (
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
 
   for (const [ruleId, entry] of Object.entries(ruleBasedSuppressions)) {
-    const result = shouldCorrectRuleViolation(
+    // First check basic rule-level filters (auto-fixable, exclude.rules, include.rules)
+    const filterResult = applyRuleAndFileFilters(
       ruleId,
       Object.keys(entry),
       eslintConfig,
       config,
     );
 
-    if (!result.shouldCorrect) {
+    if (!filterResult.isEligible) {
       continue;
     }
 
-    const correctableViolatedFilesAmount = result.correctableFiles.length;
+    // Use original file count for limit check, not filtered count
+    const originalViolatedFiles = Object.keys(entry).length;
 
-    if (correctableViolatedFilesAmount > limitCount) {
+    if (originalViolatedFiles > limitCount) {
       if (allowPartialSelection && partialSelectableRule == null) {
         // do partial selection only once since no need to compare with other rules exceeding the limit
         partialSelectableRule = ruleId;
@@ -118,10 +120,13 @@ export const selectRuleBasedOnFilesLimit = (
       continue;
     }
 
+    // For full selection, use filtered file count for comparison
+    const correctableFileCount = filterResult.correctableFiles.length;
+
     // update FullSelection rule if it has more violations
-    if (correctableViolatedFilesAmount > selectedTargetCount) {
+    if (correctableFileCount > selectedTargetCount) {
       fullSelectableRule = ruleId;
-      selectedTargetCount = correctableViolatedFilesAmount;
+      selectedTargetCount = correctableFileCount;
     }
   }
 
@@ -143,14 +148,14 @@ export const selectRuleBasedOnFilesLimit = (
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const rule = ruleBasedSuppressions[partialSelectableRule]!;
 
-    const result = shouldCorrectRuleViolation(
+    const result = applyRuleAndFileFilters(
       partialSelectableRule,
       Object.keys(rule),
       eslintConfig,
       config,
     );
 
-    if (!result.shouldCorrect) {
+    if (!result.isEligible) {
       return { success: false };
     }
 
@@ -202,32 +207,39 @@ export const selectRuleBasedOnViolationsLimit = (
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
 
   for (const [ruleId, entry] of Object.entries(ruleBasedSuppressions)) {
-    const result = shouldCorrectRuleViolation(
+    // First check basic rule-level filters (auto-fixable, exclude.rules, include.rules)
+    const filterResult = applyRuleAndFileFilters(
       ruleId,
       Object.keys(entry),
       eslintConfig,
       config,
     );
 
-    if (!result.shouldCorrect) {
+    if (!filterResult.isEligible) {
       continue;
     }
 
-    // Calculate total violation count for filtered files only
-    let totalViolationCount = 0;
-    for (const file of result.correctableFiles) {
-      const fileEntry = entry[file];
-      if (fileEntry) {
-        totalViolationCount += fileEntry.count;
-      }
-    }
+    // Use original violation count for limit check, not filtered count
+    const originalTotalViolationCount = Object.values(entry).reduce(
+      (sum, count) => sum + count.count,
+      0,
+    );
 
-    if (totalViolationCount > limitCount) {
+    if (originalTotalViolationCount > limitCount) {
       if (allowPartialSelection && partialSelectableRule == null) {
         // do partial selection only once since no need to compare with other rules exceeding the limit
         partialSelectableRule = ruleId;
       }
       continue;
+    }
+
+    // Calculate total violation count for filtered files only for comparison
+    let totalViolationCount = 0;
+    for (const file of filterResult.correctableFiles) {
+      const fileEntry = entry[file];
+      if (fileEntry) {
+        totalViolationCount += fileEntry.count;
+      }
     }
 
     // update FullSelection rule if it has more violations
@@ -255,14 +267,14 @@ export const selectRuleBasedOnViolationsLimit = (
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const rule = ruleBasedSuppressions[partialSelectableRule]!;
 
-    const result = shouldCorrectRuleViolation(
+    const result = applyRuleAndFileFilters(
       partialSelectableRule,
       Object.keys(rule),
       eslintConfig,
       config,
     );
 
-    if (!result.shouldCorrect) {
+    if (!result.isEligible) {
       return { success: false };
     }
 
@@ -313,26 +325,27 @@ export const selectRuleBasedOnViolationsLimit = (
 };
 
 /**
- * Result of checking if a rule violation should be corrected.
+ * Result of applying rule and file filters.
  */
-type ShouldCorrectRuleViolationResult =
-  | { correctableFiles: string[]; shouldCorrect: true }
-  | { shouldCorrect: false };
+type RuleFilterResult =
+  | { correctableFiles: string[]; isEligible: true }
+  | { isEligible: false };
 
 /**
- * Check if a rule violation should be corrected.
+ * Apply rule-level and file-level filters to determine if a rule is eligible
+ * and get the list of correctable files.
  * @param ruleId - The rule ID to check
  * @param violatedFiles - Array of all file paths for this rule
  * @param eslintConfig - ESLint configuration
  * @param config - Correct mode configuration
- * @returns ShouldCorrectRuleViolationResult indicating whether to continue and filtered files
+ * @returns RuleFilterResult indicating whether rule is eligible and filtered files
  */
-const shouldCorrectRuleViolation = (
+const applyRuleAndFileFilters = (
   ruleId: string,
   violatedFiles: string[],
   eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
-): ShouldCorrectRuleViolationResult => {
+): RuleFilterResult => {
   const {
     autoFixableOnly,
     exclude: { files: excludedFiles, rules: excludedRules },
@@ -341,17 +354,17 @@ const shouldCorrectRuleViolation = (
 
   // Check if rule is auto-fixable when required
   if (autoFixableOnly && !isRuleFixable(eslintConfig, ruleId)) {
-    return { shouldCorrect: false };
+    return { isEligible: false };
   }
 
   // Check if rule is excluded
   if (excludedRules.includes(ruleId)) {
-    return { shouldCorrect: false };
+    return { isEligible: false };
   }
 
   // Check if rule is included when include filter is specified
   if (includedRules.length > 0 && !includedRules.includes(ruleId)) {
-    return { shouldCorrect: false };
+    return { isEligible: false };
   }
 
   // Apply file filtering: first exclude files, then apply include filter
@@ -371,8 +384,8 @@ const shouldCorrectRuleViolation = (
   }
 
   if (filteredFiles.length === 0) {
-    return { shouldCorrect: false };
+    return { isEligible: false };
   }
 
-  return { correctableFiles: filteredFiles, shouldCorrect: true };
+  return { correctableFiles: filteredFiles, isEligible: true };
 };
