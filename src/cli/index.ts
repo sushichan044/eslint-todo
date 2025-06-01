@@ -113,23 +113,6 @@ const cli = defineCommand({
       type: "boolean",
       valueHint: "boolean",
     },
-
-    // logging
-    "debug": {
-      description: "Enable debug mode",
-      required: false,
-      type: "boolean",
-    },
-    "trace": {
-      description: "Enable trace mode",
-      required: false,
-      type: "boolean",
-    },
-    "verbose": {
-      description: "Enable verbose mode",
-      required: false,
-      type: "boolean",
-    },
   },
   meta: {
     description:
@@ -330,25 +313,6 @@ If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
     if (!args.mcp) {
       // When used as MCP server, we should not output anything not satisfies MCP transport protocol.
       consola.info(`${packageName} CLI ${packageVersion}`);
-    }
-
-    switch (true) {
-      case args.debug: {
-        consola.level = 4;
-
-        break;
-      }
-      case args.trace: {
-        consola.level = 5;
-
-        break;
-      }
-      case args.verbose: {
-        consola.level = +999;
-
-        break;
-      }
-      // No default
     }
   },
 });

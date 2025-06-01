@@ -153,12 +153,3 @@ update `.vscode/mcp.json` in your workspace:
   }
 }
 ```
-
-## Misc
-
-### logging mode
-
-> [!CAUTION]
-> This feature is not implemented yet.
-
-You can pass `--debug`, `--trace`, `--verbose` to see the debug logs.
