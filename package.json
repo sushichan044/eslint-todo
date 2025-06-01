@@ -90,7 +90,7 @@
     "@vitest/eslint-plugin": "1.2.1",
     "eslint": "9.26.0",
     "eslint-flat-config-utils": "2.1.0",
-    "eslint-plugin-import-access": "2.2.2",
+    "eslint-plugin-import-access": "3.0.0",
     "eslint-plugin-unicorn": "59.0.1",
     "eslint-typegen": "2.1.0",
     "fs-extra": "11.3.0",
