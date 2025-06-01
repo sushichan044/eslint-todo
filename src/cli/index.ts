@@ -143,29 +143,31 @@ const cli = defineCommand({
     const {
       context,
       inputConfig,
-      isDirty: configPassedViaFlags,
+      isConfigDirty: configPassedViaFlags,
     } = parseArguments({
       // args from citty are always not nullable even if default is not set
-      correct: {
-        "autoFixableOnly": args["correct.autoFixableOnly"] as
-          | boolean
-          | undefined,
-        "exclude.files": args["correct.exclude.files"] as string | undefined,
-        "exclude.rules": args["correct.exclude.rules"] as string | undefined,
-        "include.files": args["correct.include.files"] as string | undefined,
-        "include.rules": args["correct.include.rules"] as string | undefined,
-        "limit.count": args["correct.limit.count"] as string | undefined,
-        "limit.type": args["correct.limit.type"] as string | undefined,
-        "partialSelection": args["correct.partialSelection"] as
-          | boolean
-          | undefined,
+      config: {
+        correct: {
+          "autoFixableOnly": args["correct.autoFixableOnly"] as
+            | boolean
+            | undefined,
+          "exclude.files": args["correct.exclude.files"] as string | undefined,
+          "exclude.rules": args["correct.exclude.rules"] as string | undefined,
+          "include.files": args["correct.include.files"] as string | undefined,
+          "include.rules": args["correct.include.rules"] as string | undefined,
+          "limit.count": args["correct.limit.count"] as string | undefined,
+          "limit.type": args["correct.limit.type"] as string | undefined,
+          "partialSelection": args["correct.partialSelection"] as
+            | boolean
+            | undefined,
+        },
+        root: args.root as string | undefined,
+        todoFile: args.todoFile as string | undefined,
       },
       mode: {
         correct: args.correct,
         mcp: args.mcp,
       },
-      root: args.root as string | undefined,
-      todoFile: args.todoFile as string | undefined,
     });
 
     if (configPassedViaFlags) {

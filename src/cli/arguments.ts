@@ -3,37 +3,40 @@ import type { CorrectModeUserConfig, UserConfig } from "../config/config";
 import { isNonEmptyString } from "../utils/string";
 
 type Input = {
-  correct: {
-    "autoFixableOnly": boolean | undefined;
-    /**
-     * Glob patterns for files to exclude from the operation.
-     */
-    "exclude.files": string | undefined;
-    /**
-     * Comma-separated list of rules to exclude from the operation.
-     */
-    "exclude.rules": string | undefined;
-    /**
-     * Glob patterns for files to include in the operation.
-     */
-    "include.files": string | undefined;
-    /**
-     * Comma-separated list of rules to include in the operation.
-     */
-    "include.rules": string | undefined;
-    /**
-     * Limit the number of violations or files to fix.
-     */
-    "limit.count": string | undefined;
-    "limit.type": string | undefined;
-    "partialSelection": boolean | undefined;
+  config: {
+    correct: {
+      "autoFixableOnly": boolean | undefined;
+      /**
+       * Glob patterns for files to exclude from the operation.
+       */
+      "exclude.files": string | undefined;
+      /**
+       * Comma-separated list of rules to exclude from the operation.
+       */
+      "exclude.rules": string | undefined;
+      /**
+       * Glob patterns for files to include in the operation.
+       */
+      "include.files": string | undefined;
+      /**
+       * Comma-separated list of rules to include in the operation.
+       */
+      "include.rules": string | undefined;
+      /**
+       * Limit the number of violations or files to fix.
+       */
+      "limit.count": string | undefined;
+      "limit.type": string | undefined;
+      "partialSelection": boolean | undefined;
+    };
+    root: string | undefined;
+    todoFile: string | undefined;
   };
+
   mode: {
     correct: boolean;
     mcp: boolean;
   };
-  root: string | undefined;
-  todoFile: string | undefined;
 };
 
 type ParsedCLIInput = {
@@ -41,7 +44,7 @@ type ParsedCLIInput = {
     mode: "correct" | "generate" | "mcp";
   };
   inputConfig: UserConfig;
-  isDirty: boolean;
+  isConfigDirty: boolean;
 };
 
 /**
@@ -62,14 +65,13 @@ export const parseArguments = (input: Input): ParsedCLIInput => {
     return "generate";
   })();
 
-  const isModeDirty = mode !== "generate";
-  const isRootDirty = input.root !== undefined;
-  const isTodoFileDirty = input.todoFile !== undefined;
+  const parsedCorrectMode = parseCorrectMode(input.config.correct);
 
-  const parsedCorrectMode = parseCorrectMode(input.correct);
-
-  const isDirty =
-    isModeDirty || isRootDirty || isTodoFileDirty || parsedCorrectMode.isDirty;
+  const isRootDirty = input.config.root !== undefined;
+  const isTodoFileDirty = input.config.todoFile !== undefined;
+  // We should check under `input.config` because `input.mode` or other keys are not in scope of dirty check.
+  const isConfigDirty =
+    isRootDirty || isTodoFileDirty || parsedCorrectMode.isConfigDirty;
 
   return {
     context: {
@@ -77,10 +79,10 @@ export const parseArguments = (input: Input): ParsedCLIInput => {
     },
     inputConfig: {
       correct: parsedCorrectMode.config,
-      root: input.root,
-      todoFile: input.todoFile,
+      root: input.config.root,
+      todoFile: input.config.todoFile,
     },
-    isDirty,
+    isConfigDirty,
   };
 };
 
@@ -90,10 +92,12 @@ const isValidLimitType = (input: string): input is "file" | "violation" => {
 
 type ParsedCorrectMode = {
   config: CorrectModeUserConfig;
-  isDirty: boolean;
+  isConfigDirty: boolean;
 };
 
-const parseCorrectMode = (input: Input["correct"]): ParsedCorrectMode => {
+const parseCorrectMode = (
+  input: Input["config"]["correct"],
+): ParsedCorrectMode => {
   const limitCount = isNonEmptyString(input["limit.count"])
     ? Number.parseInt(input["limit.count"])
     : undefined;
@@ -142,7 +146,7 @@ const parseCorrectMode = (input: Input["correct"]): ParsedCorrectMode => {
       },
       partialSelection: input.partialSelection,
     },
-    isDirty,
+    isConfigDirty: isDirty,
   };
 };
 
