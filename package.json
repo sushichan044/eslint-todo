@@ -88,7 +88,7 @@
     "@virtual-live-lab/tsconfig": "2.1.20",
     "@vitest/coverage-v8": "3.1.4",
     "@vitest/eslint-plugin": "1.2.1",
-    "eslint": "9.26.0",
+    "eslint": "9.28.0",
     "eslint-flat-config-utils": "2.1.0",
     "eslint-plugin-import-access": "3.0.0",
     "eslint-plugin-unicorn": "59.0.1",
