@@ -98,7 +98,7 @@
     "pkg-pr-new": "0.0.50",
     "pnpm": "10.11.0",
     "prettier": "3.5.3",
-    "release-it": "19.0.2",
+    "release-it": "19.0.3",
     "release-it-pnpm": "4.6.5",
     "ts-patch": "3.3.0",
     "typescript": "5.8.3",
