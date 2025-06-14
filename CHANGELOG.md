@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.2
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- **deps**:
+  - Update dependency zod to v3.25.46 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/241 [<samp>(a2c64)</samp>](https://github.com/sushichan044/eslint-todo/commit/a2c64d8)
+  - Update dependency @modelcontextprotocol/sdk to v1.12.1 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/240 [<samp>(17bb1)</samp>](https://github.com/sushichan044/eslint-todo/commit/17bb137)
+  - Update typescript-eslint monorepo to v8.33.0 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/243 [<samp>(060ed)</samp>](https://github.com/sushichan044/eslint-todo/commit/060eda7)
+  - Update dependency zod to v3.25.56 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/249 [<samp>(5be97)</samp>](https://github.com/sushichan044/eslint-todo/commit/5be9792)
+  - Update typescript-eslint monorepo to v8.34.0 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/250 [<samp>(84d72)</samp>](https://github.com/sushichan044/eslint-todo/commit/84d729a)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.2.1...0.2.2)
+
 ## 0.2.1
 
 *No significant changes*
