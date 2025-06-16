@@ -71,8 +71,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       zod:
-        specifier: 3.25.56
-        version: 3.25.56
+        specifier: 3.25.64
+        version: 3.25.64
     devDependencies:
       '@ryoppippi/unplugin-typia':
         specifier: 2.6.4
@@ -891,6 +891,7 @@ packages:
 
   '@ryoppippi/unplugin-typia@2.6.4':
     resolution: {integrity: sha512-dQuZkz3BpSk59PMyJsWXEAose2u0eXFy5rA6EC3j/LtcELHIkyx1ebbk/CfjsQJaKCkkXdY0UeOrcHMAHjHkcQ==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       svelte: ^5.28.2
       typescript: '>=4.8.0 <5.9.0'
@@ -4267,8 +4268,8 @@ packages:
     peerDependencies:
       zod: ^3.24.1
 
-  zod@3.25.56:
-    resolution: {integrity: sha512-rd6eEF3BTNvQnR2e2wwolfTmUTnp70aUTqr0oaGbHifzC3BKJsoV+Gat8vxUMR1hwOKBs6El+qWehrHbCpW6SQ==}
+  zod@3.25.64:
+    resolution: {integrity: sha512-hbP9FpSZf7pkS7hRVUrOjhwKJNyampPgtXKc3AN6DsWtoHsg2Sb4SQaS4Tcay380zSwd2VPo9G9180emBACp5g==}
 
 snapshots:
 
@@ -4630,8 +4631,8 @@ snapshots:
       express-rate-limit: 7.5.0(express@5.1.0)
       pkce-challenge: 5.0.0
       raw-body: 3.0.0
-      zod: 3.25.56
-      zod-to-json-schema: 3.24.5(zod@3.25.56)
+      zod: 3.25.64
+      zod-to-json-schema: 3.24.5(zod@3.25.64)
     transitivePeerDependencies:
       - supports-color
 
@@ -7802,7 +7803,7 @@ snapshots:
       quick-lru: 7.0.0
       url-join: 5.0.0
       validate-npm-package-name: 5.0.1
-      zod: 3.25.56
+      zod: 3.25.64
       zod-package-json: 1.1.0
 
   query-string@9.1.1:
@@ -8771,10 +8772,10 @@ snapshots:
 
   zod-package-json@1.1.0:
     dependencies:
-      zod: 3.25.56
+      zod: 3.25.64
 
-  zod-to-json-schema@3.24.5(zod@3.25.56):
+  zod-to-json-schema@3.24.5(zod@3.25.64):
     dependencies:
-      zod: 3.25.56
+      zod: 3.25.64
 
-  zod@3.25.56: {}
+  zod@3.25.64: {}
