@@ -44,7 +44,7 @@ Requires:
 
     export default [
       // your existing configs,
-    + await eslintConfigTodo()
+    + ...(await eslintConfigTodo())
     ]
     ```
 
