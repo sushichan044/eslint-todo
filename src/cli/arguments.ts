@@ -114,12 +114,12 @@ const parseCorrectMode = (
     config: {
       autoFixableOnly: input.autoFixableOnly,
       exclude: {
-        files: input["exclude.files"] ?? [],
-        rules: input["exclude.rules"] ?? [],
+        files: input["exclude.files"],
+        rules: input["exclude.rules"],
       },
       include: {
-        files: input["include.files"] ?? [],
-        rules: input["include.rules"] ?? [],
+        files: input["include.files"],
+        rules: input["include.rules"],
       },
       limit: {
         count: input["limit.count"],
