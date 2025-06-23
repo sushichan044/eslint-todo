@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import type { CorrectModeLimitType } from "../config/config.js";
 import type { RuleCountInfo, SelectionResult } from "./select-rule.js";
 
 import { selectOptimalRule } from "./select-rule.js";
@@ -106,7 +107,7 @@ describe("selectOptimalRule", () => {
       const tc: Array<{
         expected: SelectionResult;
         limitCount: number;
-        limitType: "file" | "violation";
+        limitType: CorrectModeLimitType;
         name: string;
         ruleCounts: RuleCountInfo[];
       }> = [
@@ -172,7 +173,7 @@ describe("selectOptimalRule", () => {
       const tc: Array<{
         expected: SelectionResult;
         limitCount: number;
-        limitType: "file" | "violation";
+        limitType: CorrectModeLimitType;
         name: string;
         ruleCounts: RuleCountInfo[];
       }> = [
