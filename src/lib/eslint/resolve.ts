@@ -13,6 +13,7 @@
  * - handle ESLint violations
  * - only accepts root: string as parameter
  * - explicitly move to the directory of the eslint config file
+ * - use empathic instead of find-up to find the config file
  *
  * For full license and copyright information, see the LICENSE and NOTICE files.
  */
@@ -21,7 +22,7 @@ import type { RuleMetaData } from "@typescript-eslint/utils/ts-eslint";
 import type { Linter, Rule } from "eslint";
 
 import { bundleRequire } from "bundle-require";
-import { findUp } from "find-up";
+import { any as findUpAny } from "empathic/find";
 import { resolve as resolveModule } from "mlly";
 import { dirname } from "pathe";
 
@@ -30,10 +31,13 @@ import type { ESLintConfig } from "./index";
 import { runInDirectory } from "../../utils/process";
 import { isNonEmptyString } from "../../utils/string";
 
-const resolveConfigPath = async (
+/**
+ * @package
+ */
+export const resolveConfigPath = (
   root: string,
-): Promise<{ basePath: string; fullPath: string }> => {
-  const configPath = await findUp(
+): { basePath: string; fullPath: string } => {
+  const configPath = findUpAny(
     [
       "eslint.config.js",
       "eslint.config.mjs",
@@ -59,7 +63,7 @@ const resolveConfigPath = async (
  * @package
  */
 export const readFlatConfig = async (root: string): Promise<ESLintConfig> => {
-  const { basePath, fullPath } = await resolveConfigPath(root);
+  const { basePath, fullPath } = resolveConfigPath(root);
 
   // In MCP server, the current working directory is usually user's home directory.
   // But, configs like eslint-config-flat-gitignore are depends on current working directory.
