@@ -3,7 +3,7 @@ import { define } from "gunshi/definition";
 import { cwd } from "node:process";
 import { relative } from "pathe";
 
-import type { FlattenToArgumentSchema } from "./types";
+import type { CorrectModeArguments } from "./types";
 
 import { ESLintTodoCore } from "../..";
 import { prepareAction } from "../../action";
@@ -25,47 +25,47 @@ export const correctCmd = define({
   args: {
     ...commonArguments,
 
-    "autoFixableOnly": {
+    "correct.autoFixableOnly": {
       description: "Allow to select non auto-fixable rules.",
       type: "boolean",
     },
-    "exclude.files": {
+    "correct.exclude.files": {
       description: "Glob patterns for files to exclude from the operation.",
       parse: (value) => {
         return value.split(",").map((v) => v.trim());
       },
       type: "custom",
     },
-    "exclude.rules": {
+    "correct.exclude.rules": {
       description: "List of rules to exclude from the operation.",
       parse: (value) => {
         return value.split(",").map((v) => v.trim());
       },
       type: "custom",
     },
-    "include.files": {
+    "correct.include.files": {
       description: "Glob patterns for files to include in the operation.",
       parse: (value) => {
         return value.split(",").map((v) => v.trim());
       },
       type: "custom",
     },
-    "include.rules": {
+    "correct.include.rules": {
       description: "List of rules to include in the operation.",
       parse: (value) => {
         return value.split(",").map((v) => v.trim());
       },
       type: "custom",
     },
-    "limit.count": {
+    "correct.limit.count": {
       description: "Limit the number of violations or files to fix.",
       type: "number",
     },
-    "limit.type": {
+    "correct.limit.type": {
       choices: ["file", "violation"],
       type: "enum",
     },
-    "partialSelection": {
+    "correct.partialSelection": {
       description: "Allow partial selection of violations.",
       type: "boolean",
     },
@@ -75,14 +75,14 @@ export const correctCmd = define({
     // Resolve Args
     const root = context.values.root;
     const todoFile = context.values.todoFile;
-    const autoFixableOnly = context.values.autoFixableOnly;
-    const excludeRules = context.values["exclude.rules"];
-    const excludeFiles = context.values["exclude.files"];
-    const includeRules = context.values["include.rules"];
-    const includeFiles = context.values["include.files"];
-    const limitCount = context.values["limit.count"];
-    const limitType = context.values["limit.type"];
-    const partialSelection = context.values.partialSelection;
+    const autoFixableOnly = context.values["correct.autoFixableOnly"];
+    const excludeRules = context.values["correct.exclude.rules"];
+    const excludeFiles = context.values["correct.exclude.files"];
+    const includeRules = context.values["correct.include.rules"];
+    const includeFiles = context.values["correct.include.files"];
+    const limitCount = context.values["correct.limit.count"];
+    const limitType = context.values["correct.limit.type"];
+    const partialSelection = context.values["correct.partialSelection"];
 
     const { inputConfig, isConfigDirty } = parseArguments({
       config: {
