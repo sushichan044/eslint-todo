@@ -2,6 +2,19 @@ import type { Args } from "gunshi";
 
 import type { CorrectModeArguments } from "./types";
 
+import { isNonEmptyString } from "../../utils/string";
+
+const parseCommaSeparatedString = (value: string): string[] => {
+  const result: string[] = [];
+  for (const part of value.split(",")) {
+    const trimmed = part.trim();
+    if (isNonEmptyString(trimmed)) {
+      result.push(trimmed);
+    }
+  }
+  return result;
+};
+
 /**
  * @package
  */
@@ -39,32 +52,24 @@ export const correctModeArguments = {
   "correct.exclude.files": {
     description:
       "Glob patterns for files to exclude from the operation. Comma-separated.",
-    parse: (value) => {
-      return value.split(",").map((v) => v.trim());
-    },
+    parse: parseCommaSeparatedString,
     type: "custom",
   },
   "correct.exclude.rules": {
     description:
       "List of rules to exclude from the operation. Comma-separated.",
-    parse: (value) => {
-      return value.split(",").map((v) => v.trim());
-    },
+    parse: parseCommaSeparatedString,
     type: "custom",
   },
   "correct.include.files": {
     description:
       "Glob patterns for files to include in the operation. Comma-separated.",
-    parse: (value) => {
-      return value.split(",").map((v) => v.trim());
-    },
+    parse: parseCommaSeparatedString,
     type: "custom",
   },
   "correct.include.rules": {
     description: "List of rules to include in the operation. Comma-separated.",
-    parse: (value) => {
-      return value.split(",").map((v) => v.trim());
-    },
+    parse: parseCommaSeparatedString,
     type: "custom",
   },
   "correct.limit.count": {
