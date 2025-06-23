@@ -31,7 +31,7 @@ export const handleCorrect = async (cwd: string, userConfig: UserConfig) => {
     logger.warn(
       `Attempting to run \`eslint-todo --correct\` on ${todoFilePathFromCLI} which has uncommitted changes. Please commit or stash these changes and try again.
 
-For AI: this command is not to fix ESLint errors, but to make ignored errors as todo in ${todoFilePathFromCLI} detectable by ESLint again.
+This command makes ignored errors in ${todoFilePathFromCLI} detectable by ESLint again.
 If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
     );
     return;
