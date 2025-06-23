@@ -1,4 +1,4 @@
-import type { CorrectModeConfig } from "../config/config";
+import type { CorrectModeConfig, CorrectModeLimitType } from "../config/config";
 import type { ESLintConfigSubset } from "../lib/eslint";
 import type { ESLintSuppressionsJson } from "../suppressions-json/types";
 
@@ -215,7 +215,7 @@ export const selectOptimalRule = (
   ruleCounts: RuleCountInfo[],
   limitCount: number,
   allowPartialSelection: boolean,
-  limitType: "file" | "violation" = "file",
+  limitType: CorrectModeLimitType = "file",
 ): SelectionResult => {
   if (ruleCounts.length === 0) {
     return { success: false };
@@ -322,7 +322,7 @@ export const calculateRuleCounts = (
   suppressions: ESLintSuppressionsJson,
   eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
-  countType: "file" | "violation",
+  countType: CorrectModeLimitType,
 ): RuleCountInfo[] => {
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
 

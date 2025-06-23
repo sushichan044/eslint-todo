@@ -82,7 +82,7 @@ export type CorrectModeConfig = {
      *
      * @default "violation"
      */
-    type: "file" | "violation";
+    type: CorrectModeLimitType;
   };
   /**
    * Allow partial selection of violations.
@@ -91,6 +91,8 @@ export type CorrectModeConfig = {
    */
   partialSelection: boolean;
 };
+
+export type CorrectModeLimitType = "file" | "violation";
 
 export type CorrectModeUserConfig = DeepPartial<CorrectModeConfig>;
 

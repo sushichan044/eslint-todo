@@ -17,5 +17,8 @@ export default defineConfig({
       process.env["GITHUB_ACTIONS"] == null
         ? "default"
         : ["default", "github-actions"],
+    typecheck: {
+      enabled: true,
+    },
   },
 });

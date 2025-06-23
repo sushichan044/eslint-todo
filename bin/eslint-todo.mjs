@@ -2,4 +2,4 @@
 // @ts-check
 import { run } from "../dist/cli/index.mjs";
 
-await run(process.argv);
+await run(process.argv.slice(2));
