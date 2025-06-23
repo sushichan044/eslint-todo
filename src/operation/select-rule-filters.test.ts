@@ -51,12 +51,13 @@ describe("applyRuleAndFileFilters", () => {
       },
     ];
 
-    it.each(tc)("$name", ({ config, eslintConfig, expected, ruleId }) => {
-      const result = applyRuleAndFileFilters(
+    it.each(tc)("$name", async ({ config, eslintConfig, expected, ruleId }) => {
+      const result = await applyRuleAndFileFilters(
         ruleId,
         testFiles,
         eslintConfig,
         config,
+        "/test/root",
       );
 
       if (expected.isEligible) {
@@ -115,13 +116,14 @@ describe("applyRuleAndFileFilters", () => {
       },
     ];
 
-    it.each(tc)("$name", ({ config, expected, ruleId }) => {
+    it.each(tc)("$name", async ({ config, expected, ruleId }) => {
       const eslintConfig = createESLintConfig({ [ruleId]: { fixable: true } });
-      const result = applyRuleAndFileFilters(
+      const result = await applyRuleAndFileFilters(
         ruleId,
         testFiles,
         eslintConfig,
         config,
+        "/test/root",
       );
 
       if (expected.isEligible) {
@@ -182,15 +184,16 @@ describe("applyRuleAndFileFilters", () => {
       },
     ];
 
-    it.each(tc)("$name", ({ config, expected }) => {
+    it.each(tc)("$name", async ({ config, expected }) => {
       const eslintConfig = createESLintConfig({
         "no-console": { fixable: true },
       });
-      const result = applyRuleAndFileFilters(
+      const result = await applyRuleAndFileFilters(
         "no-console",
         testFiles,
         eslintConfig,
         config,
+        "/test/root",
       );
 
       if (expected.isEligible) {

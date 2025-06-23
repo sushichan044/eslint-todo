@@ -33,39 +33,51 @@ const createESLintConfigSubset = (
 
 describe("select-rule integration tests", () => {
   describe("selectRuleBasedOnLimit", () => {
-    it("calls selectRuleBasedOnFilesLimit for file limit type", () => {
+    it("calls selectRuleBasedOnFilesLimit for file limit type", async () => {
       const todoModule = createTodoModuleV2({});
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const eslintConfig = createESLintConfigSubset();
       const config = createConfig({ limit: { count: 10, type: "file" } });
 
-      const result = selectRuleBasedOnLimit(suppressions, eslintConfig, config);
-      const expected = selectRuleBasedOnFilesLimit(
+      const result = await selectRuleBasedOnLimit(
         suppressions,
         eslintConfig,
         config,
+        "/test/root",
+      );
+      const expected = await selectRuleBasedOnFilesLimit(
+        suppressions,
+        eslintConfig,
+        config,
+        "/test/root",
       );
 
       expect(result).toStrictEqual(expected);
     });
 
-    it("calls selectRuleBasedOnViolationsLimit for violation limit type", () => {
+    it("calls selectRuleBasedOnViolationsLimit for violation limit type", async () => {
       const todoModule = createTodoModuleV2({});
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const eslintConfig = createESLintConfigSubset();
       const config = createConfig({ limit: { count: 10, type: "violation" } });
 
-      const result = selectRuleBasedOnLimit(suppressions, eslintConfig, config);
-      const expected = selectRuleBasedOnViolationsLimit(
+      const result = await selectRuleBasedOnLimit(
         suppressions,
         eslintConfig,
         config,
+        "/test/root",
+      );
+      const expected = await selectRuleBasedOnViolationsLimit(
+        suppressions,
+        eslintConfig,
+        config,
+        "/test/root",
       );
 
       expect(result).toStrictEqual(expected);
     });
 
-    it("throws error for unknown limit type", () => {
+    it("throws error for unknown limit type", async () => {
       const todoModule = createTodoModuleV2({});
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const config = createConfig({
@@ -73,13 +85,14 @@ describe("select-rule integration tests", () => {
         limit: { count: 10, type: "unknown" },
       });
 
-      expect(() =>
+      await expect(async () =>
         selectRuleBasedOnLimit(
           suppressions,
           createESLintConfigSubset(),
           config,
+          "/test/root",
         ),
-      ).toThrowError("Got unknown limit");
+      ).rejects.toThrowError("Got unknown limit");
     });
   });
 
@@ -259,16 +272,17 @@ describe("select-rule integration tests", () => {
       },
     ];
 
-    it.each(tc)("$name", ({ config, eslintRules, expected, todo }) => {
+    it.each(tc)("$name", async ({ config, eslintRules, expected, todo }) => {
       const todoModule = createTodoModuleV2(todo);
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const eslintConfig = createESLintConfigSubset(eslintRules.rules);
       const correctConfig = createConfig(config);
 
-      const result = selectRuleBasedOnLimit(
+      const result = await selectRuleBasedOnLimit(
         suppressions,
         eslintConfig,
         correctConfig,
+        "/test/root",
       );
       expect(result).toStrictEqual(expected);
     });
@@ -292,18 +306,19 @@ describe("select-rule integration tests", () => {
       },
     ];
 
-    it.each(tc)("$name", ({ config, expectError }) => {
+    it.each(tc)("$name", async ({ config, expectError }) => {
       const todoModule = createTodoModuleV2({});
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const correctConfig = createConfig(config);
 
-      expect(() =>
+      await expect(async () =>
         selectRuleBasedOnLimit(
           suppressions,
           createESLintConfigSubset(),
           correctConfig,
+          "/test/root",
         ),
-      ).toThrowError(expectError);
+      ).rejects.toThrowError(expectError);
     });
   });
 });

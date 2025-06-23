@@ -41,6 +41,52 @@ describe("UserConfigJsonSchema matches snapshot", () => {
                 "title": "Options for excluding todo items",
                 "type": "object",
               },
+              "importGraph": {
+                "description": "Import graph configuration for dependency-based file filtering.",
+                "properties": {
+                  "dependencyDepth": {
+                    "description": "Maximum dependency depth to traverse.
+      If not specified, will traverse the entire dependency tree.",
+                    "title": "Maximum dependency depth to traverse",
+                    "type": "number",
+                  },
+                  "enabled": {
+                    "description": "Whether to enable import graph-based file filtering.",
+                    "title": "Whether to enable import graph-based file filtering",
+                    "type": "boolean",
+                  },
+                  "entryPoints": {
+                    "description": "Entry point files to start the dependency analysis from.
+      These can be glob patterns or specific file paths.",
+                    "items": {
+                      "type": "string",
+                    },
+                    "title": "Entry point files to start the dependency analysis from",
+                    "type": "array",
+                  },
+                  "mode": {
+                    "description": "Mode for selecting files based on the import graph.
+      - 'dependents': Files that depend on the entry points (upstream)
+      - 'dependencies': Files that the entry points depend on (downstream)
+      - 'connected': All files connected to the entry points (both directions)",
+                    "oneOf": [
+                      {
+                        "const": "connected",
+                      },
+                      {
+                        "const": "dependencies",
+                      },
+                      {
+                        "const": "dependents",
+                      },
+                    ],
+                    "title": "Mode for selecting files based on the import graph",
+                  },
+                },
+                "required": [],
+                "title": "Import graph configuration for dependency-based file filtering",
+                "type": "object",
+              },
               "include": {
                 "description": "Options for including todo items.",
                 "properties": {

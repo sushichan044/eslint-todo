@@ -25,10 +25,11 @@ export const selectRulesToFixAction = defineAction<
   const suppressions = SuppressionsJsonGenerator.fromV2(currentModule);
 
   await hooks.callHook("before:select-rule");
-  const result = selectRuleBasedOnLimit(
+  const result = await selectRuleBasedOnLimit(
     suppressions,
     eslintConfig,
     config.correct,
+    config.root,
   );
   await hooks.callHook("after:select-rule", result);
 

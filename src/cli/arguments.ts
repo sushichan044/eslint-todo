@@ -15,6 +15,22 @@ type Input = {
        */
       "exclude.rules": string | undefined;
       /**
+       * Maximum dependency depth to traverse.
+       */
+      "importGraph.dependencyDepth": string | undefined;
+      /**
+       * Enable import graph-based file filtering.
+       */
+      "importGraph.enabled": boolean | undefined;
+      /**
+       * Comma-separated list of entry point files for import graph analysis.
+       */
+      "importGraph.entryPoints": string | undefined;
+      /**
+       * Mode for selecting files based on import graph.
+       */
+      "importGraph.mode": string | undefined;
+      /**
        * Glob patterns for files to include in the operation.
        */
       "include.files": string | undefined;
@@ -90,6 +106,12 @@ const isValidLimitType = (input: string): input is "file" | "violation" => {
   return ["file", "violation"].includes(input);
 };
 
+const isValidImportGraphMode = (
+  input: string,
+): input is "connected" | "dependencies" | "dependents" => {
+  return ["connected", "dependencies", "dependents"].includes(input);
+};
+
 type ParsedCorrectMode = {
   config: CorrectModeUserConfig;
   isConfigDirty: boolean;
@@ -119,6 +141,29 @@ const parseCorrectMode = (
   const includedFiles = parseCommaSeparatedString(input["include.files"]);
   const includedRules = parseCommaSeparatedString(input["include.rules"]);
 
+  // Parse import graph options
+  const importGraphDepth = isNonEmptyString(
+    input["importGraph.dependencyDepth"],
+  )
+    ? Number.parseInt(input["importGraph.dependencyDepth"])
+    : undefined;
+  if (importGraphDepth != undefined && Number.isNaN(importGraphDepth)) {
+    throw new TypeError("importGraph.dependencyDepth must be a number");
+  }
+
+  if (
+    isNonEmptyString(input["importGraph.mode"]) &&
+    !isValidImportGraphMode(input["importGraph.mode"])
+  ) {
+    throw new Error(
+      `importGraph.mode must be either 'dependents', 'dependencies', or 'connected', got ${input["importGraph.mode"]}`,
+    );
+  }
+
+  const importGraphEntryPoints = parseCommaSeparatedString(
+    input["importGraph.entryPoints"],
+  );
+
   const isDirty =
     input.autoFixableOnly !== undefined ||
     input["exclude.rules"] !== undefined ||
@@ -127,7 +172,11 @@ const parseCorrectMode = (
     input["include.rules"] !== undefined ||
     input["limit.count"] !== undefined ||
     input["limit.type"] !== undefined ||
-    input.partialSelection !== undefined;
+    input.partialSelection !== undefined ||
+    input["importGraph.enabled"] !== undefined ||
+    input["importGraph.entryPoints"] !== undefined ||
+    input["importGraph.dependencyDepth"] !== undefined ||
+    input["importGraph.mode"] !== undefined;
 
   return {
     config: {
@@ -135,6 +184,12 @@ const parseCorrectMode = (
       exclude: {
         files: excludedFiles,
         rules: excludedRules,
+      },
+      importGraph: {
+        dependencyDepth: importGraphDepth,
+        enabled: input["importGraph.enabled"],
+        entryPoints: importGraphEntryPoints,
+        mode: input["importGraph.mode"],
       },
       include: {
         files: includedFiles,

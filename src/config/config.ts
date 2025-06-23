@@ -2,6 +2,7 @@ import defu from "defu";
 import { klona } from "klona";
 import { cwd } from "node:process";
 
+import type { ImportGraphConfig } from "../import-graph/types";
 import type { DeepPartial } from "../utils/types";
 
 export type Config = {
@@ -54,6 +55,10 @@ export type CorrectModeConfig = {
     rules: string[];
   };
   /**
+   * Import graph configuration for dependency-based file filtering.
+   */
+  importGraph: ImportGraphConfig;
+  /**
    * Options for including todo items.
    */
   include: {
@@ -100,6 +105,11 @@ const DEFAULT_CONFIG = {
     exclude: {
       files: [],
       rules: [],
+    },
+    importGraph: {
+      enabled: false,
+      entryPoints: [],
+      mode: "connected",
     },
     include: {
       files: [],

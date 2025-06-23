@@ -1,7 +1,13 @@
 import type { CorrectModeConfig } from "../config/config";
+import type { DependencyGraph } from "../import-graph/types";
 import type { ESLintConfigSubset } from "../lib/eslint";
 import type { ESLintSuppressionsJson } from "../suppressions-json/types";
 
+import {
+  buildDependencyGraph,
+  DependencyGraphCache,
+  filterFilesByImportGraph,
+} from "../import-graph";
 import { isRuleFixable } from "../lib/eslint";
 import { toRuleBasedSuppression } from "../suppressions-json/rule-based";
 import { extractPathsByGlobs } from "../utils/glob";
@@ -44,25 +50,33 @@ export type SelectionResult =
  * @param suppressions - Suppressions.
  * @param ruleMetaMap - ESLint config.
  * @param correctConfig - Correct mode config.
+ * @param rootDirectory - Project root directory.
+ * @param dependencyGraph - Optional pre-built dependency graph.
  */
-export const selectRuleBasedOnLimit = (
+export const selectRuleBasedOnLimit = async (
   suppressions: ESLintSuppressionsJson,
   eslintConfig: ESLintConfigSubset,
   correctConfig: CorrectModeConfig,
-): SelectionResult => {
+  rootDirectory: string,
+  dependencyGraph?: DependencyGraph,
+): Promise<SelectionResult> => {
   switch (correctConfig.limit.type) {
     case "file": {
-      return selectRuleBasedOnFilesLimit(
+      return await selectRuleBasedOnFilesLimit(
         suppressions,
         eslintConfig,
         correctConfig,
+        rootDirectory,
+        dependencyGraph,
       );
     }
     case "violation": {
-      return selectRuleBasedOnViolationsLimit(
+      return await selectRuleBasedOnViolationsLimit(
         suppressions,
         eslintConfig,
         correctConfig,
+        rootDirectory,
+        dependencyGraph,
       );
     }
     default: {
@@ -76,11 +90,13 @@ export const selectRuleBasedOnLimit = (
 /**
  * @package
  */
-export const selectRuleBasedOnFilesLimit = (
+export const selectRuleBasedOnFilesLimit = async (
   suppressions: ESLintSuppressionsJson,
   eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
-): SelectionResult => {
+  rootDirectory: string,
+  dependencyGraph?: DependencyGraph,
+): Promise<SelectionResult> => {
   const {
     limit: { count: limitCount },
     partialSelection: allowPartialSelection,
@@ -90,11 +106,13 @@ export const selectRuleBasedOnFilesLimit = (
     throw new Error("The file limit must be greater than 0.");
   }
 
-  const ruleCounts = calculateRuleCounts(
+  const ruleCounts = await calculateRuleCounts(
     suppressions,
     eslintConfig,
     config,
     "file",
+    rootDirectory,
+    dependencyGraph,
   );
 
   return selectOptimalRule(ruleCounts, limitCount, allowPartialSelection);
@@ -103,11 +121,13 @@ export const selectRuleBasedOnFilesLimit = (
 /**
  * @package
  */
-export const selectRuleBasedOnViolationsLimit = (
+export const selectRuleBasedOnViolationsLimit = async (
   suppressions: ESLintSuppressionsJson,
   eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
-): SelectionResult => {
+  rootDirectory: string,
+  dependencyGraph?: DependencyGraph,
+): Promise<SelectionResult> => {
   const {
     limit: { count: limitCount },
     partialSelection: allowPartialSelection,
@@ -117,11 +137,13 @@ export const selectRuleBasedOnViolationsLimit = (
     throw new Error("The violation limit must be greater than 0.");
   }
 
-  const ruleCounts = calculateRuleCounts(
+  const ruleCounts = await calculateRuleCounts(
     suppressions,
     eslintConfig,
     config,
     "violation",
+    rootDirectory,
+    dependencyGraph,
   );
 
   return selectOptimalRule(
@@ -146,19 +168,24 @@ type RuleFilterResult =
  * @param violatedFiles - Array of all file paths for this rule
  * @param eslintConfig - ESLint configuration
  * @param config - Correct mode configuration
- * @returns RuleFilterResult indicating whether rule is eligible and filtered files
+ * @param rootDirectory - Project root directory (for import graph analysis)
+ * @param dependencyGraph - Optional pre-built dependency graph
+ * @returns Promise<RuleFilterResult> indicating whether rule is eligible and filtered files
  *
  * @package
  */
-export const applyRuleAndFileFilters = (
+export const applyRuleAndFileFilters = async (
   ruleId: string,
   violatedFiles: string[],
   eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
-): RuleFilterResult => {
+  rootDirectory: string,
+  dependencyGraph?: DependencyGraph,
+): Promise<RuleFilterResult> => {
   const {
     autoFixableOnly,
     exclude: { files: excludedFiles, rules: excludedRules },
+    importGraph,
     include: { files: includedFiles, rules: includedRules },
   } = config;
 
@@ -191,6 +218,51 @@ export const applyRuleAndFileFilters = (
   // Apply include.files filtering
   if (includedFiles.length > 0) {
     filteredFiles = extractPathsByGlobs(filteredFiles, includedFiles);
+  }
+
+  // Apply import graph filtering if enabled
+  if (importGraph.enabled && importGraph.entryPoints.length > 0) {
+    let graph = dependencyGraph;
+
+    // Build dependency graph if not provided
+    if (!graph) {
+      try {
+        const cache = new DependencyGraphCache(rootDirectory);
+        graph = (await cache.get(importGraph, rootDirectory)) ?? undefined;
+
+        if (!graph) {
+          graph = await buildDependencyGraph({
+            entryPoints: importGraph.entryPoints,
+            maxDepth: importGraph.dependencyDepth,
+            rootDir: rootDirectory,
+          });
+
+          // Cache the graph for future use
+          await cache.set(graph, importGraph, rootDirectory);
+        }
+      } catch (error) {
+        // If import graph analysis fails, fall back to existing filtering
+        console.warn(
+          "Import graph analysis failed, falling back to glob filtering:",
+          error,
+        );
+
+        if (filteredFiles.length === 0) {
+          return { isEligible: false };
+        }
+
+        return { correctableFiles: filteredFiles, isEligible: true };
+      }
+    }
+
+    // Apply import graph filtering
+    const importGraphResult = filterFilesByImportGraph(
+      filteredFiles,
+      graph,
+      importGraph,
+    );
+
+    filteredFiles = importGraphResult.matchedFiles;
   }
 
   if (filteredFiles.length === 0) {
@@ -313,21 +385,25 @@ export type RuleCountInfo = {
  * @param eslintConfig - ESLint config.
  * @param config - Correct mode config.
  * @param countType - Whether to count files or violations.
+ * @param rootDir - Project root directory.
+ * @param dependencyGraph - Optional pre-built dependency graph.
  *
- * @returns Array of violation information for each rule.
+ * @returns Promise<Array<RuleCountInfo>> - Array of violation information for each rule.
  *
  * @package
  */
-export const calculateRuleCounts = (
+export const calculateRuleCounts = async (
   suppressions: ESLintSuppressionsJson,
   eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
   countType: "file" | "violation",
-): RuleCountInfo[] => {
+  rootDirectory: string,
+  dependencyGraph?: DependencyGraph,
+): Promise<RuleCountInfo[]> => {
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
 
-  return Object.entries(ruleBasedSuppressions)
-    .map(([ruleId, entry]) => {
+  const rulePromises = Object.entries(ruleBasedSuppressions).map(
+    async ([ruleId, entry]) => {
       // Calculate original counts
       const originalFileCount = Object.keys(entry).length;
       const originalViolationCount = Object.values(entry).reduce(
@@ -338,11 +414,13 @@ export const calculateRuleCounts = (
         countType === "file" ? originalFileCount : originalViolationCount;
 
       // Apply filtering
-      const filterResult = applyRuleAndFileFilters(
+      const filterResult = await applyRuleAndFileFilters(
         ruleId,
         Object.keys(entry),
         eslintConfig,
         config,
+        rootDirectory,
+        dependencyGraph,
       );
 
       if (!filterResult.isEligible) {
@@ -372,6 +450,9 @@ export const calculateRuleCounts = (
         originalCount,
         ruleId,
       };
-    })
-    .filter((info): info is RuleCountInfo => info !== null);
+    },
+  );
+
+  const results = await Promise.all(rulePromises);
+  return results.filter((info): info is RuleCountInfo => info !== null);
 };
