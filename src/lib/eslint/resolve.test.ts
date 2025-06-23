@@ -97,12 +97,19 @@ describe("resolveConfigPath", () => {
     await fixture.rm();
   });
 
-  const testCases: Array<{
-    cwd: string;
-    expectedPathContains?: string;
-    name: string;
-    shouldThrow: boolean;
-  }> = [
+  const testCases: Array<
+    | {
+        cwd: string;
+        expectedPathContains: string;
+        name: string;
+        shouldThrow: false;
+      }
+    | {
+        cwd: string;
+        name: string;
+        shouldThrow: true;
+      }
+  > = [
     {
       cwd: "project",
       expectedPathContains: "project/eslint.config.js",
@@ -149,12 +156,12 @@ describe("resolveConfigPath", () => {
     },
   ];
 
-  it.each(testCases)("$name", ({ cwd, expectedPathContains, shouldThrow }) => {
+  it.each(testCases)("$name", ({ cwd, ...testCase }) => {
     const cwdPath = fixture.getPath(cwd);
 
-    if (shouldThrow) {
+    if (testCase.shouldThrow) {
       expect(() => resolveConfigPath(cwdPath)).toThrow(
-        "No eslint config found",
+        new Error("No eslint config found"),
       );
     } else {
       const result = resolveConfigPath(cwdPath);
@@ -162,8 +169,12 @@ describe("resolveConfigPath", () => {
       expect(result).toHaveProperty("basePath");
       expect(result).toHaveProperty("fullPath");
 
-      if (isNonEmptyString(expectedPathContains)) {
-        expect(result.fullPath).toContain(expectedPathContains);
+      if (isNonEmptyString(testCase.expectedPathContains)) {
+        expect(result.fullPath).toContain(testCase.expectedPathContains);
+      } else {
+        throw new Error(
+          "expectedPathContains is required when shouldThrow is false",
+        );
       }
     }
   });
