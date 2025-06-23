@@ -2,8 +2,8 @@ export type FlattenObject<T> = {
   [K in FlattenKeys<T>]: K extends `${infer P}.${infer S}`
     ? P extends keyof T
       ? T[P] extends Record<PropertyKey, unknown>
-        ? S extends keyof T[P]
-          ? T[P][S]
+        ? S extends keyof FlattenObject<T[P]>
+          ? FlattenObject<T[P]>[S]
           : never
         : never
       : never
