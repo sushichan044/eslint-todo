@@ -63,7 +63,6 @@ export const correctCmd = define({
     },
     "limit.type": {
       choices: ["file", "violation"],
-      default: "violation",
       type: "enum",
     },
     "partialSelection": {
