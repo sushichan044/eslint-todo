@@ -26,6 +26,4 @@ export const handleMCP = async (cwd: string, userConfig: UserConfig) => {
         process.exitCode = 1;
       });
   });
-
-  return;
 };

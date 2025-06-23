@@ -45,5 +45,4 @@ export const handleGenerate = async (cwd: string, userConfig: UserConfig) => {
   });
 
   await genActionExecutor();
-  return;
 };

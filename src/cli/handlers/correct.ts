@@ -34,6 +34,7 @@ export const handleCorrect = async (cwd: string, userConfig: UserConfig) => {
 This command makes ignored errors in ${todoFilePathFromCLI} detectable by ESLint again.
 If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
     );
+    // Do not continue if the todo module has uncommitted changes.
     return;
   }
 
@@ -101,5 +102,4 @@ If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
   });
 
   await deleteRuleExecutor(result.selection);
-  return;
 };
