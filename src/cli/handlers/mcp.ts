@@ -19,11 +19,11 @@ export const handleMCP = async (cwd: string, userConfig: UserConfig) => {
   process.on("SIGINT", () => {
     stopMcpServer()
       .then(() => {
-        process.exitCode = 0;
+        process.exit(0);
       })
       .catch((error) => {
         console.error(error);
-        process.exitCode = 1;
+        process.exit(1);
       });
   });
 };
