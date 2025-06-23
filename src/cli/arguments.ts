@@ -96,7 +96,10 @@ type ParsedCorrectMode = {
 const parseCorrectMode = (
   input: Input["config"]["correct"],
 ): ParsedCorrectMode => {
-  if (Number.isNaN(input["limit.count"])) {
+  if (
+    input["limit.count"] !== undefined &&
+    Number.isNaN(input["limit.count"])
+  ) {
     throw new TypeError("limit must be a number");
   }
 
