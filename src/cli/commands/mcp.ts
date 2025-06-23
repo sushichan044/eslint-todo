@@ -4,6 +4,7 @@ import { cwd } from "node:process";
 import { resolveFileConfig } from "../../config/resolve";
 import { parseArguments } from "../arguments";
 import { handleMCP } from "../handlers/mcp";
+import { logger } from "../logger";
 import { commonArguments } from "./common-arguments";
 
 /**
@@ -38,6 +39,12 @@ export const mcpCmd = define({
         mcp: true,
       },
     });
+
+    if (isConfigDirty) {
+      logger.warn(
+        "Ignoring config file because config is passed via CLI flags.",
+      );
+    }
 
     const cliCwd = cwd();
     const userConfig = isConfigDirty
