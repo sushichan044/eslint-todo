@@ -113,7 +113,7 @@ describe("CLI Arguments", () => {
             correct: {
               "autoFixableOnly": undefined,
               "exclude.files": undefined,
-              "exclude.rules": "no-console,no-unused-vars,",
+              "exclude.rules": ["no-console", "no-unused-vars"],
               "include.files": undefined,
               "include.rules": undefined,
               "limit.count": undefined,
@@ -143,7 +143,7 @@ describe("CLI Arguments", () => {
           config: {
             correct: {
               "autoFixableOnly": undefined,
-              "exclude.files": "dist/**,build/**,.cache/**,",
+              "exclude.files": ["dist/**", "build/**", ".cache/**"],
               "exclude.rules": undefined,
               "include.files": undefined,
               "include.rules": undefined,
@@ -177,7 +177,7 @@ describe("CLI Arguments", () => {
               "autoFixableOnly": undefined,
               "exclude.files": undefined,
               "exclude.rules": undefined,
-              "include.files": "src/**/*.ts,app/**/*.tsx,",
+              "include.files": ["src/**/*.ts", "app/**/*.tsx"],
               "include.rules": undefined,
               "limit.count": undefined,
               "limit.type": undefined,
@@ -209,7 +209,10 @@ describe("CLI Arguments", () => {
               "exclude.files": undefined,
               "exclude.rules": undefined,
               "include.files": undefined,
-              "include.rules": "no-console,@typescript-eslint/no-unused-vars,",
+              "include.rules": [
+                "no-console",
+                "@typescript-eslint/no-unused-vars",
+              ],
               "limit.count": undefined,
               "limit.type": undefined,
               "partialSelection": undefined,
@@ -239,8 +242,11 @@ describe("CLI Arguments", () => {
               "autoFixableOnly": undefined,
               "exclude.files": undefined,
               "exclude.rules": undefined,
-              "include.files": "src/**/*.ts,app/**/*.tsx",
-              "include.rules": "no-console,@typescript-eslint/no-unused-vars",
+              "include.files": ["src/**/*.ts", "app/**/*.tsx"],
+              "include.rules": [
+                "no-console",
+                "@typescript-eslint/no-unused-vars",
+              ],
               "limit.count": undefined,
               "limit.type": undefined,
               "partialSelection": undefined,
@@ -272,8 +278,8 @@ describe("CLI Arguments", () => {
           config: {
             correct: {
               "autoFixableOnly": undefined,
-              "exclude.files": "dist/**,node_modules/**",
-              "exclude.rules": "no-console,no-unused-vars",
+              "exclude.files": ["dist/**", "node_modules/**"],
+              "exclude.rules": ["no-console", "no-unused-vars"],
               "include.files": undefined,
               "include.rules": undefined,
               "limit.count": undefined,
@@ -307,9 +313,9 @@ describe("CLI Arguments", () => {
           config: {
             correct: {
               "autoFixableOnly": undefined,
-              "exclude.files": "**/*.test.ts,**/*.spec.ts",
+              "exclude.files": ["**/*.test.ts", "**/*.spec.ts"],
               "exclude.rules": undefined,
-              "include.files": "src/**/*.ts,app/**/*.tsx",
+              "include.files": ["src/**/*.ts", "app/**/*.tsx"],
               "include.rules": undefined,
               "limit.count": undefined,
               "limit.type": undefined,
@@ -469,7 +475,7 @@ describe("CLI Arguments", () => {
               "exclude.rules": undefined,
               "include.files": undefined,
               "include.rules": undefined,
-              "limit.count": "10",
+              "limit.count": 10,
               "limit.type": undefined,
               "partialSelection": undefined,
             },
@@ -522,7 +528,7 @@ describe("CLI Arguments", () => {
             correct: {
               "autoFixableOnly": undefined,
               "exclude.files": undefined,
-              "exclude.rules": "",
+              "exclude.rules": [],
               "include.files": undefined,
               "include.rules": undefined,
               "limit.count": undefined,
@@ -569,7 +575,7 @@ describe("CLI Arguments", () => {
               "exclude.rules": undefined,
               "include.files": undefined,
               "include.rules": undefined,
-              "limit.count": "invalid",
+              "limit.count": Number.NaN,
               "limit.type": undefined,
               "partialSelection": undefined,
             },
@@ -582,31 +588,6 @@ describe("CLI Arguments", () => {
           },
         },
         name: "should throw error for invalid limit.count",
-      },
-      {
-        expectedError:
-          "limit-type must be either 'violation' or 'file', got invalid",
-        input: {
-          config: {
-            correct: {
-              "autoFixableOnly": undefined,
-              "exclude.files": undefined,
-              "exclude.rules": undefined,
-              "include.files": undefined,
-              "include.rules": undefined,
-              "limit.count": undefined,
-              "limit.type": "invalid",
-              "partialSelection": undefined,
-            },
-            root: undefined,
-            todoFile: undefined,
-          },
-          mode: {
-            correct: true,
-            mcp: false,
-          },
-        },
-        name: "should throw error for invalid limit.type",
       },
     ];
 

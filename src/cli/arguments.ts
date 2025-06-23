@@ -1,51 +1,8 @@
-import type { CorrectModeUserConfig, UserConfig } from "../config/config";
-
-import { isNonEmptyString } from "../utils/string";
-
-type Input = {
-  config: {
-    correct: {
-      "autoFixableOnly": boolean | undefined;
-      /**
-       * Glob patterns for files to exclude from the operation.
-       */
-      "exclude.files": string | undefined;
-      /**
-       * Comma-separated list of rules to exclude from the operation.
-       */
-      "exclude.rules": string | undefined;
-      /**
-       * Glob patterns for files to include in the operation.
-       */
-      "include.files": string | undefined;
-      /**
-       * Comma-separated list of rules to include in the operation.
-       */
-      "include.rules": string | undefined;
-      /**
-       * Limit the number of violations or files to fix.
-       */
-      "limit.count": string | undefined;
-      "limit.type": string | undefined;
-      "partialSelection": boolean | undefined;
-    };
-    root: string | undefined;
-    todoFile: string | undefined;
-  };
-
-  mode: {
-    correct: boolean;
-    mcp: boolean;
-  };
-};
-
-type ParsedCLIInput = {
-  context: {
-    mode: "correct" | "generate" | "mcp";
-  };
-  inputConfig: UserConfig;
-  isConfigDirty: boolean;
-};
+import type {
+  CorrectModeLimitType,
+  CorrectModeUserConfig,
+  UserConfig,
+} from "../config/config";
 
 /**
  * Structure the CLI flags and arguments into a structured object.
@@ -86,8 +43,49 @@ export const parseArguments = (input: Input): ParsedCLIInput => {
   };
 };
 
-const isValidLimitType = (input: string): input is "file" | "violation" => {
-  return ["file", "violation"].includes(input);
+type Input = {
+  config: {
+    correct: {
+      "autoFixableOnly": boolean | undefined;
+      /**
+       * Glob patterns for files to exclude from the operation.
+       */
+      "exclude.files": string[] | undefined;
+      /**
+       * Comma-separated list of rules to exclude from the operation.
+       */
+      "exclude.rules": string[] | undefined;
+      /**
+       * Glob patterns for files to include in the operation.
+       */
+      "include.files": string[] | undefined;
+      /**
+       * Comma-separated list of rules to include in the operation.
+       */
+      "include.rules": string[] | undefined;
+      /**
+       * Limit the number of violations or files to fix.
+       */
+      "limit.count": number | undefined;
+      "limit.type": CorrectModeLimitType | undefined;
+      "partialSelection": boolean | undefined;
+    };
+    root: string | undefined;
+    todoFile: string | undefined;
+  };
+
+  mode: {
+    correct: boolean;
+    mcp: boolean;
+  };
+};
+
+type ParsedCLIInput = {
+  context: {
+    mode: "correct" | "generate" | "mcp";
+  };
+  inputConfig: UserConfig;
+  isConfigDirty: boolean;
 };
 
 type ParsedCorrectMode = {
@@ -98,26 +96,9 @@ type ParsedCorrectMode = {
 const parseCorrectMode = (
   input: Input["config"]["correct"],
 ): ParsedCorrectMode => {
-  const limitCount = isNonEmptyString(input["limit.count"])
-    ? Number.parseInt(input["limit.count"])
-    : undefined;
-  if (limitCount != undefined && Number.isNaN(limitCount)) {
+  if (Number.isNaN(input["limit.count"])) {
     throw new TypeError("limit must be a number");
   }
-
-  if (
-    isNonEmptyString(input["limit.type"]) &&
-    !isValidLimitType(input["limit.type"])
-  ) {
-    throw new Error(
-      `limit-type must be either 'violation' or 'file', got ${input["limit.type"]}`,
-    );
-  }
-
-  const excludedRules = parseCommaSeparatedString(input["exclude.rules"]);
-  const excludedFiles = parseCommaSeparatedString(input["exclude.files"]);
-  const includedFiles = parseCommaSeparatedString(input["include.files"]);
-  const includedRules = parseCommaSeparatedString(input["include.rules"]);
 
   const isDirty =
     input.autoFixableOnly !== undefined ||
@@ -133,38 +114,19 @@ const parseCorrectMode = (
     config: {
       autoFixableOnly: input.autoFixableOnly,
       exclude: {
-        files: excludedFiles,
-        rules: excludedRules,
+        files: input["exclude.files"] ?? [],
+        rules: input["exclude.rules"] ?? [],
       },
       include: {
-        files: includedFiles,
-        rules: includedRules,
+        files: input["include.files"] ?? [],
+        rules: input["include.rules"] ?? [],
       },
       limit: {
-        count: limitCount,
+        count: input["limit.count"],
         type: input["limit.type"],
       },
       partialSelection: input.partialSelection,
     },
     isConfigDirty: isDirty,
   };
-};
-
-/**
- * Parse a comma-separated string into an array of non-empty strings.
- * @param input The comma-separated string to parse
- * @returns Array of trimmed non-empty strings
- */
-const parseCommaSeparatedString = (input: string | undefined): string[] => {
-  if (!isNonEmptyString(input)) {
-    return [];
-  }
-
-  return input.split(",").flatMap((element) => {
-    const trimmedElement = element.trim();
-    if (isNonEmptyString(trimmedElement)) {
-      return trimmedElement;
-    }
-    return [];
-  });
 };
