@@ -10,35 +10,36 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
     },
     "./config": {
-      "import": "./dist/config/index.mjs",
-      "types": "./dist/config/index.d.ts"
+      "types": "./dist/config/index.d.mts",
+      "import": "./dist/config/index.mjs"
     },
     "./eslint": {
-      "import": "./dist/eslint/index.mjs",
-      "types": "./dist/eslint/index.d.ts"
+      "types": "./dist/eslint/index.d.mts",
+      "import": "./dist/eslint/index.mjs"
     },
     "./mcp": {
-      "import": "./dist/mcp/index.mjs",
-      "types": "./dist/mcp/index.d.ts"
-    }
+      "types": "./dist/mcp/index.d.mts",
+      "import": "./dist/mcp/index.mjs"
+    },
+    "./package.json": "./package.json"
   },
   "bin": {
     "eslint-todo": "bin/eslint-todo.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sushichan044/eslint-todo.git"
+    "url": "git+https://github.com/sushichan044/eslint-todo.git"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "unbuild",
+    "build": "tsdown",
     "build:json-schema": "vite-node scripts/json-schema.ts",
     "dev": "unbuild --stub",
     "lint": "eslint --max-warnings 0 .",
