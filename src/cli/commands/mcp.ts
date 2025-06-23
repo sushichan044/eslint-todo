@@ -1,11 +1,9 @@
 import { define } from "gunshi/definition";
 import { cwd } from "node:process";
 
-import { configWithDefault } from "../../config/config";
 import { resolveFileConfig } from "../../config/resolve";
-import { createESLintConfigSubset, readESLintConfig } from "../../lib/eslint";
-import { startMcpServerWithStdio } from "../../mcp/stdio";
 import { parseArguments } from "../arguments";
+import { handleMCP } from "../handlers/mcp";
 import { commonArguments } from "./common-arguments";
 
 /**
@@ -45,27 +43,7 @@ export const mcpCmd = define({
     const userConfig = isConfigDirty
       ? inputConfig
       : await resolveFileConfig(cliCwd);
-    const config = configWithDefault(userConfig);
 
-    const eslintConfig = await readESLintConfig(config.root);
-    const eslintConfigSubset = createESLintConfigSubset(eslintConfig);
-
-    const stopMcpServer = await startMcpServerWithStdio({
-      config,
-      eslintConfig: eslintConfigSubset,
-    });
-
-    process.on("SIGINT", () => {
-      stopMcpServer()
-        .then(() => {
-          process.exitCode = 0;
-        })
-        .catch((error) => {
-          console.error(error);
-          process.exitCode = 1;
-        });
-    });
-
-    return;
+    await handleMCP(cliCwd, userConfig);
   },
 });
