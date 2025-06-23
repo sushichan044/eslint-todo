@@ -123,6 +123,9 @@ importers:
       fs-extra:
         specifier: 11.3.0
         version: 11.3.0
+      fs-fixture:
+        specifier: 2.8.1
+        version: 2.8.1
       globals:
         specifier: 16.2.0
         version: 16.2.0
@@ -2189,6 +2192,10 @@ packages:
   fs-extra@11.3.0:
     resolution: {integrity: sha512-Z4XaCL6dUDHfP/jT25jJKMmtxvuwbkrD1vNSMFlo9lNLY2c5FHYSQgHPRZUjAB26TpDEoW9HCOgplrdbaPV/ew==}
     engines: {node: '>=14.14'}
+
+  fs-fixture@2.8.1:
+    resolution: {integrity: sha512-C0xA7XvqZBbbOgitWcMDstfih8GaOPEyXfvNefmV7+1573TCnFQ6hAJEUEzH2LVrscONLh73rvayNfa/m9PMgw==}
+    engines: {node: '>=18.0.0'}
 
   fs-minipass@2.1.0:
     resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
@@ -6586,6 +6593,8 @@ snapshots:
       graceful-fs: 4.2.11
       jsonfile: 6.1.0
       universalify: 2.0.1
+
+  fs-fixture@2.8.1: {}
 
   fs-minipass@2.1.0:
     dependencies:
