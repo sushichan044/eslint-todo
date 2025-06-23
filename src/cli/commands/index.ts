@@ -57,7 +57,11 @@ const mainCmd = define({
     const limitType = context.values["correct.limit.type"];
     const partialSelection = context.values["correct.partialSelection"];
 
-    const { inputConfig, isConfigDirty } = parseArguments({
+    const {
+      context: { mode },
+      inputConfig,
+      isConfigDirty,
+    } = parseArguments({
       config: {
         correct: {
           "autoFixableOnly": autoFixableOnly,
@@ -91,14 +95,24 @@ const mainCmd = define({
       ? inputConfig
       : await resolveFileConfig(cliCwd);
 
-    if (context.values.mcp) {
+    if (mode === "mcp") {
+      logger.warn(
+        "The `--mcp` flag is deprecated and will be removed in v1. Use the `mcp` sub command instead.",
+      );
+
       return await handleMCP(cliCwd, userConfig);
     }
 
-    if (context.values.correct) {
+    if (mode === "correct") {
+      logger.warn(
+        "The `--correct` flag is deprecated and will be removed in v1. Use the `correct` sub command instead.",
+      );
+
       return await handleCorrect(cliCwd, userConfig);
     }
 
+    // After v1, root command will still be `generate` command.
+    // So we don't need to print deprecation warning here.
     return await handleGenerate(cliCwd, userConfig);
   },
 });
