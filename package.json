@@ -10,35 +10,36 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
     },
     "./config": {
-      "import": "./dist/config/index.mjs",
-      "types": "./dist/config/index.d.ts"
+      "types": "./dist/config/index.d.mts",
+      "import": "./dist/config/index.mjs"
     },
     "./eslint": {
-      "import": "./dist/eslint/index.mjs",
-      "types": "./dist/eslint/index.d.ts"
+      "types": "./dist/eslint/index.d.mts",
+      "import": "./dist/eslint/index.mjs"
     },
     "./mcp": {
-      "import": "./dist/mcp/index.mjs",
-      "types": "./dist/mcp/index.d.ts"
-    }
+      "types": "./dist/mcp/index.d.mts",
+      "import": "./dist/mcp/index.mjs"
+    },
+    "./package.json": "./package.json"
   },
   "bin": {
     "eslint-todo": "bin/eslint-todo.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sushichan044/eslint-todo.git"
+    "url": "git+https://github.com/sushichan044/eslint-todo.git"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "unbuild",
+    "build": "tsdown",
     "build:json-schema": "vite-node scripts/json-schema.ts",
     "dev": "unbuild --stub",
     "lint": "eslint --max-warnings 0 .",
@@ -49,9 +50,10 @@
     "test:run": "vitest run",
     "eslint:inspect": "eslint --inspect-config",
     "pkg-pr-new": "pkg-pr-new publish --compact --comment=update --pnpm",
-    "check": "pnpm run build && pnpm run lint && pnpm run format:ci && pnpm run typecheck && pnpm run test:run",
+    "check": "pnpm run build && pnpm run lint && pnpm run format:ci && pnpm run typecheck && pnpm run test:run && pnpm run attw:check",
     "prepare": "ts-patch install",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "attw:check": "pnpm run build && pnpm pack && attw"
   },
   "peerDependencies": {
     "eslint": "^8.57.0 || ^9.0.0"
@@ -60,10 +62,8 @@
     "@modelcontextprotocol/sdk": "1.13.0",
     "@typescript-eslint/utils": "8.34.1",
     "bundle-require": "5.1.0",
-    "citty": "0.1.6",
     "comlink": "4.4.2",
     "consola": "3.4.2",
-    "cross-spawn": "7.0.6",
     "defu": "6.1.4",
     "empathic": "2.0.0",
     "gunshi": "0.26.3",
@@ -71,7 +71,6 @@
     "jiti": "2.4.2",
     "klona": "2.0.6",
     "magicast": "0.3.5",
-    "minimatch": "10.0.3",
     "mlly": "1.7.4",
     "pathe": "2.0.3",
     "picomatch": "4.0.2",
@@ -79,9 +78,9 @@
     "zod": "3.25.67"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
     "@ryoppippi/unplugin-typia": "2.6.5",
     "@samchon/openapi": "4.3.3",
-    "@types/cross-spawn": "6.0.6",
     "@types/fs-extra": "11.0.4",
     "@types/node": "22.15.32",
     "@types/picomatch": "4.0.0",
@@ -101,13 +100,17 @@
     "pkg-pr-new": "0.0.53",
     "pnpm": "10.12.2",
     "prettier": "3.5.3",
+    "publint": "0.3.12",
     "release-it": "19.0.3",
     "release-it-pnpm": "4.6.6",
+    "rolldown": "1.0.0-beta.19",
+    "rollup-plugin-node-externals": "8.0.1",
     "ts-patch": "3.3.0",
+    "tsdown": "0.12.8",
     "typescript": "5.8.3",
     "typescript-eslint": "8.34.1",
     "typia": "9.3.1",
-    "unbuild": "3.5.0",
+    "unplugin-unused": "0.5.1",
     "vite": "6.3.5",
     "vite-node": "3.2.4",
     "vitest": "3.2.4"
