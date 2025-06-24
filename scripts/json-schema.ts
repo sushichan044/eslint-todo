@@ -1,8 +1,19 @@
+/**
+ * @fileoverview Generate JSON schema and add it to the build artifacts.
+ *
+ * IMPORTANT:
+ * This script requires `unplugin-typia` to work.
+ * So you need to run this script via `pnpm run build:json-schema`.
+ */
+
 import * as fs from "fs-extra/esm";
-import { cwd } from "node:process";
-import { join } from "pathe";
+import { join, resolve } from "pathe";
 
 import { UserConfigJsonSchema } from "../src/config/json";
+
+const getRepoRoot = () => {
+  return resolve(import.meta.dirname, "..");
+};
 
 /**
  * Generate JSON schema and add it to the build artifacts.
@@ -23,4 +34,4 @@ const generateJsonSchemaFile = async (outputDirectory: string) => {
   );
 };
 
-await generateJsonSchemaFile(cwd());
+await generateJsonSchemaFile(getRepoRoot());
