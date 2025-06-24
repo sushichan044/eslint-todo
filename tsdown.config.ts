@@ -13,7 +13,7 @@ export default defineConfig({
     "./src/cli/index.ts",
     "./src/mcp/index.ts",
 
-    // Worker threads are depends on relative file structure.
+    // Worker threads depend on relative file structure.
     // So we need to include it explicitly to avoid any bundling issue or tree-shaking issue.
     "./src/worker/**/*.ts",
     "!./src/worker/**/*.test.ts",
