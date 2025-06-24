@@ -103,6 +103,7 @@
     "publint": "0.3.12",
     "release-it": "19.0.3",
     "release-it-pnpm": "4.6.6",
+    "rolldown": "1.0.0-beta.19",
     "rollup-plugin-node-externals": "8.0.1",
     "ts-patch": "3.3.0",
     "tsdown": "0.12.8",
