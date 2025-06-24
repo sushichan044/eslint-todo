@@ -22,7 +22,13 @@ export default defineConfig({
   format: "esm",
   hooks: {
     "build:done": async () => {
-      await sh(["pnpm", "run", "build:json-schema"]);
+      try {
+        await sh(["pnpm", "run", "build:json-schema"]);
+        console.log("✅ JSON schema generated successfully");
+      } catch (error) {
+        console.error("❌ Failed to generate JSON schema:", error.message);
+        throw error; // Re-throw to fail the build if schema generation is critical
+      }
     },
   },
   minify: "dce-only",
