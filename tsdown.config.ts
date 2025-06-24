@@ -1,6 +1,7 @@
 import NodeExternals from "rollup-plugin-node-externals";
 import { defineConfig } from "tsdown";
 
+import { sh } from "./src/utils/command";
 import { typiaRolldown } from "./typia-plugin";
 
 export default defineConfig({
@@ -19,6 +20,21 @@ export default defineConfig({
     "!./src/worker/**/*.test.ts",
   ],
   format: "esm",
+  hooks: {
+    "build:done": async () => {
+      try {
+        await sh(["pnpm", "run", "build:json-schema"]);
+        console.log("✅ JSON schema generated successfully");
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error("❌ Failed to generate JSON schema:", error.message);
+        } else {
+          console.error("❌ Failed to generate JSON schema:", String(error));
+        }
+        throw error;
+      }
+    },
+  },
   minify: "dce-only",
   outDir: "dist",
   outExtensions: () => {
