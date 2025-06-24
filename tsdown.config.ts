@@ -1,6 +1,7 @@
 import NodeExternals from "rollup-plugin-node-externals";
 import { defineConfig } from "tsdown";
 
+import { sh } from "./src/utils/command";
 import { typiaRolldown } from "./typia-plugin";
 
 export default defineConfig({
@@ -19,6 +20,11 @@ export default defineConfig({
     "!./src/worker/**/*.test.ts",
   ],
   format: "esm",
+  hooks: {
+    "build:done": async () => {
+      await sh(["pnpm", "run", "build:json-schema"]);
+    },
+  },
   minify: "dce-only",
   outDir: "dist",
   outExtensions: () => {
