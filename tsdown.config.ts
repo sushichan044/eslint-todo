@@ -26,8 +26,12 @@ export default defineConfig({
         await sh(["pnpm", "run", "build:json-schema"]);
         console.log("✅ JSON schema generated successfully");
       } catch (error) {
-        console.error("❌ Failed to generate JSON schema:", error.message);
-        throw error; // Re-throw to fail the build if schema generation is critical
+        if (error instanceof Error) {
+          console.error("❌ Failed to generate JSON schema:", error.message);
+        } else {
+          console.error("❌ Failed to generate JSON schema:", String(error));
+        }
+        throw error;
       }
     },
   },
