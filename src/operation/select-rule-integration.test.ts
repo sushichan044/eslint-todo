@@ -257,6 +257,93 @@ describe("select-rule integration tests", () => {
         name: "empty todo",
         todo: {},
       },
+      {
+        config: {
+          autoFixableOnly: false,
+          limit: { count: 10, type: "file" as const },
+        },
+        eslintRules: {
+          rules: {
+            "fixable-rule": { fixable: true },
+            "non-fixable-rule": { fixable: false },
+          },
+        },
+        expected: {
+          selection: { ruleId: "fixable-rule", type: "full" },
+          success: true,
+        },
+        name: "prioritizes fixable rules when autoFixableOnly is false",
+        todo: {
+          "fixable-rule": {
+            autoFix: true,
+            violations: { "file1.ts": 1, "file2.ts": 1 },
+          },
+          "non-fixable-rule": {
+            autoFix: false,
+            violations: { "file1.ts": 1, "file2.ts": 1, "file3.ts": 1 },
+          },
+        },
+      },
+      {
+        config: {
+          autoFixableOnly: false,
+          limit: { count: 10, type: "file" as const },
+        },
+        eslintRules: {
+          rules: {
+            "fixable-medium": { fixable: true },
+            "non-fixable-high": { fixable: false },
+          },
+        },
+        expected: {
+          selection: { ruleId: "fixable-medium", type: "full" },
+          success: true,
+        },
+        name: "prioritizes fixable rules even with lower violation count",
+        todo: {
+          "fixable-medium": {
+            autoFix: true,
+            violations: { "file1.ts": 1, "file2.ts": 1, "file3.ts": 1 },
+          },
+          "non-fixable-high": {
+            autoFix: false,
+            violations: {
+              "file1.ts": 1,
+              "file2.ts": 1,
+              "file3.ts": 1,
+              "file4.ts": 1,
+              "file5.ts": 1,
+            },
+          },
+        },
+      },
+      {
+        config: {
+          autoFixableOnly: false,
+          limit: { count: 10, type: "file" as const },
+        },
+        eslintRules: {
+          rules: {
+            "a-fixable-rule": { fixable: true },
+            "z-fixable-rule": { fixable: true },
+          },
+        },
+        expected: {
+          selection: { ruleId: "a-fixable-rule", type: "full" },
+          success: true,
+        },
+        name: "uses rule id as tiebreaker when fixability and count are same",
+        todo: {
+          "a-fixable-rule": {
+            autoFix: true,
+            violations: { "file1.ts": 1, "file2.ts": 1 },
+          },
+          "z-fixable-rule": {
+            autoFix: true,
+            violations: { "file1.ts": 1, "file2.ts": 1 },
+          },
+        },
+      },
     ];
 
     it.each(tc)("$name", ({ config, eslintRules, expected, todo }) => {

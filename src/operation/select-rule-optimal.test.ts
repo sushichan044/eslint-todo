@@ -11,10 +11,12 @@ const createRuleCountInfo = (
   filteredCount: number,
   filteredFiles: string[] = [],
   filteredViolations: Record<string, number> = {},
+  isFixable = false, // Default to false for backward compatibility
 ): RuleCountInfo => ({
   filteredCount,
   filteredFiles,
   filteredViolations,
+  isFixable,
   originalCount,
   ruleId,
 });
@@ -264,6 +266,117 @@ describe("selectOptimalRule", () => {
       ];
       const result = selectOptimalRule(ruleCounts, 5, true);
       expect(result).toStrictEqual({ success: false });
+    });
+  });
+
+  describe("auto-fixable rule prioritization", () => {
+    describe("when autoFixableOnly is false", () => {
+      it("prioritizes auto-fixable rules over non-fixable rules with same filtered count", () => {
+        const ruleCounts = [
+          createRuleCountInfo("non-fixable-rule", 5, 10, [], {}, false),
+          createRuleCountInfo("fixable-rule", 5, 10, [], {}, true),
+        ];
+
+        const result = selectOptimalRule(ruleCounts, 20, false);
+
+        expect(result).toStrictEqual({
+          selection: { ruleId: "fixable-rule", type: "full" },
+          success: true,
+        });
+      });
+
+      it("prioritizes auto-fixable rule even with lower filtered count", () => {
+        const ruleCounts = [
+          createRuleCountInfo("non-fixable-rule", 5, 15, [], {}, false),
+          createRuleCountInfo("fixable-rule", 5, 10, [], {}, true),
+        ];
+
+        const result = selectOptimalRule(ruleCounts, 20, false);
+
+        expect(result).toStrictEqual({
+          selection: { ruleId: "fixable-rule", type: "full" },
+          success: true,
+        });
+      });
+
+      it("falls back to filtered count when both rules have same fixability", () => {
+        const ruleCounts = [
+          createRuleCountInfo("rule-low-count", 5, 8, [], {}, true),
+          createRuleCountInfo("rule-high-count", 5, 12, [], {}, true),
+        ];
+
+        const result = selectOptimalRule(ruleCounts, 20, false);
+
+        expect(result).toStrictEqual({
+          selection: { ruleId: "rule-high-count", type: "full" },
+          success: true,
+        });
+      });
+
+      it("uses rule id as tiebreaker when fixability and filtered count are same", () => {
+        const ruleCounts = [
+          createRuleCountInfo("z-rule", 5, 10, [], {}, true),
+          createRuleCountInfo("a-rule", 5, 10, [], {}, true),
+        ];
+
+        const result = selectOptimalRule(ruleCounts, 20, false);
+
+        expect(result).toStrictEqual({
+          selection: { ruleId: "a-rule", type: "full" },
+          success: true,
+        });
+      });
+
+      it("handles mixed fixable and non-fixable rules correctly", () => {
+        const ruleCounts = [
+          createRuleCountInfo("non-fixable-high", 5, 20, [], {}, false),
+          createRuleCountInfo("fixable-medium", 5, 15, [], {}, true),
+          createRuleCountInfo("non-fixable-low", 5, 10, [], {}, false),
+          createRuleCountInfo("fixable-low", 5, 5, [], {}, true),
+        ];
+
+        const result = selectOptimalRule(ruleCounts, 25, false);
+
+        expect(result).toStrictEqual({
+          selection: { ruleId: "fixable-medium", type: "full" },
+          success: true,
+        });
+      });
+    });
+
+    describe("edge cases", () => {
+      it("handles empty array", () => {
+        const result = selectOptimalRule([], 10, false);
+        expect(result).toStrictEqual({ success: false });
+      });
+
+      it("handles all non-fixable rules", () => {
+        const ruleCounts = [
+          createRuleCountInfo("rule1", 5, 10, [], {}, false),
+          createRuleCountInfo("rule2", 5, 8, [], {}, false),
+        ];
+
+        const result = selectOptimalRule(ruleCounts, 15, false);
+
+        expect(result).toStrictEqual({
+          selection: { ruleId: "rule1", type: "full" },
+          success: true,
+        });
+      });
+
+      it("handles all fixable rules", () => {
+        const ruleCounts = [
+          createRuleCountInfo("rule1", 5, 8, [], {}, true),
+          createRuleCountInfo("rule2", 5, 12, [], {}, true),
+        ];
+
+        const result = selectOptimalRule(ruleCounts, 15, false);
+
+        expect(result).toStrictEqual({
+          selection: { ruleId: "rule2", type: "full" },
+          success: true,
+        });
+      });
     });
   });
 });

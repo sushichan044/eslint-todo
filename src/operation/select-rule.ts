@@ -1,3 +1,5 @@
+import { klona as klonaJSON } from "klona/json";
+
 import type { CorrectModeConfig, CorrectModeLimitType } from "../config/config";
 import type { ESLintConfigSubset } from "../lib/eslint";
 import type { ESLintSuppressionsJson } from "../suppressions-json/types";
@@ -221,20 +223,31 @@ export const selectOptimalRule = (
     return { success: false };
   }
 
+  // Sort rules by multi-criteria: [fixable DESC, filtered_count DESC, rule_id ASC]
+  const sortedRules = klonaJSON(ruleCounts).sort((a, b) => {
+    // First: prioritize fixable rules (true > false)
+    if (a.isFixable !== b.isFixable) {
+      return b.isFixable ? 1 : -1;
+    }
+
+    // Second: prioritize higher filtered count
+    if (a.filteredCount !== b.filteredCount) {
+      return b.filteredCount - a.filteredCount;
+    }
+
+    // Third: use rule ID as tiebreaker (lexicographical order)
+    return a.ruleId.localeCompare(b.ruleId);
+  });
+
   // Find the best rule for full selection (original count <= limit)
-  const fullSelectableRules = ruleCounts.filter(
+  const fullSelectableRules = sortedRules.filter(
     (rule) => rule.originalCount <= limitCount,
   );
 
   if (fullSelectableRules.length > 0) {
-    // Select rule with highest filtered count
+    // Select first rule from sorted list (already the best)
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    let bestRule = fullSelectableRules[0]!;
-    for (const rule of fullSelectableRules) {
-      if (rule.filteredCount > bestRule.filteredCount) {
-        bestRule = rule;
-      }
-    }
+    const bestRule = fullSelectableRules[0]!;
 
     return {
       selection: { ruleId: bestRule.ruleId, type: "full" },
@@ -245,7 +258,7 @@ export const selectOptimalRule = (
   // If no full selection possible and partial selection is allowed
   if (allowPartialSelection) {
     // Find first rule that exceeds the original limit (for partial selection)
-    const partialSelectableRule = ruleCounts.find(
+    const partialSelectableRule = sortedRules.find(
       (rule) => rule.originalCount > limitCount,
     );
 
@@ -303,6 +316,7 @@ export type RuleCountInfo = {
   filteredCount: number;
   filteredFiles: string[];
   filteredViolations: Record<string, number>;
+  isFixable: boolean;
   originalCount: number;
   ruleId: string;
 };
@@ -369,6 +383,7 @@ export const calculateRuleCounts = (
         filteredCount,
         filteredFiles,
         filteredViolations,
+        isFixable: isRuleFixable(eslintConfig, ruleId),
         originalCount,
         ruleId,
       };
