@@ -244,6 +244,7 @@ export const selectOptimalRule = (
 
   if (fullSelectableRules.length > 0) {
     // Select first rule from sorted list (already the best)
+    // Safe: fullSelectableRules.length > 0 guaranteed by preceding check
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const bestRule = fullSelectableRules[0]!;
 

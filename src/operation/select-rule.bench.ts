@@ -90,8 +90,7 @@ const generateESLintConfig = (): ESLintConfigSubset => {
   // Generate rules based on patterns
   for (let index = 0; index < 10; index++) {
     for (const { fixable, pattern } of rulePatterns) {
-      const ruleId =
-        pattern.source.replace("^", "").replace("$", "") + `-${index}`;
+      const ruleId = `${pattern.source.replace("^", "").replace("$", "")}-${index}`;
       rules[ruleId] = { fixable };
     }
   }
