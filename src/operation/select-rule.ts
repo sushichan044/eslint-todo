@@ -237,16 +237,29 @@ export const selectOptimalRule = (
     return a.ruleId.localeCompare(b.ruleId);
   });
 
-  // Find the best rule for full selection (original count <= limit)
-  const fullSelectableRules = sortedRules.filter(
-    (rule) => rule.originalCount <= limitCount,
+  // Optimize: Partition rules into full and partial selectable in one iteration
+  // eslint-disable-next-line unicorn/no-array-reduce
+  const partitionedRules = sortedRules.reduce(
+    (accumulator, rule) => {
+      if (rule.originalCount <= limitCount) {
+        accumulator.fullSelectable.push(rule);
+      } else {
+        accumulator.partialSelectable.push(rule);
+      }
+      return accumulator;
+    },
+    {
+      fullSelectable: [] as RuleCountInfo[],
+      partialSelectable: [] as RuleCountInfo[],
+    },
   );
 
-  if (fullSelectableRules.length > 0) {
+  // Try full selection first
+  if (partitionedRules.fullSelectable.length > 0) {
     // Select first rule from sorted list (already the best)
-    // Safe: fullSelectableRules.length > 0 guaranteed by preceding check
+    // Safe: fullSelectable.length > 0 guaranteed by preceding check
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const bestRule = fullSelectableRules[0]!;
+    const bestRule = partitionedRules.fullSelectable[0]!;
 
     return {
       selection: { ruleId: bestRule.ruleId, type: "full" },
@@ -256,10 +269,8 @@ export const selectOptimalRule = (
 
   // If no full selection possible and partial selection is allowed
   if (allowPartialSelection) {
-    // Find first rule that exceeds the original limit (for partial selection)
-    const partialSelectableRule = sortedRules.find(
-      (rule) => rule.originalCount > limitCount,
-    );
+    // Use first partial rule (already sorted by priority)
+    const partialSelectableRule = partitionedRules.partialSelectable[0];
 
     if (partialSelectableRule) {
       const selectedViolations: Record<string, number> = {};
