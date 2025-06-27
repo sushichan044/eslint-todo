@@ -16,7 +16,7 @@ const runBenchmarks = () => {
     const mainResult = execSync(
       "pnpm vitest run src/operation/select-rule.bench.ts",
       {
-        encoding: "utf-8",
+        encoding: "utf8",
         stdio: "pipe",
       },
     );
@@ -26,7 +26,7 @@ const runBenchmarks = () => {
     const comparisonResult = execSync(
       "pnpm vitest run src/operation/select-rule-comparison.bench.ts",
       {
-        encoding: "utf-8",
+        encoding: "utf8",
         stdio: "pipe",
       },
     );
@@ -90,7 +90,7 @@ The new implementation introduces:
   }
 };
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   runBenchmarks();
 }
 

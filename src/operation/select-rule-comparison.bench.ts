@@ -1,5 +1,4 @@
 import { bench, describe } from "vitest";
-import { klona as klonaJSON } from "klona/json";
 
 import type { CorrectModeConfig, CorrectModeLimitType } from "../config/config";
 import type { ESLintConfigSubset } from "../lib/eslint";
@@ -7,8 +6,8 @@ import type { ESLintSuppressionsJson } from "../suppressions-json/types";
 
 import {
   calculateRuleCounts,
-  selectOptimalRule as selectOptimalRuleNew,
   type RuleCountInfo,
+  selectOptimalRule as selectOptimalRuleNew,
 } from "./select-rule";
 
 /**
@@ -107,46 +106,44 @@ const generateLargeSuppressions = (): ESLintSuppressionsJson => {
 
   // Generate mixed fixable and non-fixable rules
   const ruleTypes = [
-    { prefix: "fixable-rule", fixable: true, fileCount: 100, avgViolations: 3 },
+    { avgViolations: 3, fileCount: 100, fixable: true, prefix: "fixable-rule" },
     {
-      prefix: "non-fixable-rule",
-      fixable: false,
-      fileCount: 80,
       avgViolations: 5,
+      fileCount: 80,
+      fixable: false,
+      prefix: "non-fixable-rule",
     },
     {
-      prefix: "typescript-rule",
-      fixable: true,
-      fileCount: 150,
       avgViolations: 2,
+      fileCount: 150,
+      fixable: true,
+      prefix: "typescript-rule",
     },
-    { prefix: "react-rule", fixable: false, fileCount: 120, avgViolations: 4 },
-    { prefix: "import-rule", fixable: true, fileCount: 200, avgViolations: 1 },
-    { prefix: "style-rule", fixable: true, fileCount: 300, avgViolations: 2 },
+    { avgViolations: 4, fileCount: 120, fixable: false, prefix: "react-rule" },
+    { avgViolations: 1, fileCount: 200, fixable: true, prefix: "import-rule" },
+    { avgViolations: 2, fileCount: 300, fixable: true, prefix: "style-rule" },
     {
-      prefix: "complexity-rule",
-      fixable: false,
-      fileCount: 50,
       avgViolations: 8,
+      fileCount: 50,
+      fixable: false,
+      prefix: "complexity-rule",
     },
     {
-      prefix: "security-rule",
-      fixable: false,
-      fileCount: 30,
       avgViolations: 10,
+      fileCount: 30,
+      fixable: false,
+      prefix: "security-rule",
     },
   ];
 
   for (const ruleType of ruleTypes) {
-    for (let i = 0; i < 10; i++) {
-      const ruleId = `${ruleType.prefix}-${i}`;
+    for (let index = 0; index < 10; index++) {
+      const ruleId = `${ruleType.prefix}-${index}`;
 
       for (let fileIndex = 0; fileIndex < ruleType.fileCount; fileIndex++) {
         const fileName = `src/${ruleType.prefix}/file-${fileIndex}.ts`;
 
-        if (!suppressions[fileName]) {
-          suppressions[fileName] = {};
-        }
+        suppressions[fileName] ??= {};
 
         const violationCount = Math.max(
           1,
@@ -168,19 +165,20 @@ const generateESLintConfig = (): ESLintConfigSubset => {
   const rules: Record<string, { fixable: boolean }> = {};
 
   const rulePatterns = [
-    { pattern: /^fixable-rule/, fixable: true },
-    { pattern: /^non-fixable-rule/, fixable: false },
-    { pattern: /^typescript-rule/, fixable: true },
-    { pattern: /^react-rule/, fixable: false },
-    { pattern: /^import-rule/, fixable: true },
-    { pattern: /^style-rule/, fixable: true },
-    { pattern: /^complexity-rule/, fixable: false },
-    { pattern: /^security-rule/, fixable: false },
+    { fixable: true, pattern: /^fixable-rule/ },
+    { fixable: false, pattern: /^non-fixable-rule/ },
+    { fixable: true, pattern: /^typescript-rule/ },
+    { fixable: false, pattern: /^react-rule/ },
+    { fixable: true, pattern: /^import-rule/ },
+    { fixable: true, pattern: /^style-rule/ },
+    { fixable: false, pattern: /^complexity-rule/ },
+    { fixable: false, pattern: /^security-rule/ },
   ];
 
-  for (let i = 0; i < 10; i++) {
-    for (const { pattern, fixable } of rulePatterns) {
-      const ruleId = pattern.source.replace("^", "").replace("$", "") + `-${i}`;
+  for (let index = 0; index < 10; index++) {
+    for (const { fixable, pattern } of rulePatterns) {
+      const ruleId =
+        pattern.source.replace("^", "").replace("$", "") + `-${index}`;
       rules[ruleId] = { fixable };
     }
   }
@@ -280,16 +278,18 @@ describe("selectOptimalRule comparison benchmarks", () => {
 
   describe("Edge cases", () => {
     // Test with very large dataset
-    const veryLargeRuleCounts = [...Array(1000)].map((_, i) => ({
-      filteredCount: Math.floor(Math.random() * 500) + 1,
-      filteredFiles: [`file-${i}.ts`],
-      filteredViolations: {
-        [`file-${i}.ts`]: Math.floor(Math.random() * 10) + 1,
-      },
-      isFixable: Math.random() > 0.5,
-      originalCount: Math.floor(Math.random() * 500) + 1,
-      ruleId: `rule-${i}`,
-    })) satisfies RuleCountInfo[];
+    const veryLargeRuleCounts = Array.from({ length: 1000 }).map(
+      (_, index) => ({
+        filteredCount: Math.floor(Math.random() * 500) + 1,
+        filteredFiles: [`file-${index}.ts`],
+        filteredViolations: {
+          [`file-${index}.ts`]: Math.floor(Math.random() * 10) + 1,
+        },
+        isFixable: Math.random() > 0.5,
+        originalCount: Math.floor(Math.random() * 500) + 1,
+        ruleId: `rule-${index}`,
+      }),
+    ) satisfies RuleCountInfo[];
 
     bench("OLD algorithm (1000 rules)", () => {
       selectOptimalRuleOld(veryLargeRuleCounts, 100, false, "file");

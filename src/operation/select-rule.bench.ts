@@ -15,50 +15,46 @@ const generateLargeSuppressions = (): ESLintSuppressionsJson => {
 
   // Generate a variety of rule types with different characteristics
   const ruleTypes = [
-    { prefix: "fixable-rule", fixable: true, fileCount: 100, avgViolations: 3 },
+    { avgViolations: 3, fileCount: 100, fixable: true, prefix: "fixable-rule" },
     {
-      prefix: "non-fixable-rule",
-      fixable: false,
-      fileCount: 80,
       avgViolations: 5,
+      fileCount: 80,
+      fixable: false,
+      prefix: "non-fixable-rule",
     },
     {
-      prefix: "typescript-rule",
-      fixable: true,
-      fileCount: 150,
       avgViolations: 2,
+      fileCount: 150,
+      fixable: true,
+      prefix: "typescript-rule",
     },
-    { prefix: "react-rule", fixable: false, fileCount: 120, avgViolations: 4 },
-    { prefix: "import-rule", fixable: true, fileCount: 200, avgViolations: 1 },
-    { prefix: "style-rule", fixable: true, fileCount: 300, avgViolations: 2 },
+    { avgViolations: 4, fileCount: 120, fixable: false, prefix: "react-rule" },
+    { avgViolations: 1, fileCount: 200, fixable: true, prefix: "import-rule" },
+    { avgViolations: 2, fileCount: 300, fixable: true, prefix: "style-rule" },
     {
-      prefix: "complexity-rule",
-      fixable: false,
-      fileCount: 50,
       avgViolations: 8,
+      fileCount: 50,
+      fixable: false,
+      prefix: "complexity-rule",
     },
     {
-      prefix: "security-rule",
-      fixable: false,
-      fileCount: 30,
       avgViolations: 10,
+      fileCount: 30,
+      fixable: false,
+      prefix: "security-rule",
     },
   ];
 
-  let ruleCounter = 0;
-
   for (const ruleType of ruleTypes) {
     // Create multiple rules of each type
-    for (let i = 0; i < 10; i++) {
-      const ruleId = `${ruleType.prefix}-${i}`;
+    for (let index = 0; index < 10; index++) {
+      const ruleId = `${ruleType.prefix}-${index}`;
 
       // Generate files for this rule
       for (let fileIndex = 0; fileIndex < ruleType.fileCount; fileIndex++) {
         const fileName = `src/${ruleType.prefix}/file-${fileIndex}.ts`;
 
-        if (!suppressions[fileName]) {
-          suppressions[fileName] = {};
-        }
+        suppressions[fileName] ??= {};
 
         // Add some randomness to violation counts
         const violationCount = Math.max(
@@ -68,8 +64,6 @@ const generateLargeSuppressions = (): ESLintSuppressionsJson => {
 
         suppressions[fileName][ruleId] = { count: violationCount };
       }
-
-      ruleCounter++;
     }
   }
 
@@ -83,20 +77,21 @@ const generateESLintConfig = (): ESLintConfigSubset => {
   const rules: Record<string, { fixable: boolean }> = {};
 
   const rulePatterns = [
-    { pattern: /^fixable-rule/, fixable: true },
-    { pattern: /^non-fixable-rule/, fixable: false },
-    { pattern: /^typescript-rule/, fixable: true },
-    { pattern: /^react-rule/, fixable: false },
-    { pattern: /^import-rule/, fixable: true },
-    { pattern: /^style-rule/, fixable: true },
-    { pattern: /^complexity-rule/, fixable: false },
-    { pattern: /^security-rule/, fixable: false },
+    { fixable: true, pattern: /^fixable-rule/ },
+    { fixable: false, pattern: /^non-fixable-rule/ },
+    { fixable: true, pattern: /^typescript-rule/ },
+    { fixable: false, pattern: /^react-rule/ },
+    { fixable: true, pattern: /^import-rule/ },
+    { fixable: true, pattern: /^style-rule/ },
+    { fixable: false, pattern: /^complexity-rule/ },
+    { fixable: false, pattern: /^security-rule/ },
   ];
 
   // Generate rules based on patterns
-  for (let i = 0; i < 10; i++) {
-    for (const { pattern, fixable } of rulePatterns) {
-      const ruleId = pattern.source.replace("^", "").replace("$", "") + `-${i}`;
+  for (let index = 0; index < 10; index++) {
+    for (const { fixable, pattern } of rulePatterns) {
+      const ruleId =
+        pattern.source.replace("^", "").replace("$", "") + `-${index}`;
       rules[ruleId] = { fixable };
     }
   }
@@ -108,11 +103,10 @@ const generateESLintConfig = (): ESLintConfigSubset => {
  * Create test config with different scenarios.
  */
 const createTestConfigs = (): Array<{
-  name: string;
   config: CorrectModeConfig;
+  name: string;
 }> => [
   {
-    name: "default (no autoFixableOnly)",
     config: {
       autoFixableOnly: false,
       exclude: { files: [], rules: [] },
@@ -120,9 +114,9 @@ const createTestConfigs = (): Array<{
       limit: { count: 100, type: "file" },
       partialSelection: false,
     },
+    name: "default (no autoFixableOnly)",
   },
   {
-    name: "autoFixableOnly enabled",
     config: {
       autoFixableOnly: true,
       exclude: { files: [], rules: [] },
@@ -130,9 +124,9 @@ const createTestConfigs = (): Array<{
       limit: { count: 100, type: "file" },
       partialSelection: false,
     },
+    name: "autoFixableOnly enabled",
   },
   {
-    name: "high limit with partial selection",
     config: {
       autoFixableOnly: false,
       exclude: { files: [], rules: [] },
@@ -140,9 +134,9 @@ const createTestConfigs = (): Array<{
       limit: { count: 1000, type: "file" },
       partialSelection: true,
     },
+    name: "high limit with partial selection",
   },
   {
-    name: "violation-based limit",
     config: {
       autoFixableOnly: false,
       exclude: { files: [], rules: [] },
@@ -150,6 +144,7 @@ const createTestConfigs = (): Array<{
       limit: { count: 500, type: "violation" },
       partialSelection: false,
     },
+    name: "violation-based limit",
   },
 ];
 
@@ -168,21 +163,23 @@ describe("select-rule performance benchmarks", () => {
   );
 
   describe("calculateRuleCounts", () => {
-    for (const { name, config } of testConfigs) {
+    for (const { config, name } of testConfigs) {
       bench(`calculateRuleCounts - ${name}`, () => {
         calculateRuleCounts(largeSuppressions, eslintConfig, config, "file");
       });
     }
 
     bench("calculateRuleCounts - violation counting", () => {
-      const config = testConfigs[0]!.config;
+      const config = testConfigs[0]?.config;
+      if (!config) throw new Error("Config not found");
       calculateRuleCounts(largeSuppressions, eslintConfig, config, "violation");
     });
   });
 
   describe("selectOptimalRule", () => {
     // Pre-calculate rule counts for selectOptimalRule benchmarks
-    const baseConfig = testConfigs[0]!.config;
+    const baseConfig = testConfigs[0]?.config;
+    if (!baseConfig) throw new Error("Config not found");
     const ruleCounts = calculateRuleCounts(
       largeSuppressions,
       eslintConfig,
@@ -218,7 +215,7 @@ describe("select-rule performance benchmarks", () => {
   });
 
   describe("end-to-end performance", () => {
-    for (const { name, config } of testConfigs) {
+    for (const { config, name } of testConfigs) {
       bench(`full pipeline - ${name}`, () => {
         const ruleCounts = calculateRuleCounts(
           largeSuppressions,
