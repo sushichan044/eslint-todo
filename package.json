@@ -48,6 +48,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
+    "bench": "vitest bench",
+    "bench:run": "vitest bench --run",
     "eslint:inspect": "eslint --inspect-config",
     "pkg-pr-new": "pkg-pr-new publish --compact --comment=update --pnpm",
     "check": "pnpm run build && pnpm run lint && pnpm run format:ci && pnpm run typecheck && pnpm run test:run && pnpm run attw:check",
