@@ -237,19 +237,22 @@ export const selectOptimalRule = (
     return a.ruleId.localeCompare(b.ruleId);
   });
 
-  // Partition rules into full and partial selectable in single pass
-  const partitionedRules = {
-    fullSelectable: [] as RuleCountInfo[],
-    partialSelectable: [] as RuleCountInfo[],
-  };
-
-  for (const rule of sortedRules) {
-    if (rule.originalCount <= limitCount) {
-      partitionedRules.fullSelectable.push(rule);
-    } else {
-      partitionedRules.partialSelectable.push(rule);
-    }
-  }
+  // Optimize: Partition rules into full and partial selectable in one iteration
+  // eslint-disable-next-line unicorn/no-array-reduce
+  const partitionedRules = sortedRules.reduce(
+    (accumulator, rule) => {
+      if (rule.originalCount <= limitCount) {
+        accumulator.fullSelectable.push(rule);
+      } else {
+        accumulator.partialSelectable.push(rule);
+      }
+      return accumulator;
+    },
+    {
+      fullSelectable: [] as RuleCountInfo[],
+      partialSelectable: [] as RuleCountInfo[],
+    },
+  );
 
   // Try full selection first
   if (partitionedRules.fullSelectable.length > 0) {
