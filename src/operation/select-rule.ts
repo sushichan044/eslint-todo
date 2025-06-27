@@ -1,5 +1,3 @@
-import { klona as klonaJSON } from "klona/json";
-
 import type { CorrectModeConfig, CorrectModeLimitType } from "../config/config";
 import type { ESLintConfigSubset } from "../lib/eslint";
 import type { ESLintSuppressionsJson } from "../suppressions-json/types";
@@ -224,7 +222,7 @@ export const selectOptimalRule = (
   }
 
   // Sort rules by multi-criteria: [fixable DESC, filtered_count DESC, rule_id ASC]
-  const sortedRules = klonaJSON(ruleCounts).sort((a, b) => {
+  const sortedRules = ruleCounts.toSorted((a, b) => {
     // First: prioritize fixable rules (true > false)
     if (a.isFixable !== b.isFixable) {
       return b.isFixable ? 1 : -1;
