@@ -1,24 +1,12 @@
 # @sushichan044/eslint-todo
 
+A simple tool to gradually resolve a large number of ESLint violations.
+It allows you to temporarily disable violations and fix them at your own pace.
+
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sushichan044/eslint-todo)
 
 > [!CAUTION]
-> This library will soon be subject to destructive changes based on [ESLint bulk suppressions](https://eslint.org/blog/2025/04/introducing-bulk-suppressions/#getting-started).
-
-Simple tool to temporarily disable existing ESLint violations like `.rubocop_todo.yml` in RuboCop.
-
-It also has a utility that helps reducing ignored violations at your pace.
-
-This tool is designed to work with AI Agents such as [Devin](https://devin.ai/).
-
-And now eslint-todo also provides MCP server! [See: Use as MCP server](#use-as-mcp-server-experimental)
-
-> [!NOTE]
-> This tool only supports ESLint Flat Config with ES Module.
->
-> If you want to use this tool to supress ESLint errors when migrating to ESLint Flat Config,
->
-> you first need to create Flat Config and then use this tool. Maybe utilities like [@eslint/compat](https://github.com/eslint/rewrite/tree/main/packages/compat) can help you.
+> This library will be subject to destructive changes based on [ESLint bulk suppressions](https://eslint.org/blog/2025/04/introducing-bulk-suppressions/#getting-started).
 
 ## Installation
 
@@ -30,7 +18,9 @@ Requires:
 
 - **ES Module**
 - ESLint: `^8.57.0 || ^9.0.0`
-  - **Flat Config**
+  - **Flat Config Required**
+  - If you are using legacy config, you must migrate into flat config first.
+    - Utilities like [@eslint/compat](https://github.com/eslint/rewrite/tree/main/packages/compat) can help you.
 - Node.js: `>= 20.0.0`
   - May work in Deno, but not tested.
 
@@ -56,22 +46,30 @@ Requires:
 
 ## Usage
 
-### Generate ESLint Todo file
+### 1. Generate ESLint Todo file to temporarily suppress existing violations
 
 ```bash
 npx @sushichan044/eslint-todo
 ```
 
-### Correct ignored errors
+### 2. Correct ignored errors
 
 Add `--correct` flag to launch eslint-todo with correct mode.
 
-In this mode, eslint-todo searches the todo file with the limit from config file or CLI.
-And it removes one matching rule from the todo file.
+In this mode, you can make suppressed violations detectable again according to flexible conditions.
 
-This allows ESLint to detect that rule as a violation again. For safety, only auto-fixable rules are searched by default.
+For example, to resolve 40 violations from any rule other than `@typescript-eslint/no-explicit-any`, specify it as follows.
 
-By default, it searches for rules that can be automatically fixed and have less than or equal to 100 violations.
+```bash
+eslint-todo --correct \
+  --correct.autoFixableOnly false \
+  --correct.partialSelection \
+  --correct.exclude.rules '@typescript-eslint/no-explicit-any' \
+  --correct.limit.count 40 \
+  --correct.limit.type violation
+```
+
+This will allow ESLint to detect the errors again, enabling you to have them fixed by AI or other tools.
 
 ## Configuration
 
@@ -88,7 +86,7 @@ Use `npx eslint-todo --help` to see all available options.
 > - `--correct`
 > - `--mcp`
 
-### Configuration File (recommended)
+### Configuration File
 
 Just create `eslint-todo.config.{js,ts}`:
 

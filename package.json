@@ -1,7 +1,7 @@
 {
   "name": "@sushichan044/eslint-todo",
   "version": "0.2.2",
-  "description": "Simple tool to temporarily disable existing ESLint violations.",
+  "description": "A simple tool to gradually resolve a large number of ESLint violations.",
   "type": "module",
   "module": "./dist/index.mjs",
   "files": [
