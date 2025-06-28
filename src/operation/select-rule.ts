@@ -334,14 +334,14 @@ const selectViolationsForRule = (
     // For file limit, select files up to the limit count
     for (const file of rule.eligibleFiles.slice(0, limitCount)) {
       const violationCount = rule.filteredViolations[file];
-      if (violationCount === undefined || violationCount === null) continue;
+      if (violationCount == null) continue;
       selectedViolations[file] = violationCount;
     }
   } else {
     // For violation limit, select files until violation count reaches limit
     for (const file of rule.eligibleFiles) {
       const violationCount = rule.filteredViolations[file];
-      if (violationCount === undefined || violationCount === null) continue;
+      if (violationCount == null) continue;
 
       if (selectedCount + violationCount > limitCount) {
         break;
