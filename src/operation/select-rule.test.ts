@@ -71,8 +71,8 @@ describe("calculateRuleCounts", () => {
         (r) => r.ruleId === "non-fixable-rule",
       );
 
-      expect(fixableRule?.isFixable).toBe(true);
-      expect(nonFixableRule?.isFixable).toBe(false);
+      expect(fixableRule?.supportsAutoFix).toBe(true);
+      expect(nonFixableRule?.supportsAutoFix).toBe(false);
     });
 
     it("defaults to false for unknown rules", () => {
@@ -93,7 +93,7 @@ describe("calculateRuleCounts", () => {
       );
 
       expect(result).toHaveLength(1);
-      expect(result[0]?.isFixable).toBe(false);
+      expect(result[0]?.supportsAutoFix).toBe(false);
     });
 
     it("filters out rules when autoFixableOnly is true", () => {
@@ -122,7 +122,7 @@ describe("calculateRuleCounts", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]?.ruleId).toBe("fixable-rule");
-      expect(result[0]?.isFixable).toBe(true);
+      expect(result[0]?.supportsAutoFix).toBe(true);
     });
   });
 });

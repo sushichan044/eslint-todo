@@ -24,7 +24,7 @@ describe("applyRuleAndFileFilters", () => {
     const tc: Array<{
       config: CorrectModeConfig;
       eslintConfig: ESLintConfigSubset;
-      expected: { correctableFiles?: string[]; isEligible: boolean };
+      expected: { eligibleFiles?: string[]; isEligible: boolean };
       name: string;
       ruleId: string;
     }> = [
@@ -38,14 +38,14 @@ describe("applyRuleAndFileFilters", () => {
       {
         config: { ...createDefaultConfig(), autoFixableOnly: false },
         eslintConfig: createESLintConfig({ "no-console": { fixable: false } }),
-        expected: { correctableFiles: testFiles, isEligible: true },
+        expected: { eligibleFiles: testFiles, isEligible: true },
         name: "includes non-fixable rule when autoFixableOnly is false",
         ruleId: "no-console",
       },
       {
         config: { ...createDefaultConfig(), autoFixableOnly: true },
         eslintConfig: createESLintConfig({ "no-console": { fixable: true } }),
-        expected: { correctableFiles: testFiles, isEligible: true },
+        expected: { eligibleFiles: testFiles, isEligible: true },
         name: "includes fixable rule when autoFixableOnly is true",
         ruleId: "no-console",
       },
@@ -61,7 +61,7 @@ describe("applyRuleAndFileFilters", () => {
 
       if (expected.isEligible) {
         expect(result).toStrictEqual({
-          correctableFiles: expected.correctableFiles,
+          eligibleFiles: expected.eligibleFiles,
           isEligible: true,
         });
       } else {
@@ -73,7 +73,7 @@ describe("applyRuleAndFileFilters", () => {
   describe("rule exclude/include filtering", () => {
     const tc: Array<{
       config: CorrectModeConfig;
-      expected: { correctableFiles?: string[]; isEligible: boolean };
+      expected: { eligibleFiles?: string[]; isEligible: boolean };
       name: string;
       ruleId: string;
     }> = [
@@ -91,7 +91,7 @@ describe("applyRuleAndFileFilters", () => {
           ...createDefaultConfig(),
           exclude: { ...createDefaultConfig().exclude, rules: ["no-console"] },
         },
-        expected: { correctableFiles: testFiles, isEligible: true },
+        expected: { eligibleFiles: testFiles, isEligible: true },
         name: "includes rule not in exclude.rules",
         ruleId: "no-unused-vars",
       },
@@ -100,7 +100,7 @@ describe("applyRuleAndFileFilters", () => {
           ...createDefaultConfig(),
           include: { ...createDefaultConfig().include, rules: ["no-console"] },
         },
-        expected: { correctableFiles: testFiles, isEligible: true },
+        expected: { eligibleFiles: testFiles, isEligible: true },
         name: "includes rule in include.rules when include filter is set",
         ruleId: "no-console",
       },
@@ -126,7 +126,7 @@ describe("applyRuleAndFileFilters", () => {
 
       if (expected.isEligible) {
         expect(result).toStrictEqual({
-          correctableFiles: expected.correctableFiles,
+          eligibleFiles: expected.eligibleFiles,
           isEligible: true,
         });
       } else {
@@ -138,7 +138,7 @@ describe("applyRuleAndFileFilters", () => {
   describe("file filtering", () => {
     const tc: Array<{
       config: CorrectModeConfig;
-      expected: { correctableFiles?: string[]; isEligible: boolean };
+      expected: { eligibleFiles?: string[]; isEligible: boolean };
       name: string;
     }> = [
       {
@@ -147,7 +147,7 @@ describe("applyRuleAndFileFilters", () => {
           exclude: { ...createDefaultConfig().exclude, files: ["dist/**"] },
         },
         expected: {
-          correctableFiles: ["src/file1.ts", "src/file2.ts", "app/file3.tsx"],
+          eligibleFiles: ["src/file1.ts", "src/file2.ts", "app/file3.tsx"],
           isEligible: true,
         },
         name: "excludes files matching exclude.files patterns",
@@ -158,7 +158,7 @@ describe("applyRuleAndFileFilters", () => {
           include: { ...createDefaultConfig().include, files: ["src/**"] },
         },
         expected: {
-          correctableFiles: ["src/file1.ts", "src/file2.ts"],
+          eligibleFiles: ["src/file1.ts", "src/file2.ts"],
           isEligible: true,
         },
         name: "includes only files matching include.files patterns",
@@ -169,7 +169,7 @@ describe("applyRuleAndFileFilters", () => {
           exclude: { ...createDefaultConfig().exclude, files: ["**/file1.ts"] },
           include: { ...createDefaultConfig().include, files: ["src/**"] },
         },
-        expected: { correctableFiles: ["src/file2.ts"], isEligible: true },
+        expected: { eligibleFiles: ["src/file2.ts"], isEligible: true },
         name: "applies both exclude and include filters",
       },
       {
@@ -195,7 +195,7 @@ describe("applyRuleAndFileFilters", () => {
 
       if (expected.isEligible) {
         expect(result).toStrictEqual({
-          correctableFiles: expected.correctableFiles,
+          eligibleFiles: expected.eligibleFiles,
           isEligible: true,
         });
       } else {
