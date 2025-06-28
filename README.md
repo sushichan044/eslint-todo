@@ -1,6 +1,7 @@
 # @sushichan044/eslint-todo
 
 A simple tool to gradually resolve a large number of ESLint violations.
+
 It allows you to temporarily disable violations and fix them at your own pace.
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sushichan044/eslint-todo)
