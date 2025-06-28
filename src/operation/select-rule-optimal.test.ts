@@ -13,12 +13,12 @@ const createRuleCountInfo = (
   filteredViolations: Record<string, number> = {},
   isFixable = false, // Default to false for backward compatibility
 ): RuleCountInfo => ({
-  filteredCount,
-  filteredFiles,
+  eligibleCount: filteredCount,
+  eligibleFiles: filteredFiles,
   filteredViolations,
-  isFixable,
-  originalCount,
   ruleId,
+  supportsAutoFix: isFixable,
+  totalCount: originalCount,
 });
 
 describe("selectOptimalRule", () => {
