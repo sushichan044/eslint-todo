@@ -101,7 +101,7 @@
     "globals": "16.2.0",
     "pkg-pr-new": "0.0.53",
     "pnpm": "10.12.2",
-    "prettier": "3.5.3",
+    "prettier": "3.6.2",
     "publint": "0.3.12",
     "release-it": "19.0.3",
     "release-it-pnpm": "4.6.6",
