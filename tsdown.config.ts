@@ -36,6 +36,7 @@ export default defineConfig({
     },
   },
   minify: "dce-only",
+  nodeProtocol: true,
   outDir: "dist",
   outExtensions: () => {
     return {
