@@ -73,7 +73,7 @@ describe("FlattenObject", () => {
         "level1.level2b": number;
         "level1.level2c.array": string[];
         "level1.level2c.nested.deep": boolean;
-        "simple": string;
+        simple: string;
       }>();
     });
   });
@@ -83,7 +83,7 @@ describe("FlattenObject", () => {
       expectTypeOf<
         FlattenObject<{ arr: string[]; nested: { arr: number[] } }>
       >().toEqualTypeOf<{
-        "arr": string[];
+        arr: string[];
         "nested.arr": number[];
       }>();
     });
@@ -95,7 +95,7 @@ describe("FlattenObject", () => {
           nested: { readonly items: readonly number[] };
         }>
       >().toEqualTypeOf<{
-        "arr": readonly string[];
+        arr: readonly string[];
         "nested.items": readonly number[];
       }>();
     });
@@ -138,10 +138,10 @@ describe("FlattenObject", () => {
           primitive: string;
         }>
       >().toEqualTypeOf<{
-        "array": boolean[];
+        array: boolean[];
         "deepNested.inner.value": string;
         "nested.value": number;
-        "primitive": string;
+        primitive: string;
       }>();
     });
   });

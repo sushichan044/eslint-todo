@@ -4,9 +4,9 @@ description: Setup Node.js and pnpm
 inputs:
   registry-url:
     # ref: https://github.com/actions/setup-node/blob/1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a/action.yml#L18C5-L18C176
-    description: 'Optional registry to set up for auth. Will set the registry in a project level .npmrc and .yarnrc file, and set up auth to read in from env.NODE_AUTH_TOKEN.'
+    description: "Optional registry to set up for auth. Will set the registry in a project level .npmrc and .yarnrc file, and set up auth to read in from env.NODE_AUTH_TOKEN."
     required: false
-    default: ''
+    default: ""
 
 runs:
   using: composite

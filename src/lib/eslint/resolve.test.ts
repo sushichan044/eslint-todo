@@ -41,17 +41,17 @@ describe("resolveConfigPath", () => {
           // root config
           export default [];
         `,
-        "level1": {
+        level1: {
           "eslint.config.js": `
             // level1 config
             export default [];
           `,
-          "level2": {
+          level2: {
             "eslint.config.mjs": `
               // level2 config
               export default [];
             `,
-            "level3": {
+            level3: {
               "file.js": "console.log('deeply nested');",
             },
           },
@@ -61,12 +61,12 @@ describe("resolveConfigPath", () => {
         "file.js": "console.log('no config');",
       },
       "parent-child-configs": {
-        "child": {
+        child: {
           "eslint.config.mjs": `
             // child config
             export default [];
           `,
-          "grandchild": {
+          grandchild: {
             "file.js": "console.log('test');",
           },
         },
@@ -75,8 +75,8 @@ describe("resolveConfigPath", () => {
           export default [];
         `,
       },
-      "project": {
-        "deeply": {
+      project: {
+        deeply: {
           nested: {
             directories: {
               "file.js": "console.log('deeply nested');",
@@ -86,7 +86,7 @@ describe("resolveConfigPath", () => {
         "eslint.config.js": `
           export default [];
         `,
-        "nested": {
+        nested: {
           "file.js": "console.log('test');",
         },
       },
