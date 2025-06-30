@@ -102,6 +102,35 @@ export type CorrectModeUserConfig = {
   partialSelection?: boolean;
 };
 
+export type CorrectModeLimit =
+  | {
+      /**
+       * Entrypoints to build the import graph.
+       *
+       * @default []
+       */
+      entrypoints: string[];
+      type: "import-graph";
+    }
+  | {
+      /**
+       * Limit the number of files to fix.
+       *
+       * @default 100
+       */
+      count: number;
+      type: "file";
+    }
+  | {
+      /**
+       * Limit the number of violations to fix.
+       *
+       * @default 100
+       */
+      count: number;
+      type: "violation";
+    };
+
 const DEFAULT_CONFIG = {
   correct: {
     autoFixableOnly: true,
