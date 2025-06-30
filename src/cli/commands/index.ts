@@ -64,7 +64,7 @@ const mainCmd = define({
     } = parseArguments({
       config: {
         correct: {
-          "autoFixableOnly": autoFixableOnly,
+          autoFixableOnly: autoFixableOnly,
           "exclude.files": excludeFiles,
           "exclude.rules": excludeRules,
           "include.files": includeFiles,

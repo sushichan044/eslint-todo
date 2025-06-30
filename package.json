@@ -43,8 +43,8 @@
     "build:json-schema": "vite-node scripts/json-schema.ts",
     "dev": "unbuild --stub",
     "lint": "eslint --max-warnings 0 .",
-    "format": "prettier --write .",
-    "format:ci": "prettier --check .",
+    "format": "prettier --experimental-cli --write .",
+    "format:ci": "prettier --experimental-cli --check .",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
@@ -81,6 +81,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
+    "@prettier/plugin-oxc": "0.0.4",
     "@ryoppippi/unplugin-typia": "2.6.5",
     "@samchon/openapi": "4.3.3",
     "@types/fs-extra": "11.0.4",
