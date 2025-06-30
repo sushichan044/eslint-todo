@@ -92,7 +92,36 @@ export type CorrectModeConfig = {
   partialSelection: boolean;
 };
 
-export type CorrectModeLimitType = "file" | "violation";
+export type CorrectModeLimit =
+  | {
+      /**
+       * Entrypoints to build the import graph.
+       *
+       * @default []
+       */
+      entrypoints: string[];
+      type: "import-graph";
+    }
+  | {
+      /**
+       * Limit the number of files to fix.
+       *
+       * @default 100
+       */
+      count: number;
+      type: "file";
+    }
+  | {
+      /**
+       * Limit the number of violations to fix.
+       *
+       * @default 100
+       */
+      count: number;
+      type: "violation";
+    };
+
+export type CorrectModeLimitType = CorrectModeLimit["type"];
 
 export type CorrectModeUserConfig = DeepPartial<CorrectModeConfig>;
 
