@@ -1,9 +1,23 @@
 import { describe, expect, it } from "vitest";
 
-import type { CorrectModeLimitType } from "../config/config.js";
+import type {
+  CorrectModeConfig,
+  CorrectModeLimitType,
+} from "../config/config.js";
 import type { RuleCountInfo, SelectionResult } from "./select-rule.js";
 
 import { selectOptimalRule } from "./select-rule.js";
+
+const createConfig = (
+  limitType: CorrectModeLimitType = "file",
+  limitCount = 10,
+): CorrectModeConfig => ({
+  autoFixableOnly: false,
+  exclude: { files: [], rules: [] },
+  include: { files: [], rules: [] },
+  limit: { count: limitCount, type: limitType },
+  partialSelection: false,
+});
 
 const createRuleCountInfo = (
   ruleId: string,
@@ -24,7 +38,7 @@ const createRuleCountInfo = (
 describe("selectOptimalRule", () => {
   describe("empty input", () => {
     it("returns not successful when no rules provided", () => {
-      const result = selectOptimalRule([], 10, false);
+      const result = selectOptimalRule([], 10, false, createConfig());
       expect(result).toStrictEqual({ success: false });
     });
   });
@@ -87,6 +101,7 @@ describe("selectOptimalRule", () => {
           ruleCounts,
           limitCount,
           allowPartialSelection,
+          createConfig(),
         );
         expect(result).toStrictEqual(expected);
       },
@@ -99,7 +114,7 @@ describe("selectOptimalRule", () => {
         createRuleCountInfo("rule1", 15, 10),
         createRuleCountInfo("rule2", 20, 8),
       ];
-      const result = selectOptimalRule(ruleCounts, 10, false);
+      const result = selectOptimalRule(ruleCounts, 10, false, createConfig());
       expect(result).toStrictEqual({ success: false });
     });
   });
@@ -164,7 +179,7 @@ describe("selectOptimalRule", () => {
             ruleCounts,
             limitCount,
             true,
-            limitType,
+            createConfig(limitType, limitCount),
           );
           expect(result).toStrictEqual(expected);
         },
@@ -247,7 +262,7 @@ describe("selectOptimalRule", () => {
             ruleCounts,
             limitCount,
             true,
-            limitType,
+            createConfig(limitType, limitCount),
           );
           expect(result).toStrictEqual(expected);
         },
@@ -264,7 +279,7 @@ describe("selectOptimalRule", () => {
           {}, // No filtered violations
         ),
       ];
-      const result = selectOptimalRule(ruleCounts, 5, true);
+      const result = selectOptimalRule(ruleCounts, 5, true, createConfig());
       expect(result).toStrictEqual({ success: false });
     });
   });
@@ -277,7 +292,7 @@ describe("selectOptimalRule", () => {
           createRuleCountInfo("fixable-rule", 5, 10, [], {}, true),
         ];
 
-        const result = selectOptimalRule(ruleCounts, 20, false);
+        const result = selectOptimalRule(ruleCounts, 20, false, createConfig());
 
         expect(result).toStrictEqual({
           selection: { ruleId: "fixable-rule", type: "full" },
@@ -291,7 +306,7 @@ describe("selectOptimalRule", () => {
           createRuleCountInfo("fixable-rule", 5, 10, [], {}, true),
         ];
 
-        const result = selectOptimalRule(ruleCounts, 20, false);
+        const result = selectOptimalRule(ruleCounts, 20, false, createConfig());
 
         expect(result).toStrictEqual({
           selection: { ruleId: "fixable-rule", type: "full" },
@@ -305,7 +320,7 @@ describe("selectOptimalRule", () => {
           createRuleCountInfo("rule-high-count", 5, 12, [], {}, true),
         ];
 
-        const result = selectOptimalRule(ruleCounts, 20, false);
+        const result = selectOptimalRule(ruleCounts, 20, false, createConfig());
 
         expect(result).toStrictEqual({
           selection: { ruleId: "rule-high-count", type: "full" },
@@ -319,7 +334,7 @@ describe("selectOptimalRule", () => {
           createRuleCountInfo("a-rule", 5, 10, [], {}, true),
         ];
 
-        const result = selectOptimalRule(ruleCounts, 20, false);
+        const result = selectOptimalRule(ruleCounts, 20, false, createConfig());
 
         expect(result).toStrictEqual({
           selection: { ruleId: "a-rule", type: "full" },
@@ -335,7 +350,7 @@ describe("selectOptimalRule", () => {
           createRuleCountInfo("fixable-low", 5, 5, [], {}, true),
         ];
 
-        const result = selectOptimalRule(ruleCounts, 25, false);
+        const result = selectOptimalRule(ruleCounts, 25, false, createConfig());
 
         expect(result).toStrictEqual({
           selection: { ruleId: "fixable-medium", type: "full" },
@@ -346,7 +361,7 @@ describe("selectOptimalRule", () => {
 
     describe("edge cases", () => {
       it("handles empty array", () => {
-        const result = selectOptimalRule([], 10, false);
+        const result = selectOptimalRule([], 10, false, createConfig());
         expect(result).toStrictEqual({ success: false });
       });
 
@@ -356,7 +371,7 @@ describe("selectOptimalRule", () => {
           createRuleCountInfo("rule2", 5, 8, [], {}, false),
         ];
 
-        const result = selectOptimalRule(ruleCounts, 15, false);
+        const result = selectOptimalRule(ruleCounts, 15, false, createConfig());
 
         expect(result).toStrictEqual({
           selection: { ruleId: "rule1", type: "full" },
@@ -370,7 +385,7 @@ describe("selectOptimalRule", () => {
           createRuleCountInfo("rule2", 5, 12, [], {}, true),
         ];
 
-        const result = selectOptimalRule(ruleCounts, 15, false);
+        const result = selectOptimalRule(ruleCounts, 15, false, createConfig());
 
         expect(result).toStrictEqual({
           selection: { ruleId: "rule2", type: "full" },

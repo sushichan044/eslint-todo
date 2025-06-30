@@ -1,4 +1,4 @@
-import type { CorrectModeConfig, CorrectModeLimitType } from "../config/config";
+import type { CorrectModeConfig } from "../config/config";
 import type { ESLintConfigSubset } from "../lib/eslint";
 import type { ESLintSuppressionsJson } from "../suppressions-json/types";
 
@@ -108,20 +108,11 @@ export const selectRuleBasedOnLimit = (
   eslintConfig: ESLintConfigSubset,
   correctConfig: CorrectModeConfig,
 ): SelectionResult => {
+  // Validate limit type for exhaustive checking
   switch (correctConfig.limit.type) {
-    case "file": {
-      return selectRuleBasedOnFilesLimit(
-        suppressions,
-        eslintConfig,
-        correctConfig,
-      );
-    }
+    case "file":
     case "violation": {
-      return selectRuleBasedOnViolationsLimit(
-        suppressions,
-        eslintConfig,
-        correctConfig,
-      );
+      break;
     }
     default: {
       // exhaustive check
@@ -129,37 +120,11 @@ export const selectRuleBasedOnLimit = (
       throw new Error(`Got unknown limit type: ${JSON.stringify(l)}`);
     }
   }
-};
 
-/**
- * @package
- */
-export const selectRuleBasedOnFilesLimit = (
-  suppressions: ESLintSuppressionsJson,
-  eslintConfig: ESLintConfigSubset,
-  config: CorrectModeConfig,
-): SelectionResult => {
   return selectRuleBasedOnLimitInternal(
     suppressions,
     eslintConfig,
-    config,
-    "file",
-  );
-};
-
-/**
- * @package
- */
-export const selectRuleBasedOnViolationsLimit = (
-  suppressions: ESLintSuppressionsJson,
-  eslintConfig: ESLintConfigSubset,
-  config: CorrectModeConfig,
-): SelectionResult => {
-  return selectRuleBasedOnLimitInternal(
-    suppressions,
-    eslintConfig,
-    config,
-    "violation",
+    correctConfig,
   );
 };
 
@@ -168,16 +133,15 @@ export const selectRuleBasedOnViolationsLimit = (
  * @param suppressions - Suppressions.
  * @param eslintConfig - ESLint config.
  * @param config - Correct mode config.
- * @param limitType - The type of limit to apply.
+ * @package
  */
-const selectRuleBasedOnLimitInternal = (
+export const selectRuleBasedOnLimitInternal = (
   suppressions: ESLintSuppressionsJson,
   eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
-  limitType: CorrectModeLimitType,
 ): SelectionResult => {
   const {
-    limit: { count: limitCount },
+    limit: { count: limitCount, type: limitType },
     partialSelection: allowPartialSelection,
   } = config;
 
@@ -186,18 +150,13 @@ const selectRuleBasedOnLimitInternal = (
     throw new Error(`The ${limitTypeLabel} limit must be greater than 0.`);
   }
 
-  const ruleCounts = calculateRuleCounts(
-    suppressions,
-    eslintConfig,
-    config,
-    limitType,
-  );
+  const ruleCounts = calculateRuleCounts(suppressions, eslintConfig, config);
 
   return selectOptimalRule(
     ruleCounts,
     limitCount,
     allowPartialSelection,
-    limitType,
+    config,
   );
 };
 
@@ -319,16 +278,17 @@ const partitionRulesByLimit = (
  * Select violations for a rule based on the limit type and count.
  * @param rule - The rule to select violations from.
  * @param limitCount - The limit count.
- * @param limitType - Whether the limit is for files or violations.
+ * @param config - Correct mode config.
  * @returns Record of selected violations by file.
  */
 const selectViolationsForRule = (
   rule: RuleCountInfo,
   limitCount: number,
-  limitType: CorrectModeLimitType,
+  config: CorrectModeConfig,
 ): Record<string, number> => {
   const selectedViolations: Record<string, number> = {};
   let selectedCount = 0;
+  const limitType = config.limit.type;
 
   if (limitType === "file") {
     // For file limit, select files up to the limit count
@@ -360,7 +320,7 @@ const selectViolationsForRule = (
  * @param ruleCounts - Array of rule count information.
  * @param limitCount - The limit count.
  * @param allowPartialSelection - Whether partial selection is allowed.
- * @param limitType - Whether the limit is for files or violations.
+ * @param config - Correct mode config.
  *
  * @returns The result of the selection.
  *
@@ -370,7 +330,7 @@ export const selectOptimalRule = (
   ruleCounts: RuleCountInfo[],
   limitCount: number,
   allowPartialSelection: boolean,
-  limitType: CorrectModeLimitType = "file",
+  config: CorrectModeConfig,
 ): SelectionResult => {
   // Guard clause: early return for empty rule counts
   if (ruleCounts.length === 0) {
@@ -407,7 +367,7 @@ export const selectOptimalRule = (
   const selectedViolations = selectViolationsForRule(
     partialSelectableRule,
     limitCount,
-    limitType,
+    config,
   );
 
   // Guard clause: early return if no violations selected
@@ -430,7 +390,6 @@ export const selectOptimalRule = (
  * @param suppressions - Suppressions.
  * @param eslintConfig - ESLint config.
  * @param config - Correct mode config.
- * @param countType - Whether to count files or violations.
  *
  * @returns Array of violation information for each rule.
  *
@@ -440,9 +399,9 @@ export const calculateRuleCounts = (
   suppressions: ESLintSuppressionsJson,
   eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
-  countType: CorrectModeLimitType,
 ): RuleCountInfo[] => {
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
+  const countType = config.limit.type;
 
   return Object.entries(ruleBasedSuppressions)
     .map(([ruleId, entry]) => {

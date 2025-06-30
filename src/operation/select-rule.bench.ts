@@ -1,10 +1,21 @@
 import { bench, describe } from "vitest";
 
-import type { CorrectModeConfig } from "../config/config";
+import type { CorrectModeConfig, CorrectModeLimitType } from "../config/config";
 import type { ESLintConfigSubset } from "../lib/eslint";
 import type { ESLintSuppressionsJson } from "../suppressions-json/types";
 
 import { calculateRuleCounts, selectOptimalRule } from "./select-rule";
+
+const createConfig = (
+  limitType: CorrectModeLimitType = "file",
+  limitCount = 10,
+): CorrectModeConfig => ({
+  autoFixableOnly: false,
+  exclude: { files: [], rules: [] },
+  include: { files: [], rules: [] },
+  limit: { count: limitCount, type: limitType },
+  partialSelection: false,
+});
 
 /**
  * Generate large-scale suppressions data for benchmarking.
@@ -164,14 +175,14 @@ describe("select-rule performance benchmarks", () => {
   describe("calculateRuleCounts", () => {
     for (const { config, name } of testConfigs) {
       bench(`calculateRuleCounts - ${name}`, () => {
-        calculateRuleCounts(largeSuppressions, eslintConfig, config, "file");
+        calculateRuleCounts(largeSuppressions, eslintConfig, config);
       });
     }
 
     bench("calculateRuleCounts - violation counting", () => {
       const config = testConfigs[0]?.config;
       if (!config) throw new Error("Config not found");
-      calculateRuleCounts(largeSuppressions, eslintConfig, config, "violation");
+      calculateRuleCounts(largeSuppressions, eslintConfig, config);
     });
   });
 
@@ -183,33 +194,32 @@ describe("select-rule performance benchmarks", () => {
       largeSuppressions,
       eslintConfig,
       baseConfig,
-      "file",
     );
 
     bench("selectOptimalRule - small limit (10 files)", () => {
-      selectOptimalRule(ruleCounts, 10, false, "file");
+      selectOptimalRule(ruleCounts, 10, false, createConfig("file", 10));
     });
 
     bench("selectOptimalRule - medium limit (100 files)", () => {
-      selectOptimalRule(ruleCounts, 100, false, "file");
+      selectOptimalRule(ruleCounts, 100, false, createConfig("file", 100));
     });
 
     bench("selectOptimalRule - large limit (1000 files)", () => {
-      selectOptimalRule(ruleCounts, 1000, false, "file");
+      selectOptimalRule(ruleCounts, 1000, false, createConfig("file", 1000));
     });
 
     bench("selectOptimalRule - with partial selection", () => {
-      selectOptimalRule(ruleCounts, 50, true, "file");
+      selectOptimalRule(ruleCounts, 50, true, createConfig("file", 50));
     });
 
     bench("selectOptimalRule - violation based", () => {
+      const violationConfig = createConfig("violation", 500);
       const violationRuleCounts = calculateRuleCounts(
         largeSuppressions,
         eslintConfig,
-        baseConfig,
-        "violation",
+        violationConfig,
       );
-      selectOptimalRule(violationRuleCounts, 500, false, "violation");
+      selectOptimalRule(violationRuleCounts, 500, false, violationConfig);
     });
   });
 
@@ -220,13 +230,12 @@ describe("select-rule performance benchmarks", () => {
           largeSuppressions,
           eslintConfig,
           config,
-          config.limit.type,
         );
         selectOptimalRule(
           ruleCounts,
           config.limit.count,
           config.partialSelection,
-          config.limit.type,
+          config,
         );
       });
     }

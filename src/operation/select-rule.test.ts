@@ -57,12 +57,7 @@ describe("calculateRuleCounts", () => {
 
       const config = createConfig();
 
-      const result = calculateRuleCounts(
-        suppressions,
-        eslintConfig,
-        config,
-        "file",
-      );
+      const result = calculateRuleCounts(suppressions, eslintConfig, config);
 
       expect(result).toHaveLength(2);
 
@@ -85,12 +80,7 @@ describe("calculateRuleCounts", () => {
       const eslintConfig = createESLintConfig({});
       const config = createConfig();
 
-      const result = calculateRuleCounts(
-        suppressions,
-        eslintConfig,
-        config,
-        "file",
-      );
+      const result = calculateRuleCounts(suppressions, eslintConfig, config);
 
       expect(result).toHaveLength(1);
       expect(result[0]?.supportsAutoFix).toBe(false);
@@ -113,12 +103,7 @@ describe("calculateRuleCounts", () => {
 
       const config = createConfig({ autoFixableOnly: true });
 
-      const result = calculateRuleCounts(
-        suppressions,
-        eslintConfig,
-        config,
-        "file",
-      );
+      const result = calculateRuleCounts(suppressions, eslintConfig, config);
 
       expect(result).toHaveLength(1);
       expect(result[0]?.ruleId).toBe("fixable-rule");

@@ -11,9 +11,8 @@ import type { SelectionResult } from "./select-rule";
 import { configWithDefault } from "../config/config";
 import { SuppressionsJsonGenerator } from "../suppressions-json";
 import {
-  selectRuleBasedOnFilesLimit,
   selectRuleBasedOnLimit,
-  selectRuleBasedOnViolationsLimit,
+  selectRuleBasedOnLimitInternal,
 } from "./select-rule";
 
 const createTodoModuleV2 = (todo: TodoModuleV2["todo"]): TodoModuleV2 => ({
@@ -33,14 +32,14 @@ const createESLintConfigSubset = (
 
 describe("select-rule integration tests", () => {
   describe("selectRuleBasedOnLimit", () => {
-    it("calls selectRuleBasedOnFilesLimit for file limit type", () => {
+    it("calls selectRuleBasedOnLimitInternal for file limit type", () => {
       const todoModule = createTodoModuleV2({});
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const eslintConfig = createESLintConfigSubset();
       const config = createConfig({ limit: { count: 10, type: "file" } });
 
       const result = selectRuleBasedOnLimit(suppressions, eslintConfig, config);
-      const expected = selectRuleBasedOnFilesLimit(
+      const expected = selectRuleBasedOnLimitInternal(
         suppressions,
         eslintConfig,
         config,
@@ -49,14 +48,14 @@ describe("select-rule integration tests", () => {
       expect(result).toStrictEqual(expected);
     });
 
-    it("calls selectRuleBasedOnViolationsLimit for violation limit type", () => {
+    it("calls selectRuleBasedOnLimitInternal for violation limit type", () => {
       const todoModule = createTodoModuleV2({});
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const eslintConfig = createESLintConfigSubset();
       const config = createConfig({ limit: { count: 10, type: "violation" } });
 
       const result = selectRuleBasedOnLimit(suppressions, eslintConfig, config);
-      const expected = selectRuleBasedOnViolationsLimit(
+      const expected = selectRuleBasedOnLimitInternal(
         suppressions,
         eslintConfig,
         config,
