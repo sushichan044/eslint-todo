@@ -144,9 +144,6 @@ importers:
       rolldown:
         specifier: 1.0.0-beta.19
         version: 1.0.0-beta.19
-      rollup-plugin-node-externals:
-        specifier: 8.0.1
-        version: 8.0.1(rollup@4.44.0)
       ts-patch:
         specifier: 3.3.0
         version: 3.3.0
@@ -3573,12 +3570,6 @@ packages:
   rolldown@1.0.0-beta.19:
     resolution: {integrity: sha512-rEBMUCfaK4LOf2rynaqcgKDGqwZ6GdWFdbgjfBOBvsY3Mr3AL0G6AKx516vDhOj1UVkAnxixfqDrXkZkH27n3w==}
     hasBin: true
-
-  rollup-plugin-node-externals@8.0.1:
-    resolution: {integrity: sha512-j6uve/BPEyHCmQuXpu5/LT5qXw69QLIi6YnFrs6F7tmGFXjkFDT0zqZMt0KaMuWSvkcxJFBklsKfYYoKKEPwyw==}
-    engines: {node: '>= 21 || ^20.6.0 || ^18.19.0'}
-    peerDependencies:
-      rollup: ^4.0.0
 
   rollup@4.44.0:
     resolution: {integrity: sha512-qHcdEzLCiktQIfwBq420pn2dP+30uzqYxv9ETm91wdt2R9AFcWfjNAmje4NWlnCIQ5RMTzVf0ZyisOKqHR6RwA==}
@@ -7958,10 +7949,6 @@ snapshots:
       '@rolldown/binding-win32-arm64-msvc': 1.0.0-beta.19
       '@rolldown/binding-win32-ia32-msvc': 1.0.0-beta.19
       '@rolldown/binding-win32-x64-msvc': 1.0.0-beta.19
-
-  rollup-plugin-node-externals@8.0.1(rollup@4.44.0):
-    dependencies:
-      rollup: 4.44.0
 
   rollup@4.44.0:
     dependencies:
