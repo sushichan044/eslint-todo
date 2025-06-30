@@ -81,6 +81,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
+    "@prettier/plugin-oxc": "0.0.4",
     "@ryoppippi/unplugin-typia": "2.6.5",
     "@samchon/openapi": "4.3.3",
     "@types/fs-extra": "11.0.4",
