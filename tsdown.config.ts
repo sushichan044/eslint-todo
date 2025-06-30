@@ -1,4 +1,3 @@
-import NodeExternals from "rollup-plugin-node-externals";
 import { defineConfig } from "tsdown";
 
 import { sh } from "./src/utils/command";
@@ -43,7 +42,7 @@ export default defineConfig({
       js: ".mjs",
     };
   },
-  plugins: [typiaRolldown, NodeExternals()],
+  plugins: [typiaRolldown],
   publint: true,
   sourcemap: false,
   treeshake: true,
