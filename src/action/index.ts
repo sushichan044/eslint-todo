@@ -5,7 +5,7 @@ import { createHooks } from "hookable";
 
 import type { Config } from "../config";
 import type { ESLintConfigSubset } from "../lib/eslint";
-import type { DeepPartial, IsNever, MaybePromise } from "../utils/types";
+import type { IsNever, MaybePromise } from "../utils/types";
 import type { RemoteESLintTodoCore } from "../worker/core";
 
 import { launchRemoteESLintTodoCore } from "../worker/core/client";
@@ -55,7 +55,7 @@ type ActionRunnerOptions<
 > = {
   config: Config;
   eslintConfig: ESLintConfigSubset;
-  hooks?: DeepPartial<HookHandlers<Hooks>>;
+  hooks?: Partial<HookHandlers<Hooks>>;
 };
 
 /**

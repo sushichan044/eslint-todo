@@ -3,7 +3,6 @@ import type { Linter } from "eslint";
 import { cwd } from "node:process";
 
 import type { Config } from "../config";
-import type { DeepPartial } from "../utils/types";
 
 import { mergeUserConfig } from "../config";
 import { resolveFileConfig } from "../config/resolve";
@@ -17,7 +16,7 @@ import {
 import { TodoModuleV1Handler } from "../todofile/v1";
 import { TodoModuleV2Handler } from "../todofile/v2";
 
-type ESLintConfigTodoInput = DeepPartial<
+type ESLintConfigTodoInput = Partial<
   Pick<Config, "todoFile"> & {
     cwd: Config["root"];
   }
