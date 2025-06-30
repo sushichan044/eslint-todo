@@ -5,12 +5,5 @@ import prettier from "@virtual-live-lab/prettier-config";
  */
 export default {
   ...prettier,
-  overrides: [
-    {
-      files: ["*.yaml", "*.yml"],
-      options: {
-        singleQuote: true,
-      },
-    },
-  ],
+  plugins: [...prettier.plugins, "@prettier/plugin-oxc"],
 };
