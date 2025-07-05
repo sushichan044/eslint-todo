@@ -4,7 +4,10 @@ import type { CorrectModeConfig, CorrectModeLimitType } from "../config/config";
 import type { ESLintConfigSubset } from "../lib/eslint";
 import type { ESLintSuppressionsJson } from "../suppressions-json/types";
 
-import { calculateRuleCounts, selectOptimalRule } from "./select-rule";
+import {
+  calculateRuleCountsForTesting,
+  selectOptimalRule,
+} from "./select-rule";
 
 const createConfig = (
   limitType: CorrectModeLimitType = "file",
@@ -172,17 +175,17 @@ describe("select-rule performance benchmarks", () => {
     `Estimated lines: ${Math.floor(jsonSize / 80)} (assuming ~80 chars per line)`,
   );
 
-  describe("calculateRuleCounts", () => {
+  describe("calculateRuleCountsForTesting", () => {
     for (const { config, name } of testConfigs) {
-      bench(`calculateRuleCounts - ${name}`, () => {
-        calculateRuleCounts(largeSuppressions, eslintConfig, config);
+      bench(`calculateRuleCountsForTesting - ${name}`, () => {
+        calculateRuleCountsForTesting(largeSuppressions, eslintConfig, config);
       });
     }
 
-    bench("calculateRuleCounts - violation counting", () => {
+    bench("calculateRuleCountsForTesting - violation counting", () => {
       const config = testConfigs[0]?.config;
       if (!config) throw new Error("Config not found");
-      calculateRuleCounts(largeSuppressions, eslintConfig, config);
+      calculateRuleCountsForTesting(largeSuppressions, eslintConfig, config);
     });
   });
 
@@ -190,7 +193,7 @@ describe("select-rule performance benchmarks", () => {
     // Pre-calculate rule counts for selectOptimalRule benchmarks
     const baseConfig = testConfigs[0]?.config;
     if (!baseConfig) throw new Error("Config not found");
-    const ruleCounts = calculateRuleCounts(
+    const ruleCounts = calculateRuleCountsForTesting(
       largeSuppressions,
       eslintConfig,
       baseConfig,
@@ -214,7 +217,7 @@ describe("select-rule performance benchmarks", () => {
 
     bench("selectOptimalRule - violation based", () => {
       const violationConfig = createConfig("violation", 500);
-      const violationRuleCounts = calculateRuleCounts(
+      const violationRuleCounts = calculateRuleCountsForTesting(
         largeSuppressions,
         eslintConfig,
         violationConfig,
@@ -226,7 +229,7 @@ describe("select-rule performance benchmarks", () => {
   describe("end-to-end performance", () => {
     for (const { config, name } of testConfigs) {
       bench(`full pipeline - ${name}`, () => {
-        const ruleCounts = calculateRuleCounts(
+        const ruleCounts = calculateRuleCountsForTesting(
           largeSuppressions,
           eslintConfig,
           config,
