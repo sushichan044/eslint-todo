@@ -1,4 +1,7 @@
-import type { CorrectModeConfig, CorrectModeUserConfig } from "../../config/config";
+import type {
+  CorrectModeConfig,
+  CorrectModeUserConfig,
+} from "../../config/config";
 import type { ESLintConfigSubset } from "../../lib/eslint";
 import type { ESLintSuppressionsJson } from "../../suppressions-json/types";
 import type { TodoModuleV2 } from "../../todofile/v2";
@@ -68,7 +71,7 @@ export const createTestTodoModuleV2 = (
  */
 export const TEST_FILES = [
   "src/file1.ts",
-  "src/file2.ts", 
+  "src/file2.ts",
   "app/file3.tsx",
   "dist/file4.js",
 ];
@@ -90,7 +93,7 @@ export const TEST_RULES = {
  */
 export const TEST_SCENARIOS = {
   AUTO_FIXABLE_ONLY: {
-    config: { 
+    config: {
       autoFixableOnly: true,
       limit: { count: 5, type: "file" as const },
     },
@@ -102,7 +105,7 @@ export const TEST_SCENARIOS = {
   },
   BASIC_VIOLATION_LIMIT: {
     config: { limit: { count: 10, type: "violation" as const } },
-    description: "Basic violation limit configuration", 
+    description: "Basic violation limit configuration",
   },
   PARTIAL_SELECTION: {
     config: {

@@ -2,20 +2,23 @@ import { describe, expect, it } from "vitest";
 
 import type { RuleCountInfo } from "./select-rule";
 
+import { SuppressionsJsonGenerator } from "../suppressions-json";
 import {
   createTestConfig,
   createTestESLintConfig,
   createTestSuppressions,
+  createTestTodoModuleV2,
   TEST_FILES,
   TEST_RULES,
 } from "./__tests__/helpers";
 import {
   applyRuleAndFileFilters,
-  calculateRuleCounts,
+  calculateRuleCountsForTesting,
   selectOptimalRule,
+  selectRuleBasedOnLimit,
 } from "./select-rule";
 
-describe("calculateRuleCounts", () => {
+describe("calculateRuleCountsForTesting", () => {
   describe("fixability detection", () => {
     it("sets supportsAutoFix correctly based on ESLint config", () => {
       const suppressions = createTestSuppressions({
@@ -34,7 +37,11 @@ describe("calculateRuleCounts", () => {
       });
 
       const config = createTestConfig({ autoFixableOnly: false });
-      const result = calculateRuleCounts(suppressions, eslintConfig, config);
+      const result = calculateRuleCountsForTesting(
+        suppressions,
+        eslintConfig,
+        config,
+      );
 
       expect(result).toHaveLength(2);
 
@@ -56,7 +63,11 @@ describe("calculateRuleCounts", () => {
         "unknown-rule": { fixable: false },
       });
       const config = createTestConfig({ autoFixableOnly: false });
-      const result = calculateRuleCounts(suppressions, eslintConfig, config);
+      const result = calculateRuleCountsForTesting(
+        suppressions,
+        eslintConfig,
+        config,
+      );
 
       expect(result).toHaveLength(1);
       expect(result[0]?.supportsAutoFix).toBe(false);
@@ -72,7 +83,11 @@ describe("calculateRuleCounts", () => {
 
       const eslintConfig = createTestESLintConfig(TEST_RULES.MIXED);
       const config = createTestConfig({ autoFixableOnly: true });
-      const result = calculateRuleCounts(suppressions, eslintConfig, config);
+      const result = calculateRuleCountsForTesting(
+        suppressions,
+        eslintConfig,
+        config,
+      );
 
       expect(result).toHaveLength(1);
       expect(result[0]?.ruleId).toBe("fixable-rule");
@@ -87,7 +102,7 @@ describe("calculateRuleCounts", () => {
       });
 
       const config = createTestConfig({ limit: { count: 10, type: "file" } });
-      const result = calculateRuleCounts(
+      const result = calculateRuleCountsForTesting(
         suppressions,
         createTestESLintConfig({ "test-rule": { fixable: true } }),
         config,
@@ -108,7 +123,7 @@ describe("calculateRuleCounts", () => {
       const config = createTestConfig({
         limit: { count: 10, type: "violation" },
       });
-      const result = calculateRuleCounts(
+      const result = calculateRuleCountsForTesting(
         suppressions,
         createTestESLintConfig({ "test-rule": { fixable: true } }),
         config,
@@ -121,7 +136,7 @@ describe("calculateRuleCounts", () => {
 
   describe("edge cases", () => {
     it("returns empty array for empty suppressions", () => {
-      const result = calculateRuleCounts(
+      const result = calculateRuleCountsForTesting(
         {},
         createTestESLintConfig(),
         createTestConfig(),
@@ -348,8 +363,8 @@ describe("selectOptimalRule", () => {
       expect(result).toEqual({ success: false });
     });
 
-    it("should use filtered file count for limit check in selectRuleBasedOnFilesLimit", () => {
-      const todoModule = createTodoModuleV2({
+    it("should use filtered file count for limit check with file limit type", () => {
+      const todoModule = createTestTodoModuleV2({
         rule1: {
           autoFix: true,
           violations: {
@@ -364,13 +379,11 @@ describe("selectOptimalRule", () => {
         },
       });
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
-      const eslintConfig = createESLintConfigSubset({
-        rules: {
-          rule1: { fixable: true },
-        },
+      const eslintConfig = createTestESLintConfig({
+        rule1: { fixable: true },
       });
       // Original has 7 files (> limit 3), but filtered has only 2 files (< limit 3)
-      const config = createCorrectConfig({
+      const config = createTestConfig({
         include: {
           files: ["src/**"],
         },
@@ -380,21 +393,17 @@ describe("selectOptimalRule", () => {
         },
         partialSelection: true,
       });
-      const expected: SelectionResult = {
+      const expected = {
         selection: { ruleId: "rule1", type: "full" },
         success: true,
       };
 
-      const result = selectRuleBasedOnFilesLimit(
-        suppressions,
-        eslintConfig,
-        config,
-      );
+      const result = selectRuleBasedOnLimit(suppressions, eslintConfig, config);
       expect(result).toStrictEqual(expected);
     });
 
-    it("should use filtered violation count for limit check in selectRuleBasedOnViolationsLimit", () => {
-      const todoModule = createTodoModuleV2({
+    it("should use filtered violation count for limit check with violation limit type", () => {
+      const todoModule = createTestTodoModuleV2({
         rule1: {
           autoFix: true,
           violations: {
@@ -406,13 +415,11 @@ describe("selectOptimalRule", () => {
         },
       });
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
-      const eslintConfig = createESLintConfigSubset({
-        rules: {
-          rule1: { fixable: true },
-        },
+      const eslintConfig = createTestESLintConfig({
+        rule1: { fixable: true },
       });
       // Original has 115 violations (> limit 20), but filtered has only 15 violations (< limit 20)
-      const config = createCorrectConfig({
+      const config = createTestConfig({
         include: {
           files: ["src/**"],
         },
@@ -422,16 +429,12 @@ describe("selectOptimalRule", () => {
         },
         partialSelection: true,
       });
-      const expected: SelectionResult = {
+      const expected = {
         selection: { ruleId: "rule1", type: "full" },
         success: true,
       };
 
-      const result = selectRuleBasedOnViolationsLimit(
-        suppressions,
-        eslintConfig,
-        config,
-      );
+      const result = selectRuleBasedOnLimit(suppressions, eslintConfig, config);
       expect(result).toStrictEqual(expected);
     });
   });
