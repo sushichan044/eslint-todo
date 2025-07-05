@@ -1,0 +1,20 @@
+---
+alwaysApply: true
+---
+
+# Project Instructions
+
+## Development Guidelines
+
+Always refer to [CLAUDE.md](mdc:CLAUDE.md) for comprehensive project guidance, including:
+
+- Project overview and architecture
+- Development commands and build process
+- Testing strategies and patterns
+- Code quality standards
+- Technical implementation details
+- ESLint integration specifics
+- Worker architecture requirements
+- MCP server capabilities
+
+This file contains essential context for understanding the `@sushichan044/eslint-todo` project structure, patterns, and development practices.
