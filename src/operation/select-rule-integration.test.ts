@@ -1,70 +1,68 @@
 import { describe, expect, it } from "vitest";
 
-import type { SelectionResult } from "./select-rule";
-
-import { selectRuleBasedOnLimit } from "./select-rule";
 import {
   createTestConfig,
   createTestESLintConfig,
   createTestSuppressionsFromV2,
   TEST_SCENARIOS,
 } from "./__tests__/helpers";
+import { selectRuleBasedOnLimit } from "./select-rule";
 
 describe("select-rule integration tests", () => {
   describe("major end-to-end scenarios", () => {
     const integrationTestCases = [
       {
         ...TEST_SCENARIOS.BASIC_FILE_LIMIT,
-        name: "file limit - selects rule with most files",
         eslintRules: { "rule1": { fixable: true }, "rule2": { fixable: true } },
+        expected: { selection: { ruleId: "rule2", type: "full" }, success: true },
+        name: "file limit - selects rule with most files",
         todo: {
           rule1: { autoFix: true, violations: { "file1.ts": 1, "file2.ts": 1 } },
           rule2: { autoFix: true, violations: { "file1.ts": 1, "file2.ts": 1, "file3.ts": 1 } },
         },
-        expected: { success: true, selection: { ruleId: "rule2", type: "full" } },
       },
       {
         ...TEST_SCENARIOS.BASIC_VIOLATION_LIMIT,
-        name: "violation limit - selects rule within violation count",
         eslintRules: { "rule1": { fixable: true }, "rule2": { fixable: true } },
+        expected: { selection: { ruleId: "rule2", type: "full" }, success: true },
+        name: "violation limit - selects rule within violation count",
         todo: {
           rule1: { autoFix: true, violations: { "file1.ts": 15 } }, // Exceeds limit
           rule2: { autoFix: true, violations: { "file1.ts": 2, "file2.ts": 3 } }, // Within limit
         },
-        expected: { success: true, selection: { ruleId: "rule2", type: "full" } },
       },
       {
         ...TEST_SCENARIOS.AUTO_FIXABLE_ONLY,
-        name: "autoFixableOnly - filters out non-fixable rules",
         eslintRules: { "rule1": { fixable: false }, "rule2": { fixable: true } },
+        expected: { selection: { ruleId: "rule2", type: "full" }, success: true },
+        name: "autoFixableOnly - filters out non-fixable rules",
         todo: {
           rule1: { autoFix: false, violations: { "file1.ts": 1 } },
           rule2: { autoFix: true, violations: { "file1.ts": 1 } },
         },
-        expected: { success: true, selection: { ruleId: "rule2", type: "full" } },
       },
       {
         ...TEST_SCENARIOS.PARTIAL_SELECTION,
-        name: "partial selection - returns subset of files when enabled",
         eslintRules: { "rule1": { fixable: true } },
+        expected: {
+          selection: {
+            ruleId: "rule1",
+            type: "partial",
+            violations: { "file1.ts": 2, "file2.ts": 3 },
+          },
+          success: true,
+        },
+        name: "partial selection - returns subset of files when enabled",
         todo: {
           rule1: {
             autoFix: true,
             violations: { "file1.ts": 2, "file2.ts": 3, "file3.ts": 1 },
           },
         },
-        expected: {
-          success: true,
-          selection: {
-            ruleId: "rule1",
-            type: "partial",
-            violations: { "file1.ts": 2, "file2.ts": 3 },
-          },
-        },
       },
     ] as const;
 
-    it.each(integrationTestCases)("$name", ({ config, eslintRules, todo, expected }) => {
+    it.each(integrationTestCases)("$name", ({ config, eslintRules, expected, todo }) => {
       const suppressions = createTestSuppressionsFromV2(todo);
       const eslintConfig = createTestESLintConfig(eslintRules);
       const correctConfig = createTestConfig(config);
@@ -100,8 +98,8 @@ describe("select-rule integration tests", () => {
       );
 
       expect(result).toEqual({
-        success: true,
         selection: { ruleId: "rule1", type: "full" },
+        success: true,
       });
     });
 
@@ -114,23 +112,23 @@ describe("select-rule integration tests", () => {
 
       const suppressions = createTestSuppressionsFromV2({
         "excluded-rule": { autoFix: true, violations: { "file1.ts": 1 } },
-        "other-rule": { autoFix: true, violations: { "file1.ts": 1 } },
         "included-rule": { autoFix: true, violations: { "file1.ts": 1 } },
+        "other-rule": { autoFix: true, violations: { "file1.ts": 1 } },
       });
 
       const result = selectRuleBasedOnLimit(
         suppressions,
         createTestESLintConfig({
           "excluded-rule": { fixable: true },
-          "other-rule": { fixable: true },
           "included-rule": { fixable: true },
+          "other-rule": { fixable: true },
         }),
         config,
       );
 
       expect(result).toEqual({
-        success: true,
         selection: { ruleId: "included-rule", type: "full" },
+        success: true,
       });
     });
   });
@@ -152,29 +150,29 @@ describe("select-rule integration tests", () => {
       );
 
       expect(result).toEqual({
-        success: true,
         selection: { ruleId: "fixable-rule", type: "full" },
+        success: true,
       });
     });
 
     it("uses rule ID as tiebreaker for equal priority rules", () => {
       const suppressions = createTestSuppressionsFromV2({
-        "z-rule": { autoFix: true, violations: { "file1.ts": 1, "file2.ts": 1 } },
         "a-rule": { autoFix: true, violations: { "file1.ts": 1, "file2.ts": 1 } },
+        "z-rule": { autoFix: true, violations: { "file1.ts": 1, "file2.ts": 1 } },
       });
 
       const result = selectRuleBasedOnLimit(
         suppressions,
         createTestESLintConfig({
-          "z-rule": { fixable: true },
           "a-rule": { fixable: true },
+          "z-rule": { fixable: true },
         }),
         createTestConfig({ limit: { count: 10, type: "file" } }),
       );
 
       expect(result).toEqual({
-        success: true,
         selection: { ruleId: "a-rule", type: "full" },
+        success: true,
       });
     });
   });
@@ -192,7 +190,7 @@ describe("select-rule integration tests", () => {
           "large-rule": { fixable: true },
           "small-rule": { fixable: true },
         }),
-        createTestConfig({ 
+        createTestConfig({
           limit: { count: 3, type: "file" },
           partialSelection: true,
         }),
@@ -200,8 +198,8 @@ describe("select-rule integration tests", () => {
 
       // Should prefer full selection of small-rule over partial selection of large-rule
       expect(result).toEqual({
-        success: true,
         selection: { ruleId: "small-rule", type: "full" },
+        success: true,
       });
     });
 
@@ -216,19 +214,19 @@ describe("select-rule integration tests", () => {
       const result = selectRuleBasedOnLimit(
         suppressions,
         createTestESLintConfig({ "rule1": { fixable: true } }),
-        createTestConfig({ 
+        createTestConfig({
           limit: { count: 7, type: "violation" },
           partialSelection: true,
         }),
       );
 
       expect(result).toEqual({
-        success: true,
         selection: {
           ruleId: "rule1",
           type: "partial",
           violations: { "file1.ts": 3, "file2.ts": 4 }, // Total: 7
         },
+        success: true,
       });
     });
   });
@@ -266,7 +264,7 @@ describe("select-rule integration tests", () => {
       const result = selectRuleBasedOnLimit(
         suppressions,
         createTestESLintConfig({ "rule1": { fixable: true } }),
-        createTestConfig({ 
+        createTestConfig({
           limit: { count: 3, type: "file" },
           partialSelection: false, // Disabled
         }),

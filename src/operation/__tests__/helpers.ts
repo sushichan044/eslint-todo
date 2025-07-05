@@ -78,17 +78,24 @@ export const TEST_FILES = [
  */
 export const TEST_RULES = {
   FIXABLE: { "fixable-rule": { fixable: true } },
-  NON_FIXABLE: { "non-fixable-rule": { fixable: false } },
   MIXED: {
     "fixable-rule": { fixable: true },
     "non-fixable-rule": { fixable: false },
   },
+  NON_FIXABLE: { "non-fixable-rule": { fixable: false } },
 } as const;
 
 /**
  * Common test scenarios for rule selection.
  */
 export const TEST_SCENARIOS = {
+  AUTO_FIXABLE_ONLY: {
+    config: { 
+      autoFixableOnly: true,
+      limit: { count: 5, type: "file" as const },
+    },
+    description: "Auto-fixable only configuration",
+  },
   BASIC_FILE_LIMIT: {
     config: { limit: { count: 5, type: "file" as const } },
     description: "Basic file limit configuration",
@@ -96,13 +103,6 @@ export const TEST_SCENARIOS = {
   BASIC_VIOLATION_LIMIT: {
     config: { limit: { count: 10, type: "violation" as const } },
     description: "Basic violation limit configuration", 
-  },
-  AUTO_FIXABLE_ONLY: {
-    config: { 
-      autoFixableOnly: true,
-      limit: { count: 5, type: "file" as const },
-    },
-    description: "Auto-fixable only configuration",
   },
   PARTIAL_SELECTION: {
     config: {

@@ -347,5 +347,92 @@ describe("selectOptimalRule", () => {
       const result = selectOptimalRule([], 0, false, createTestConfig());
       expect(result).toEqual({ success: false });
     });
+
+    it("should use filtered file count for limit check in selectRuleBasedOnFilesLimit", () => {
+      const todoModule = createTodoModuleV2({
+        rule1: {
+          autoFix: true,
+          violations: {
+            "dist/file1.js": 1,
+            "dist/file2.js": 1,
+            "dist/file3.js": 1,
+            "dist/file4.js": 1,
+            "dist/file5.js": 1,
+            "src/file1.ts": 1,
+            "src/file2.ts": 1,
+          },
+        },
+      });
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+      const eslintConfig = createESLintConfigSubset({
+        rules: {
+          rule1: { fixable: true },
+        },
+      });
+      // Original has 7 files (> limit 3), but filtered has only 2 files (< limit 3)
+      const config = createCorrectConfig({
+        include: {
+          files: ["src/**"],
+        },
+        limit: {
+          count: 3,
+          type: "file",
+        },
+        partialSelection: true,
+      });
+      const expected: SelectionResult = {
+        selection: { ruleId: "rule1", type: "full" },
+        success: true,
+      };
+
+      const result = selectRuleBasedOnFilesLimit(
+        suppressions,
+        eslintConfig,
+        config,
+      );
+      expect(result).toStrictEqual(expected);
+    });
+
+    it("should use filtered violation count for limit check in selectRuleBasedOnViolationsLimit", () => {
+      const todoModule = createTodoModuleV2({
+        rule1: {
+          autoFix: true,
+          violations: {
+            "dist/file1.js": 50,
+            "dist/file2.js": 50,
+            "src/file1.ts": 10,
+            "src/file2.ts": 5,
+          },
+        },
+      });
+      const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
+      const eslintConfig = createESLintConfigSubset({
+        rules: {
+          rule1: { fixable: true },
+        },
+      });
+      // Original has 115 violations (> limit 20), but filtered has only 15 violations (< limit 20)
+      const config = createCorrectConfig({
+        include: {
+          files: ["src/**"],
+        },
+        limit: {
+          count: 20,
+          type: "violation",
+        },
+        partialSelection: true,
+      });
+      const expected: SelectionResult = {
+        selection: { ruleId: "rule1", type: "full" },
+        success: true,
+      };
+
+      const result = selectRuleBasedOnViolationsLimit(
+        suppressions,
+        eslintConfig,
+        config,
+      );
+      expect(result).toStrictEqual(expected);
+    });
   });
 });
