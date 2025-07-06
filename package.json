@@ -96,7 +96,7 @@
     "eslint-flat-config-utils": "2.1.0",
     "eslint-plugin-import-access": "3.0.0",
     "eslint-plugin-unicorn": "59.0.1",
-    "eslint-typegen": "2.1.0",
+    "eslint-typegen": "2.2.1",
     "fs-extra": "11.3.0",
     "fs-fixture": "2.8.1",
     "globals": "16.2.0",
