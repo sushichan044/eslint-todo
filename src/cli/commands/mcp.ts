@@ -22,14 +22,14 @@ export const mcpCmd = define({
     const { inputConfig, isConfigDirty } = parseArguments({
       config: {
         correct: {
-          autoFixableOnly: undefined,
+          "autoFixableOnly": undefined,
           "exclude.files": undefined,
           "exclude.rules": undefined,
           "include.files": undefined,
           "include.rules": undefined,
           "limit.count": undefined,
           "limit.type": undefined,
-          partialSelection: undefined,
+          "partialSelection": undefined,
         },
         root,
         todoFile,

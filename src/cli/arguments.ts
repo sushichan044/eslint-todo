@@ -46,7 +46,7 @@ export const parseArguments = (input: Input): ParsedCLIInput => {
 type Input = {
   config: {
     correct: {
-      autoFixableOnly: boolean | undefined;
+      "autoFixableOnly": boolean | undefined;
       /**
        * Glob patterns for files to exclude from the operation.
        */
@@ -68,7 +68,7 @@ type Input = {
        */
       "limit.count": number | undefined;
       "limit.type": CorrectModeLimitType | undefined;
-      partialSelection: boolean | undefined;
+      "partialSelection": boolean | undefined;
     };
     root: string | undefined;
     todoFile: string | undefined;
