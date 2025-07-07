@@ -10,8 +10,12 @@ export type MaybePromisifyAllMethods<T> = {
 
 export type IsNever<T> = T[] extends never[] ? true : false;
 
-export type DeepRequired<T> =
-  T extends Record<PropertyKey, unknown>
+/**
+ * Makes all properties in T required recursively.
+ */
+export type DeepRequired<T> = T extends readonly unknown[]
+  ? T
+  : T extends Record<PropertyKey, unknown>
     ? {
         [K in keyof T]-?: DeepRequired<T[K]>;
       }
