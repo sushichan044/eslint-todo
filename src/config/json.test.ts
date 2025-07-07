@@ -8,9 +8,14 @@ describe("UserConfigJsonSchema matches snapshot", () => {
 
     expect(UserConfigJsonSchema).toMatchInlineSnapshot(`
       {
+        "description": "Current Type: {@link UserConfig}",
         "properties": {
           "correct": {
-            "description": "Options for correct mode.",
+            "description": "Options for correct mode.
+
+      ------------------------------
+
+      Current Type: {@link CorrectModeUserConfig}",
             "properties": {
               "autoFixableOnly": {
                 "description": "Allow to select non auto-fixable rules.",
@@ -95,7 +100,6 @@ describe("UserConfigJsonSchema matches snapshot", () => {
               },
             },
             "required": [],
-            "title": "Options for correct mode",
             "type": "object",
           },
           "root": {

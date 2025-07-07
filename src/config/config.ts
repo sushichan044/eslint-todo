@@ -2,13 +2,15 @@ import defu from "defu";
 import { klona } from "klona";
 import { cwd } from "node:process";
 
-import type { DeepPartial } from "../utils/types";
+import type { DeepRequired } from "../utils/types";
 
-export type Config = {
+export type Config = DeepRequired<UserConfig>;
+
+export type UserConfig = {
   /**
    * Options for correct mode.
    */
-  correct: CorrectModeConfig;
+  correct?: CorrectModeUserConfig;
   /**
    * Project root.
    *
@@ -18,83 +20,87 @@ export type Config = {
    *
    * @default process.cwd()
    */
-  root: string;
+  root?: string;
   /**
    * The file path to read and write the ESLint todo list.
    *
    * @default ".eslint-todo.js"
    */
-  todoFile: string;
+  todoFile?: string;
 };
 
-export type UserConfig = DeepPartial<Config>;
+export type CorrectModeConfig = DeepRequired<CorrectModeUserConfig>;
 
-export type CorrectModeConfig = {
+export type CorrectModeLimitType = "file" | "violation";
+
+export type CorrectModeUserConfig = {
   /**
    * Allow to select non auto-fixable rules.
    *
    * @default true
    */
-  autoFixableOnly: boolean;
+  autoFixableOnly?: boolean;
+
   /**
    * Options for excluding todo items.
    */
-  exclude: {
+  exclude?: {
     /**
      * Glob patterns for files to exclude from the operation.
      *
      * @default []
      */
-    files: string[];
+    files?: string[];
+
     /**
      * List of rules to exclude from the operation. Comma-separated string.
      *
      * @default []
      */
-    rules: string[];
+    rules?: string[];
   };
+
   /**
    * Options for including todo items.
    */
-  include: {
+  include?: {
     /**
      * Glob patterns for files to include in the operation.
      *
      * @default []
      */
-    files: string[];
+    files?: string[];
+
     /**
      * List of rules to include in the operation.
      *
      * @default []
      */
-    rules: string[];
+    rules?: string[];
   };
-  limit: {
+  limit?: {
     /**
      * Limit the number of violations or files to fix.
      *
      * @default 100
      */
-    count: number;
+    count?: number;
+
     /**
      * Type of limit to apply.
      *
      * @default "violation"
      */
-    type: CorrectModeLimitType;
+    type?: CorrectModeLimitType;
   };
+
   /**
    * Allow partial selection of violations.
    *
    * @default false
    */
-  partialSelection: boolean;
+  partialSelection?: boolean;
 };
-
-export type CorrectModeLimitType = "file" | "violation";
-
-export type CorrectModeUserConfig = DeepPartial<CorrectModeConfig>;
 
 const DEFAULT_CONFIG = {
   correct: {

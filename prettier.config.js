@@ -5,5 +5,5 @@ import prettier from "@virtual-live-lab/prettier-config";
  */
 export default {
   ...prettier,
-  plugins: [...prettier.plugins, "@prettier/plugin-oxc"],
+  plugins: [...(prettier.plugins ?? []), "@prettier/plugin-oxc"],
 };

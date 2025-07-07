@@ -1,8 +1,6 @@
-import type { DeepPartial } from "./types";
-
 import { sh } from "./command";
 
-type HasGitChangesOptions = DeepPartial<{
+type HasGitChangesOptions = Partial<{
   /**
    * The git diff mode.
    *
