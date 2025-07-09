@@ -98,6 +98,42 @@ describe("UserConfigJsonSchema matches snapshot", () => {
                 "title": "Allow partial selection of violations",
                 "type": "boolean",
               },
+              "strategy": {
+                "description": "Rule selection strategy configuration.",
+                "oneOf": [
+                  {
+                    "properties": {
+                      "entrypoints": {
+                        "description": "Entrypoints to build the import graph.",
+                        "items": {
+                          "type": "string",
+                        },
+                        "title": "Entrypoints to build the import graph",
+                        "type": "array",
+                      },
+                      "type": {
+                        "const": "import-graph",
+                        "description": "Graph-based rule selection strategy using import dependencies.",
+                        "title": "Graph-based rule selection strategy using import dependencies",
+                      },
+                    },
+                    "required": [],
+                    "type": "object",
+                  },
+                  {
+                    "properties": {
+                      "type": {
+                        "const": "simple",
+                        "description": "Simple rule selection strategy based on counts.",
+                        "title": "Simple rule selection strategy based on counts",
+                      },
+                    },
+                    "required": [],
+                    "type": "object",
+                  },
+                ],
+                "title": "Rule selection strategy configuration",
+              },
             },
             "required": [],
             "type": "object",

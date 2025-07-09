@@ -12,13 +12,12 @@ import {
   TEST_RULES,
 } from "./__tests__/helpers";
 import {
-  applyRuleAndFileFilters,
-  calculateRuleCountsForTesting,
-  selectOptimalRule,
+  evaluateRuleEligibility,
   selectRuleBasedOnLimit,
+  SimpleRuleSelectionStrategy,
 } from "./select-rule";
 
-describe("calculateRuleCountsForTesting", () => {
+describe("SimpleRuleSelectionStrategy.calculateRuleCounts", () => {
   describe("fixability detection", () => {
     it("sets supportsAutoFix correctly based on ESLint config", () => {
       const suppressions = createTestSuppressions({
@@ -37,7 +36,7 @@ describe("calculateRuleCountsForTesting", () => {
       });
 
       const config = createTestConfig({ autoFixableOnly: false });
-      const result = calculateRuleCountsForTesting(
+      const result = SimpleRuleSelectionStrategy.calculateRuleCounts(
         suppressions,
         eslintConfig,
         config,
@@ -63,7 +62,7 @@ describe("calculateRuleCountsForTesting", () => {
         "unknown-rule": { fixable: false },
       });
       const config = createTestConfig({ autoFixableOnly: false });
-      const result = calculateRuleCountsForTesting(
+      const result = SimpleRuleSelectionStrategy.calculateRuleCounts(
         suppressions,
         eslintConfig,
         config,
@@ -83,7 +82,7 @@ describe("calculateRuleCountsForTesting", () => {
 
       const eslintConfig = createTestESLintConfig(TEST_RULES.MIXED);
       const config = createTestConfig({ autoFixableOnly: true });
-      const result = calculateRuleCountsForTesting(
+      const result = SimpleRuleSelectionStrategy.calculateRuleCounts(
         suppressions,
         eslintConfig,
         config,
@@ -102,7 +101,7 @@ describe("calculateRuleCountsForTesting", () => {
       });
 
       const config = createTestConfig({ limit: { count: 10, type: "file" } });
-      const result = calculateRuleCountsForTesting(
+      const result = SimpleRuleSelectionStrategy.calculateRuleCounts(
         suppressions,
         createTestESLintConfig({ "test-rule": { fixable: true } }),
         config,
@@ -123,7 +122,7 @@ describe("calculateRuleCountsForTesting", () => {
       const config = createTestConfig({
         limit: { count: 10, type: "violation" },
       });
-      const result = calculateRuleCountsForTesting(
+      const result = SimpleRuleSelectionStrategy.calculateRuleCounts(
         suppressions,
         createTestESLintConfig({ "test-rule": { fixable: true } }),
         config,
@@ -136,7 +135,7 @@ describe("calculateRuleCountsForTesting", () => {
 
   describe("edge cases", () => {
     it("returns empty array for empty suppressions", () => {
-      const result = calculateRuleCountsForTesting(
+      const result = SimpleRuleSelectionStrategy.calculateRuleCounts(
         {},
         createTestESLintConfig(),
         createTestConfig(),
@@ -154,7 +153,7 @@ describe("applyRuleAndFileFilters", () => {
         "no-console": { fixable: false },
       });
 
-      const result = applyRuleAndFileFilters(
+      const result = evaluateRuleEligibility(
         "no-console",
         TEST_FILES,
         eslintConfig,
@@ -169,7 +168,7 @@ describe("applyRuleAndFileFilters", () => {
         "no-console": { fixable: false },
       });
 
-      const result = applyRuleAndFileFilters(
+      const result = evaluateRuleEligibility(
         "no-console",
         TEST_FILES,
         eslintConfig,
@@ -186,7 +185,7 @@ describe("applyRuleAndFileFilters", () => {
         exclude: { files: [], rules: ["no-console"] },
       });
 
-      const result = applyRuleAndFileFilters(
+      const result = evaluateRuleEligibility(
         "no-console",
         TEST_FILES,
         createTestESLintConfig(),
@@ -200,7 +199,7 @@ describe("applyRuleAndFileFilters", () => {
         include: { files: [], rules: ["allowed-rule"] },
       });
 
-      const result = applyRuleAndFileFilters(
+      const result = evaluateRuleEligibility(
         "other-rule",
         TEST_FILES,
         createTestESLintConfig(),
@@ -216,7 +215,7 @@ describe("applyRuleAndFileFilters", () => {
         exclude: { files: ["dist/**"], rules: [] },
       });
 
-      const result = applyRuleAndFileFilters(
+      const result = evaluateRuleEligibility(
         "test-rule",
         TEST_FILES,
         createTestESLintConfig({ "test-rule": { fixable: true } }),
@@ -233,7 +232,7 @@ describe("applyRuleAndFileFilters", () => {
         include: { files: ["src/**"], rules: [] },
       });
 
-      const result = applyRuleAndFileFilters(
+      const result = evaluateRuleEligibility(
         "test-rule",
         TEST_FILES,
         createTestESLintConfig({ "test-rule": { fixable: true } }),
@@ -250,7 +249,7 @@ describe("applyRuleAndFileFilters", () => {
         include: { files: ["test/**"], rules: [] },
       });
 
-      const result = applyRuleAndFileFilters(
+      const result = evaluateRuleEligibility(
         "test-rule",
         TEST_FILES,
         createTestESLintConfig({ "test-rule": { fixable: true } }),
@@ -261,7 +260,7 @@ describe("applyRuleAndFileFilters", () => {
   });
 });
 
-describe("selectOptimalRule", () => {
+describe("`SimpleRuleSelectionStrategy.selectOptimalRule`", () => {
   const createRuleInfo = (
     ruleId: string,
     totalCount: number,
@@ -285,7 +284,12 @@ describe("selectOptimalRule", () => {
         createRuleInfo("rule3", 6, 2),
       ];
 
-      const result = selectOptimalRule(rules, 10, false, createTestConfig());
+      const result = SimpleRuleSelectionStrategy.selectOptimalRule(
+        rules,
+        10,
+        false,
+        createTestConfig(),
+      );
       expect(result).toEqual({
         selection: { ruleId: "rule2", type: "full" },
         success: true,
@@ -298,7 +302,12 @@ describe("selectOptimalRule", () => {
         createRuleInfo("fixable", 10, 10, true),
       ];
 
-      const result = selectOptimalRule(rules, 15, false, createTestConfig());
+      const result = SimpleRuleSelectionStrategy.selectOptimalRule(
+        rules,
+        15,
+        false,
+        createTestConfig(),
+      );
       expect(result).toEqual({
         selection: { ruleId: "fixable", type: "full" },
         success: true,
@@ -311,7 +320,12 @@ describe("selectOptimalRule", () => {
         createRuleInfo("a-rule", 10, 10, true),
       ];
 
-      const result = selectOptimalRule(rules, 15, false, createTestConfig());
+      const result = SimpleRuleSelectionStrategy.selectOptimalRule(
+        rules,
+        15,
+        false,
+        createTestConfig(),
+      );
       expect(result).toEqual({
         selection: { ruleId: "a-rule", type: "full" },
         success: true,
@@ -332,7 +346,12 @@ describe("selectOptimalRule", () => {
       };
 
       const config = createTestConfig({ limit: { count: 2, type: "file" } });
-      const result = selectOptimalRule(rules, 2, true, config);
+      const result = SimpleRuleSelectionStrategy.selectOptimalRule(
+        [...rules],
+        2,
+        true,
+        config,
+      );
 
       expect(result).toEqual({
         selection: {
@@ -347,19 +366,34 @@ describe("selectOptimalRule", () => {
     it("returns not successful when partial selection disabled", () => {
       const rules = [createRuleInfo("rule1", 15, 10)];
 
-      const result = selectOptimalRule(rules, 5, false, createTestConfig());
+      const result = SimpleRuleSelectionStrategy.selectOptimalRule(
+        rules,
+        5,
+        false,
+        createTestConfig(),
+      );
       expect(result).toEqual({ success: false });
     });
   });
 
   describe("edge cases", () => {
     it("returns not successful for empty rules array", () => {
-      const result = selectOptimalRule([], 10, false, createTestConfig());
+      const result = SimpleRuleSelectionStrategy.selectOptimalRule(
+        [],
+        10,
+        false,
+        createTestConfig(),
+      );
       expect(result).toEqual({ success: false });
     });
 
     it("handles zero limit count gracefully", () => {
-      const result = selectOptimalRule([], 0, false, createTestConfig());
+      const result = SimpleRuleSelectionStrategy.selectOptimalRule(
+        [],
+        0,
+        false,
+        createTestConfig(),
+      );
       expect(result).toEqual({ success: false });
     });
 

@@ -45,6 +45,9 @@ export const correctCmd = define({
           type: context.values["correct.limit.type"],
         },
         partialSelection: context.values["correct.partialSelection"],
+        strategy: {
+          type: context.values["correct.strategy.type"],
+        },
       },
       root: context.values.root,
       todoFile: context.values.todoFile,
