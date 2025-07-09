@@ -22,9 +22,20 @@ interface RuleSelectionStrategy {
   ): SelectionResult;
 }
 
+export type SelectionResult =
+  | {
+      selection: RuleSelection;
+      success: true;
+    }
+  | {
+      success: false;
+    };
+
 // ============================================================================
 // Rule Selection Types
 // ============================================================================
+
+export type RuleSelection = FullRuleSelection | PartialRuleSelection;
 
 type PartialRuleSelection = {
   /**
@@ -48,17 +59,6 @@ type FullRuleSelection = {
   type: "full";
 };
 
-export type RuleSelection = FullRuleSelection | PartialRuleSelection;
-
-export type SelectionResult =
-  | {
-      selection: RuleSelection;
-      success: true;
-    }
-  | {
-      success: false;
-    };
-
 // ============================================================================
 // Rule Processing Types
 // ============================================================================
@@ -66,52 +66,42 @@ export type SelectionResult =
 /**
  * Information about a rule's counts after filtering.
  *
- * Used by `calculateRuleCounts` and consumed by `selectOptimalRule` for prioritization.
+ * Used by `calculateRuleCounts` and consumed by `SimpleRuleSelectionStrategy.selectOptimalRule` for prioritization.
  * Contains both original and filtered data to support different limit types and selection strategies.
  *
  * @package
  */
 export type RuleCountInfo = {
-  /** Count after applying filters (files or violations depending on limitType) */
+  /**
+   * Count after applying filters (files or violations depending on limitType)
+   */
   eligibleCount: number;
-  /** Array of file paths that passed filtering */
+
+  /**
+   * Array of file paths that passed filtering
+   */
   eligibleFiles: string[];
-  /** Map of file -> violation count for filtered files only */
+
+  /**
+   * Map of file -> violation count for filtered files only
+   */
   filteredViolations: Record<string, number>;
-  /** ESLint rule identifier */
+
+  /**
+   * ESLint rule identifier
+   */
   ruleId: string;
-  /** Whether this rule supports auto-fixing (impacts prioritization) */
+
+  /**
+   * Whether this rule supports auto-fixing (impacts prioritization)
+   */
   supportsAutoFix: boolean;
-  /** Original count before filtering (files or violations depending on limitType) */
+
+  /**
+   * Original count before filtering (files or violations depending on limitType)
+   */
   totalCount: number;
 };
-
-/**
- * Result of applying rule and file filters in `applyRuleAndFileFilters`.
- *
- * Discriminated union that either provides eligible files or indicates ineligibility.
- * Used to determine if a rule should be considered for selection and which files can be processed.
- *
- * @example
- * ```ts
- * const result = applyRuleAndFileFilters(ruleId, files, config);
- * if (result.isEligible) {
- *   // Process result.correctableFiles
- * } else {
- *   // Skip this rule entirely
- * }
- * ```
- */
-type RuleFilterResult =
-  | {
-      /** Files that passed all filtering criteria and can be corrected */
-      eligibleFiles: string[];
-      isEligible: true;
-    }
-  | {
-      /** Rule was filtered out due to fixability, inclusion/exclusion rules, or no files remained */
-      isEligible: false;
-    };
 
 /**
  * Selects a rule based on the given limit.
@@ -130,9 +120,6 @@ export const selectRuleBasedOnLimit = (
     case "violation": {
       break;
     }
-    case "import-graph": {
-      throw new Error("Import graph strategy not implemented yet");
-    }
     default: {
       // exhaustive check
       const l = correctConfig.limit.type satisfies never;
@@ -145,6 +132,33 @@ export const selectRuleBasedOnLimit = (
 };
 
 /**
+ * Result of applying rule and file filters in `evaluateRuleEligibility`.
+ *
+ * Discriminated union that either provides eligible files or indicates ineligibility.
+ * Used to determine if a rule should be considered for selection and which files can be processed.
+ *
+ * @example
+ * ```ts
+ * const result = evaluateRuleEligibility(ruleId, files, config);
+ * if (result.isEligible) {
+ *   // Process result.eligibleFiles
+ * } else {
+ *   // Skip this rule entirely
+ * }
+ * ```
+ */
+type RuleEligibilityResult =
+  | {
+      /** Files that passed all filtering criteria and can be corrected */
+      eligibleFiles: string[];
+      isEligible: true;
+    }
+  | {
+      /** Rule was filtered out due to fixability, inclusion/exclusion rules, or no files remained */
+      isEligible: false;
+    };
+
+/**
  * Apply rule-level and file-level filters to determine if a rule is eligible
  * and get the list of correctable files.
  * @param ruleId - The rule ID to check
@@ -155,29 +169,29 @@ export const selectRuleBasedOnLimit = (
  *
  * @package
  */
-export const applyRuleAndFileFilters = (
+export const evaluateRuleEligibility = (
   ruleId: string,
   violatedFiles: string[],
   eslintConfig: ESLintConfigSubset,
-  config: CorrectModeConfig,
-): RuleFilterResult => {
+  config: Pick<CorrectModeConfig, "autoFixableOnly" | "exclude" | "include">,
+): RuleEligibilityResult => {
   const {
     autoFixableOnly,
     exclude: { files: excludedFiles, rules: excludedRules },
     include: { files: includedFiles, rules: includedRules },
   } = config;
 
-  // Guard clause: Check if rule is auto-fixable when required
+  // Short-circuit: Check if rule is auto-fixable when required
   if (autoFixableOnly && !isRuleFixable(eslintConfig, ruleId)) {
     return { isEligible: false };
   }
 
-  // Guard clause: Check if rule is excluded
+  // Short-circuit: Check if rule is excluded
   if (excludedRules.includes(ruleId)) {
     return { isEligible: false };
   }
 
-  // Guard clause: Check if rule is included when include filter is specified
+  // Short-circuit: Check if rule is included when include filter is specified
   if (includedRules.length > 0 && !includedRules.includes(ruleId)) {
     return { isEligible: false };
   }
@@ -270,23 +284,30 @@ const selectViolationsForRule = (
   limitCount: number,
   config: CorrectModeConfig,
 ): Record<string, number> => {
-  const selectedViolations: Record<string, number> = {};
-  let selectedCount = 0;
+  const selectedViolations = Object.create(null) as Record<string, number>;
   const limitType = config.limit.type;
 
   if (limitType === "file") {
     // For file limit, select files up to the limit count
     for (const file of rule.eligibleFiles.slice(0, limitCount)) {
       const violationCount = rule.filteredViolations[file];
-      if (violationCount == null) continue;
+      if (violationCount == null) {
+        continue;
+      }
+
       selectedViolations[file] = violationCount;
     }
   } else {
+    let selectedCount = 0;
+
     // For violation limit, select files until violation count reaches limit
     for (const file of rule.eligibleFiles) {
       const violationCount = rule.filteredViolations[file];
-      if (violationCount == null) continue;
+      if (violationCount == null) {
+        continue;
+      }
 
+      // Guard clause: break if we've reached the limit
       if (selectedCount + violationCount > limitCount) {
         break;
       }
@@ -297,31 +318,6 @@ const selectViolationsForRule = (
   }
 
   return selectedViolations;
-};
-
-/**
- * Select the optimal rule from rule count information.
- * @param ruleCounts - Array of rule count information.
- * @param limitCount - The limit count.
- * @param allowPartialSelection - Whether partial selection is allowed.
- * @param config - Correct mode config.
- *
- * @returns The result of the selection.
- *
- * @package
- */
-export const selectOptimalRule = (
-  ruleCounts: readonly RuleCountInfo[],
-  limitCount: number,
-  allowPartialSelection: boolean,
-  config: CorrectModeConfig,
-): SelectionResult => {
-  return CountBasedRuleSelectionStrategy.selectOptimalRule(
-    [...ruleCounts],
-    limitCount,
-    allowPartialSelection,
-    config,
-  );
 };
 
 // ============================================================================
@@ -336,27 +332,29 @@ export const selectOptimalRule = (
 const createRuleSelectionStrategy = (
   config: CorrectModeConfig,
 ): RuleSelectionStrategy => {
-  const strategyType = config.limit.type;
-
-  switch (strategyType) {
-    case "file":
-    case "violation": {
-      return new CountBasedRuleSelectionStrategy();
-    }
+  switch (config.strategy.type) {
     case "import-graph": {
       return new GraphBasedRuleSelectionStrategy();
     }
+    case "simple": {
+      return new SimpleRuleSelectionStrategy();
+    }
     default: {
-      throw new Error(`Unknown strategy type: ${String(strategyType)}`);
+      throw new Error(
+        // exhaustive check
+        `Unknown strategy: ${JSON.stringify(config.strategy satisfies never)}`,
+      );
     }
   }
 };
 
 /**
- * Count-based rule selection strategy.
+ * Simple rule selection strategy.
  * Selects rules based on violation counts and file counts with filtering.
+ *
+ * @package
  */
-class CountBasedRuleSelectionStrategy implements RuleSelectionStrategy {
+export class SimpleRuleSelectionStrategy implements RuleSelectionStrategy {
   public static calculateRuleCounts(
     suppressions: ESLintSuppressionsJson,
     eslintConfig: ESLintConfigSubset,
@@ -377,7 +375,7 @@ class CountBasedRuleSelectionStrategy implements RuleSelectionStrategy {
           countType === "file" ? originalFileCount : originalViolationCount;
 
         // Apply filtering
-        const filteredResult = applyRuleAndFileFilters(
+        const filteredResult = evaluateRuleEligibility(
           ruleId,
           Object.keys(entry),
           eslintConfig,
@@ -490,13 +488,13 @@ class CountBasedRuleSelectionStrategy implements RuleSelectionStrategy {
       throw new Error(`The ${limitTypeLabel} limit must be greater than 0.`);
     }
 
-    const ruleCounts = CountBasedRuleSelectionStrategy.calculateRuleCounts(
+    const ruleCounts = SimpleRuleSelectionStrategy.calculateRuleCounts(
       suppressions,
       eslintConfig,
       config,
     );
 
-    return CountBasedRuleSelectionStrategy.selectOptimalRule(
+    return SimpleRuleSelectionStrategy.selectOptimalRule(
       ruleCounts,
       limitCount,
       allowPartialSelection,
@@ -506,35 +504,13 @@ class CountBasedRuleSelectionStrategy implements RuleSelectionStrategy {
 }
 
 /**
- * Graph-based rule selection strategy placeholder.
- * TODO: Implement entry point analysis and import graph construction.
+ * Graph-based rule selection strategy.
+ * Uses import graph analysis to prioritize rules based on dependency relationships.
+ *
+ * @package
  */
 class GraphBasedRuleSelectionStrategy implements RuleSelectionStrategy {
   selectRule(): SelectionResult {
-    throw new Error("Graph-based strategy not implemented yet");
+    throw new Error("Not implemented");
   }
 }
-
-// ============================================================================
-// Internal Testing Functions
-// ============================================================================
-
-/**
- * Calculate rule counts with filtering applied.
- * @internal - テストとベンチマーク専用
- * @param suppressions - Suppressions.
- * @param eslintConfig - ESLint config.
- * @param config - Correct mode config.
- * @returns Array of violation information for each rule.
- */
-export const calculateRuleCountsForTesting = (
-  suppressions: ESLintSuppressionsJson,
-  eslintConfig: ESLintConfigSubset,
-  config: CorrectModeConfig,
-): RuleCountInfo[] => {
-  return CountBasedRuleSelectionStrategy.calculateRuleCounts(
-    suppressions,
-    eslintConfig,
-    config,
-  );
-};

@@ -30,6 +30,7 @@ export const mcpCmd = define({
           "limit.count": undefined,
           "limit.type": undefined,
           "partialSelection": undefined,
+          "strategy.type": undefined,
         },
         root,
         todoFile,

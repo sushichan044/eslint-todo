@@ -28,6 +28,7 @@ export const correctCmd = define({
     const limitCount = context.values["correct.limit.count"];
     const limitType = context.values["correct.limit.type"];
     const partialSelection = context.values["correct.partialSelection"];
+    const strategyType = context.values["correct.strategy.type"];
 
     const { inputConfig, isConfigDirty } = parseArguments({
       config: {
@@ -40,6 +41,7 @@ export const correctCmd = define({
           "limit.count": limitCount,
           "limit.type": limitType,
           partialSelection,
+          "strategy.type": strategyType,
         },
         root,
         todoFile,

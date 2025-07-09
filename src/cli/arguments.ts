@@ -69,6 +69,10 @@ type Input = {
       "limit.count": number | undefined;
       "limit.type": CorrectModeLimitType | undefined;
       "partialSelection": boolean | undefined;
+      /**
+       * Rule selection strategy type.
+       */
+      "strategy.type": "import-graph" | "simple" | undefined;
     };
     root: string | undefined;
     todoFile: string | undefined;
@@ -111,7 +115,8 @@ const parseCorrectMode = (
     input["include.rules"] !== undefined ||
     input["limit.count"] !== undefined ||
     input["limit.type"] !== undefined ||
-    input.partialSelection !== undefined;
+    input.partialSelection !== undefined ||
+    input["strategy.type"] !== undefined;
 
   return {
     config: {
@@ -129,6 +134,12 @@ const parseCorrectMode = (
         type: input["limit.type"],
       },
       partialSelection: input.partialSelection,
+      strategy:
+        input["strategy.type"] === "import-graph"
+          ? { entrypoints: [], type: "import-graph" }
+          : input["strategy.type"] === "simple"
+            ? { type: "simple" }
+            : undefined,
     },
     isConfigDirty: isDirty,
   };

@@ -56,6 +56,7 @@ const mainCmd = define({
     const limitCount = context.values["correct.limit.count"];
     const limitType = context.values["correct.limit.type"];
     const partialSelection = context.values["correct.partialSelection"];
+    const strategyType = context.values["correct.strategy.type"];
 
     const {
       context: { mode },
@@ -72,6 +73,7 @@ const mainCmd = define({
           "limit.count": limitCount,
           "limit.type": limitType,
           partialSelection,
+          "strategy.type": strategyType,
         },
         root,
         todoFile,

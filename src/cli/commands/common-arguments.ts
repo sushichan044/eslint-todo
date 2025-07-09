@@ -84,4 +84,9 @@ export const correctModeArguments = {
     description: "Allow partial selection of violations.",
     type: "boolean",
   },
+  "correct.strategy.type": {
+    choices: ["simple", "import-graph"],
+    description: "Rule selection strategy type.",
+    type: "enum",
+  },
 } as const satisfies CorrectModeArguments;

@@ -100,6 +100,12 @@ export type CorrectModeUserConfig = {
    * @default false
    */
   partialSelection?: boolean;
+  /**
+   * Rule selection strategy configuration.
+   *
+   * @default { type: "simple" }
+   */
+  strategy: CorrectModeStrategy;
 };
 
 export type CorrectModeLimit =
@@ -131,6 +137,26 @@ export type CorrectModeLimit =
       type: "violation";
     };
 
+export type CorrectModeStrategy =
+  | {
+      /**
+       * Entrypoints to build the import graph.
+       *
+       * @default []
+       */
+      entrypoints: string[];
+      /**
+       * Graph-based rule selection strategy using import dependencies.
+       */
+      type: "import-graph";
+    }
+  | {
+      /**
+       * Simple rule selection strategy based on counts.
+       */
+      type: "simple";
+    };
+
 const DEFAULT_CONFIG = {
   correct: {
     autoFixableOnly: true,
@@ -147,6 +173,9 @@ const DEFAULT_CONFIG = {
       type: "violation",
     },
     partialSelection: false,
+    strategy: {
+      type: "simple",
+    },
   },
   root: cwd(),
   todoFile: ".eslint-todo.js",
