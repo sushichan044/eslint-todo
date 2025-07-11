@@ -60,6 +60,7 @@ export default typegen(
               case: "kebabCase",
             },
           ],
+          "unicorn/no-nested-ternary": "off", // conflict with prettier
           "unicorn/no-null": "off",
         },
       }),
