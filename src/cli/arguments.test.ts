@@ -33,7 +33,6 @@ describe("CLI Arguments", () => {
         name: "should handle correct mode with autoFixableOnly",
         tAssert: (result) => {
           expect(result.context.mode).toBe("correct");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.todoFile).toBe("custom-todo.json");
           expect(result.inputConfig.correct?.autoFixableOnly).toBe(true);
         },
@@ -62,7 +61,6 @@ describe("CLI Arguments", () => {
         name: "should handle generate mode",
         tAssert: (result) => {
           expect(result.context.mode).toBe("generate");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.root).toBe("/custom/root");
         },
       },
@@ -87,9 +85,9 @@ describe("CLI Arguments", () => {
             mcp: true,
           },
         },
-        name: "should not mark as dirty when only mode flag is set",
+        name: "should handle mcp mode",
         tAssert: (result) => {
-          expect(result.isConfigDirty).toBe(false);
+          expect(result.context.mode).toBe("mcp");
         },
       },
     ];
@@ -131,7 +129,6 @@ describe("CLI Arguments", () => {
         name: "should handle exclude.rules",
         tAssert: (result) => {
           expect(result.context.mode).toBe("correct");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.correct?.exclude?.rules).toStrictEqual([
             "no-console",
             "no-unused-vars",
@@ -162,7 +159,6 @@ describe("CLI Arguments", () => {
         name: "should handle exclude.files",
         tAssert: (result) => {
           expect(result.context.mode).toBe("correct");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.correct?.exclude?.files).toStrictEqual([
             "dist/**",
             "build/**",
@@ -194,7 +190,6 @@ describe("CLI Arguments", () => {
         name: "should handle include.files",
         tAssert: (result) => {
           expect(result.context.mode).toBe("correct");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.correct?.include?.files).toStrictEqual([
             "src/**/*.ts",
             "app/**/*.tsx",
@@ -228,7 +223,6 @@ describe("CLI Arguments", () => {
         name: "should handle include.rules",
         tAssert: (result) => {
           expect(result.context.mode).toBe("correct");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.correct?.include?.rules).toStrictEqual([
             "no-console",
             "@typescript-eslint/no-unused-vars",
@@ -262,7 +256,6 @@ describe("CLI Arguments", () => {
         name: "should handle both include.files and include.rules",
         tAssert: (result) => {
           expect(result.context.mode).toBe("correct");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.correct?.include?.files).toStrictEqual([
             "src/**/*.ts",
             "app/**/*.tsx",
@@ -297,7 +290,6 @@ describe("CLI Arguments", () => {
         name: "should handle both exclude.files and exclude.rules",
         tAssert: (result) => {
           expect(result.context.mode).toBe("correct");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.correct?.exclude?.files).toStrictEqual([
             "dist/**",
             "node_modules/**",
@@ -332,7 +324,6 @@ describe("CLI Arguments", () => {
         name: "should handle both exclude.files and include.files",
         tAssert: (result) => {
           expect(result.context.mode).toBe("correct");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.correct?.exclude?.files).toStrictEqual([
             "**/*.test.ts",
             "**/*.spec.ts",
@@ -352,7 +343,7 @@ describe("CLI Arguments", () => {
     });
   });
 
-  describe("isDirty checks", () => {
+  describe("parameter validation", () => {
     const testCases: Array<{
       input: Parameters<typeof parseArguments>[0];
       name: string;
@@ -379,10 +370,9 @@ describe("CLI Arguments", () => {
             mcp: false,
           },
         },
-        name: "should return isDirty=false for default generate mode with no custom settings",
+        name: "should handle default generate mode with no custom settings",
         tAssert: (result) => {
           expect(result.context.mode).toBe("generate");
-          expect(result.isConfigDirty).toBe(false);
         },
       },
       {
@@ -406,10 +396,10 @@ describe("CLI Arguments", () => {
             mcp: false,
           },
         },
-        name: "should return isDirty=true when only todoFile is set",
+        name: "should handle todoFile setting",
         tAssert: (result) => {
           expect(result.context.mode).toBe("generate");
-          expect(result.isConfigDirty).toBe(true);
+          expect(result.inputConfig.todoFile).toBe("custom.json");
         },
       },
       {
@@ -433,10 +423,10 @@ describe("CLI Arguments", () => {
             mcp: false,
           },
         },
-        name: "should return isDirty=true when only root is set",
+        name: "should handle root setting",
         tAssert: (result) => {
           expect(result.context.mode).toBe("generate");
-          expect(result.isConfigDirty).toBe(true);
+          expect(result.inputConfig.root).toBe("/custom/path");
         },
       },
       {
@@ -460,10 +450,10 @@ describe("CLI Arguments", () => {
             mcp: false,
           },
         },
-        name: "should return isDirty=true when only correct.partialSelection is set",
+        name: "should handle correct.partialSelection setting",
         tAssert: (result) => {
           expect(result.context.mode).toBe("generate");
-          expect(result.isConfigDirty).toBe(true);
+          expect(result.inputConfig.correct?.partialSelection).toBe(false);
         },
       },
       {
@@ -487,10 +477,9 @@ describe("CLI Arguments", () => {
             mcp: false,
           },
         },
-        name: "should return isDirty=true when only correct.limit.count is set",
+        name: "should handle correct.limit.count setting",
         tAssert: (result) => {
           expect(result.context.mode).toBe("generate");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.correct?.limit?.count).toBe(10);
         },
       },
@@ -515,10 +504,9 @@ describe("CLI Arguments", () => {
             mcp: false,
           },
         },
-        name: "should return isDirty=true when only correct.limit.type is set",
+        name: "should handle correct.limit.type setting",
         tAssert: (result) => {
           expect(result.context.mode).toBe("generate");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.correct?.limit?.type).toBe("violation");
         },
       },
@@ -543,10 +531,9 @@ describe("CLI Arguments", () => {
             mcp: false,
           },
         },
-        name: "should return isDirty=true when empty string is provided for exclude.rules",
+        name: "should handle empty array for exclude.rules",
         tAssert: (result) => {
           expect(result.context.mode).toBe("generate");
-          expect(result.isConfigDirty).toBe(true);
           expect(result.inputConfig.correct?.exclude?.rules).toStrictEqual([]);
         },
       },

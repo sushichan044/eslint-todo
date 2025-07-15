@@ -58,34 +58,23 @@ const mainCmd = define({
     } = context.explicit;
     const isDirty = Object.values(flagsExceptMode).includes(true);
 
-    const root = context.values.root;
-    const todoFile = context.values.todoFile;
-    const autoFixableOnly = context.values["correct.autoFixableOnly"];
-    const excludeRules = context.values["correct.exclude.rules"];
-    const excludeFiles = context.values["correct.exclude.files"];
-    const includeRules = context.values["correct.include.rules"];
-    const includeFiles = context.values["correct.include.files"];
-    const limitCount = context.values["correct.limit.count"];
-    const limitType = context.values["correct.limit.type"];
-    const partialSelection = context.values["correct.partialSelection"];
-
     const {
       context: { mode },
       inputConfig,
     } = parseArguments({
       config: {
         correct: {
-          "autoFixableOnly": autoFixableOnly,
-          "exclude.files": excludeFiles,
-          "exclude.rules": excludeRules,
-          "include.files": includeFiles,
-          "include.rules": includeRules,
-          "limit.count": limitCount,
-          "limit.type": limitType,
-          partialSelection,
+          "autoFixableOnly": context.values["correct.autoFixableOnly"],
+          "exclude.files": context.values["correct.exclude.files"],
+          "exclude.rules": context.values["correct.exclude.rules"],
+          "include.files": context.values["correct.include.files"],
+          "include.rules": context.values["correct.include.rules"],
+          "limit.count": context.values["correct.limit.count"],
+          "limit.type": context.values["correct.limit.type"],
+          "partialSelection": context.values["correct.partialSelection"],
         },
-        root,
-        todoFile,
+        root: context.values.root,
+        todoFile: context.values.todoFile,
       },
       mode: {
         correct: context.values.correct,
