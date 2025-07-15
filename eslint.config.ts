@@ -16,7 +16,6 @@ import eslintConfigTodo from "./dist/eslint/index.mjs";
 
 export default typegen(
   composer(
-    // @ts-expect-error 型が合わない
     ...tseslint.config({
       extends: ts,
       name: "@repo/eslint-config/base",
@@ -49,7 +48,6 @@ export default typegen(
       },
     )
     .append(
-      // @ts-expect-error 型が合わない
       tseslint.config({
         extends: [eslintPluginUnicorn.configs.recommended],
         name: "@repo/eslint-config/unicorn",
