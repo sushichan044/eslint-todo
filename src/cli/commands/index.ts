@@ -1,4 +1,4 @@
-import type { Args, Command } from "gunshi";
+import type { Command } from "gunshi";
 
 import { cli, define } from "gunshi";
 import { renderHeader as defaultHeaderRenderer } from "gunshi/renderer";
@@ -24,7 +24,7 @@ import { correctCmd } from "./correct";
 import { generateCmd } from "./generate";
 import { mcpCmd } from "./mcp";
 
-const subCommands = new Map<string, Command<Args>>();
+const subCommands = new Map<string, Command>();
 
 subCommands.set("generate", generateCmd);
 subCommands.set("correct", correctCmd);
