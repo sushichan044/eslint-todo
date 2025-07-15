@@ -14,14 +14,6 @@ export const parseArguments = (input: Input): ParsedCLIInput => {
     return "generate";
   })();
 
-  // NaN check is performed here as gunshi doesn't handle this validation.
-  if (
-    input.config.correct["limit.count"] !== undefined &&
-    Number.isNaN(input.config.correct["limit.count"])
-  ) {
-    throw new TypeError("limit must be a number");
-  }
-
   return {
     context: {
       mode,

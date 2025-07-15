@@ -545,43 +545,4 @@ describe("CLI Arguments", () => {
       tAssert(result);
     });
   });
-
-  describe("limit validation", () => {
-    const testCases: Array<{
-      expectedError: string;
-      input: Parameters<typeof parseArguments>[0];
-      name: string;
-    }> = [
-      {
-        expectedError: "limit must be a number",
-        input: {
-          config: {
-            correct: {
-              "autoFixableOnly": undefined,
-              "exclude.files": undefined,
-              "exclude.rules": undefined,
-              "include.files": undefined,
-              "include.rules": undefined,
-              "limit.count": Number.NaN,
-              "limit.type": undefined,
-              "partialSelection": undefined,
-            },
-            root: undefined,
-            todoFile: undefined,
-          },
-          mode: {
-            correct: true,
-            mcp: false,
-          },
-        },
-        name: "should throw error for invalid limit.count",
-      },
-    ];
-
-    it.each(testCases)("$name", ({ expectedError, input }) => {
-      expect(() => {
-        parseArguments(input);
-      }).toThrowError(expectedError);
-    });
-  });
 });
