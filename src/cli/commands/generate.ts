@@ -16,10 +16,13 @@ export const generateCmd = define({
   } as const,
   name: "generate",
   run: async (context) => {
-    const root = context.values.root;
-    const todoFile = context.values.todoFile;
+    /**
+     * If any CLI flag is explicitly passed,
+     * treat the config as dirty and ignore the config file.
+     */
+    const isDirty = Object.values(context.explicit).includes(true);
 
-    const { inputConfig, isConfigDirty } = parseArguments({
+    const { inputConfig } = parseArguments({
       config: {
         correct: {
           "autoFixableOnly": undefined,
@@ -31,8 +34,8 @@ export const generateCmd = define({
           "limit.type": undefined,
           "partialSelection": undefined,
         },
-        root,
-        todoFile,
+        root: context.values.root,
+        todoFile: context.values.todoFile,
       },
       mode: {
         correct: false,
@@ -40,16 +43,14 @@ export const generateCmd = define({
       },
     });
 
-    if (isConfigDirty) {
+    if (isDirty) {
       logger.warn(
         "Ignoring config file because config is passed via CLI flags.",
       );
     }
 
     const cliCwd = cwd();
-    const userConfig = isConfigDirty
-      ? inputConfig
-      : await resolveFileConfig(cliCwd);
+    const userConfig = isDirty ? inputConfig : await resolveFileConfig(cliCwd);
 
     return await handleGenerate(cliCwd, userConfig);
   },

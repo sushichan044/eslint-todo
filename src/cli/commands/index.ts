@@ -45,7 +45,19 @@ const mainCmd = define({
   } as const,
   name: "root",
   run: async (context) => {
-    // Resolve Args
+    /**
+     * If any CLI flag other than mode flags(correct, mcp) is explicitly passed,
+     * treat the config as dirty and ignore the config file.
+     */
+    const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      correct: _explicitCorrect,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      mcp: _explicitMcp,
+      ...flagsExceptMode
+    } = context.explicit;
+    const isDirty = Object.values(flagsExceptMode).includes(true);
+
     const root = context.values.root;
     const todoFile = context.values.todoFile;
     const autoFixableOnly = context.values["correct.autoFixableOnly"];
@@ -82,7 +94,7 @@ const mainCmd = define({
       },
     });
 
-    if (isConfigDirty) {
+    if (isDirty) {
       logger.warn(
         "Ignoring config file because config is passed via CLI flags.",
       );
@@ -91,9 +103,7 @@ const mainCmd = define({
     // Get partial config from CLI flags or config file.
     // If any flag is passed, the config file is completely ignored.
     const cliCwd = cwd();
-    const userConfig = isConfigDirty
-      ? inputConfig
-      : await resolveFileConfig(cliCwd);
+    const userConfig = isDirty ? inputConfig : await resolveFileConfig(cliCwd);
 
     if (mode === "mcp") {
       logger.warn(

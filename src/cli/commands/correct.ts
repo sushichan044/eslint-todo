@@ -17,32 +17,26 @@ export const correctCmd = define({
   } as const,
   name: "correct",
   run: async (context) => {
-    // Resolve Args
-    const root = context.values.root;
-    const todoFile = context.values.todoFile;
-    const autoFixableOnly = context.values["correct.autoFixableOnly"];
-    const excludeRules = context.values["correct.exclude.rules"];
-    const excludeFiles = context.values["correct.exclude.files"];
-    const includeRules = context.values["correct.include.rules"];
-    const includeFiles = context.values["correct.include.files"];
-    const limitCount = context.values["correct.limit.count"];
-    const limitType = context.values["correct.limit.type"];
-    const partialSelection = context.values["correct.partialSelection"];
+    /**
+     * If any CLI flag is explicitly passed,
+     * treat the config as dirty and ignore the config file.
+     */
+    const isDirty = Object.values(context.explicit).includes(true);
 
-    const { inputConfig, isConfigDirty } = parseArguments({
+    const { inputConfig } = parseArguments({
       config: {
         correct: {
-          "autoFixableOnly": autoFixableOnly,
-          "exclude.files": excludeFiles,
-          "exclude.rules": excludeRules,
-          "include.files": includeFiles,
-          "include.rules": includeRules,
-          "limit.count": limitCount,
-          "limit.type": limitType,
-          partialSelection,
+          "autoFixableOnly": context.values["correct.autoFixableOnly"],
+          "exclude.files": context.values["correct.exclude.files"],
+          "exclude.rules": context.values["correct.exclude.rules"],
+          "include.files": context.values["correct.include.files"],
+          "include.rules": context.values["correct.include.rules"],
+          "limit.count": context.values["correct.limit.count"],
+          "limit.type": context.values["correct.limit.type"],
+          "partialSelection": context.values["correct.partialSelection"],
         },
-        root,
-        todoFile,
+        root: context.values.root,
+        todoFile: context.values.todoFile,
       },
       mode: {
         correct: true,
@@ -50,7 +44,7 @@ export const correctCmd = define({
       },
     });
 
-    if (isConfigDirty) {
+    if (isDirty) {
       logger.warn(
         "Ignoring config file because config is passed via CLI flags.",
       );
@@ -58,9 +52,7 @@ export const correctCmd = define({
 
     // Resolve Config
     const cliCwd = cwd();
-    const userConfig = isConfigDirty
-      ? inputConfig
-      : await resolveFileConfig(cliCwd);
+    const userConfig = isDirty ? inputConfig : await resolveFileConfig(cliCwd);
 
     return await handleCorrect(cliCwd, userConfig);
   },
