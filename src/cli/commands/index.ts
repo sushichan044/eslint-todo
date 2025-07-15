@@ -72,7 +72,6 @@ const mainCmd = define({
     const {
       context: { mode },
       inputConfig,
-      isConfigDirty,
     } = parseArguments({
       config: {
         correct: {

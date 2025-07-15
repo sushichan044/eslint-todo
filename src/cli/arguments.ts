@@ -24,12 +24,6 @@ export const parseArguments = (input: Input): ParsedCLIInput => {
 
   const parsedCorrectMode = parseCorrectMode(input.config.correct);
 
-  const isRootDirty = input.config.root !== undefined;
-  const isTodoFileDirty = input.config.todoFile !== undefined;
-  // We should check under `input.config` because `input.mode` or other keys are not in scope of dirty check.
-  const isConfigDirty =
-    isRootDirty || isTodoFileDirty || parsedCorrectMode.isConfigDirty;
-
   return {
     context: {
       mode,
@@ -39,7 +33,6 @@ export const parseArguments = (input: Input): ParsedCLIInput => {
       root: input.config.root,
       todoFile: input.config.todoFile,
     },
-    isConfigDirty,
   };
 };
 
@@ -85,12 +78,10 @@ type ParsedCLIInput = {
     mode: "correct" | "generate" | "mcp";
   };
   inputConfig: UserConfig;
-  isConfigDirty: boolean;
 };
 
 type ParsedCorrectMode = {
   config: CorrectModeUserConfig;
-  isConfigDirty: boolean;
 };
 
 const parseCorrectMode = (
@@ -102,16 +93,6 @@ const parseCorrectMode = (
   ) {
     throw new TypeError("limit must be a number");
   }
-
-  const isDirty =
-    input.autoFixableOnly !== undefined ||
-    input["exclude.rules"] !== undefined ||
-    input["exclude.files"] !== undefined ||
-    input["include.files"] !== undefined ||
-    input["include.rules"] !== undefined ||
-    input["limit.count"] !== undefined ||
-    input["limit.type"] !== undefined ||
-    input.partialSelection !== undefined;
 
   return {
     config: {
@@ -130,6 +111,5 @@ const parseCorrectMode = (
       },
       partialSelection: input.partialSelection,
     },
-    isConfigDirty: isDirty,
   };
 };
