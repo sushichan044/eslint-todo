@@ -1,8 +1,10 @@
-import type { Args, Command } from "gunshi";
+import type { Command } from "gunshi";
 
 import { cli, define } from "gunshi";
 import { renderHeader as defaultHeaderRenderer } from "gunshi/renderer";
 import { cwd } from "node:process";
+
+import type { UserConfig } from "../../config";
 
 import {
   description as packageDescription,
@@ -10,7 +12,6 @@ import {
   version as packageVersion,
 } from "../../../package.json";
 import { resolveFileConfig } from "../../config/resolve";
-import { parseArguments } from "../arguments";
 import { handleCorrect } from "../handlers/correct";
 import { handleGenerate } from "../handlers/generate";
 import { handleMCP } from "../handlers/mcp";
@@ -24,7 +25,7 @@ import { correctCmd } from "./correct";
 import { generateCmd } from "./generate";
 import { mcpCmd } from "./mcp";
 
-const subCommands = new Map<string, Command<Args>>();
+const subCommands = new Map<string, Command>();
 
 subCommands.set("generate", generateCmd);
 subCommands.set("correct", correctCmd);
@@ -45,54 +46,54 @@ const mainCmd = define({
   } as const,
   name: "root",
   run: async (context) => {
-    // Resolve Args
-    const root = context.values.root;
-    const todoFile = context.values.todoFile;
-    const autoFixableOnly = context.values["correct.autoFixableOnly"];
-    const excludeRules = context.values["correct.exclude.rules"];
-    const excludeFiles = context.values["correct.exclude.files"];
-    const includeRules = context.values["correct.include.rules"];
-    const includeFiles = context.values["correct.include.files"];
-    const limitCount = context.values["correct.limit.count"];
-    const limitType = context.values["correct.limit.type"];
-    const partialSelection = context.values["correct.partialSelection"];
-
+    /**
+     * If any CLI flag other than mode flags(correct, mcp) is explicitly passed,
+     * treat the config as dirty and ignore the config file.
+     */
     const {
-      context: { mode },
-      inputConfig,
-      isConfigDirty,
-    } = parseArguments({
-      config: {
-        correct: {
-          "autoFixableOnly": autoFixableOnly,
-          "exclude.files": excludeFiles,
-          "exclude.rules": excludeRules,
-          "include.files": includeFiles,
-          "include.rules": includeRules,
-          "limit.count": limitCount,
-          "limit.type": limitType,
-          partialSelection,
-        },
-        root,
-        todoFile,
-      },
-      mode: {
-        correct: context.values.correct,
-        mcp: context.values.mcp,
-      },
-    });
-
-    if (isConfigDirty) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      correct: _explicitCorrect,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      mcp: _explicitMcp,
+      ...flagsExceptMode
+    } = context.explicit;
+    const isDirty = Object.values(flagsExceptMode).includes(true);
+    if (isDirty) {
       logger.warn(
         "Ignoring config file because config is passed via CLI flags.",
       );
     }
 
-    // Get partial config from CLI flags or config file.
-    // If any flag is passed, the config file is completely ignored.
+    const mode = (() => {
+      if (context.values.correct) return "correct";
+      if (context.values.mcp) return "mcp";
+      return "generate";
+    })();
+
+    const userCLIConfig = {
+      correct: {
+        autoFixableOnly: context.values["correct.autoFixableOnly"],
+        exclude: {
+          files: context.values["correct.exclude.files"],
+          rules: context.values["correct.exclude.rules"],
+        },
+        include: {
+          files: context.values["correct.include.files"],
+          rules: context.values["correct.include.rules"],
+        },
+        limit: {
+          count: context.values["correct.limit.count"],
+          type: context.values["correct.limit.type"],
+        },
+        partialSelection: context.values["correct.partialSelection"],
+      },
+      root: context.values.root,
+      todoFile: context.values.todoFile,
+    } satisfies UserConfig;
+
     const cliCwd = cwd();
-    const userConfig = isConfigDirty
-      ? inputConfig
+    const userConfig = isDirty
+      ? userCLIConfig
       : await resolveFileConfig(cliCwd);
 
     if (mode === "mcp") {

@@ -1,8 +1,9 @@
 import { define } from "gunshi/definition";
 import { cwd } from "node:process";
 
+import type { UserConfig } from "../../config";
+
 import { resolveFileConfig } from "../../config/resolve";
-import { parseArguments } from "../arguments";
 import { handleCorrect } from "../handlers/correct";
 import { logger } from "../logger";
 import { commonArguments, correctModeArguments } from "./common-arguments";
@@ -17,49 +18,41 @@ export const correctCmd = define({
   } as const,
   name: "correct",
   run: async (context) => {
-    // Resolve Args
-    const root = context.values.root;
-    const todoFile = context.values.todoFile;
-    const autoFixableOnly = context.values["correct.autoFixableOnly"];
-    const excludeRules = context.values["correct.exclude.rules"];
-    const excludeFiles = context.values["correct.exclude.files"];
-    const includeRules = context.values["correct.include.rules"];
-    const includeFiles = context.values["correct.include.files"];
-    const limitCount = context.values["correct.limit.count"];
-    const limitType = context.values["correct.limit.type"];
-    const partialSelection = context.values["correct.partialSelection"];
-
-    const { inputConfig, isConfigDirty } = parseArguments({
-      config: {
-        correct: {
-          "autoFixableOnly": autoFixableOnly,
-          "exclude.files": excludeFiles,
-          "exclude.rules": excludeRules,
-          "include.files": includeFiles,
-          "include.rules": includeRules,
-          "limit.count": limitCount,
-          "limit.type": limitType,
-          partialSelection,
-        },
-        root,
-        todoFile,
-      },
-      mode: {
-        correct: true,
-        mcp: false,
-      },
-    });
-
-    if (isConfigDirty) {
+    /**
+     * If any CLI flag is explicitly passed,
+     * treat the config as dirty and ignore the config file.
+     */
+    const isDirty = Object.values(context.explicit).includes(true);
+    if (isDirty) {
       logger.warn(
         "Ignoring config file because config is passed via CLI flags.",
       );
     }
 
-    // Resolve Config
+    const userCLIConfig = {
+      correct: {
+        autoFixableOnly: context.values["correct.autoFixableOnly"],
+        exclude: {
+          files: context.values["correct.exclude.files"],
+          rules: context.values["correct.exclude.rules"],
+        },
+        include: {
+          files: context.values["correct.include.files"],
+          rules: context.values["correct.include.rules"],
+        },
+        limit: {
+          count: context.values["correct.limit.count"],
+          type: context.values["correct.limit.type"],
+        },
+        partialSelection: context.values["correct.partialSelection"],
+      },
+      root: context.values.root,
+      todoFile: context.values.todoFile,
+    } satisfies UserConfig;
+
     const cliCwd = cwd();
-    const userConfig = isConfigDirty
-      ? inputConfig
+    const userConfig = isDirty
+      ? userCLIConfig
       : await resolveFileConfig(cliCwd);
 
     return await handleCorrect(cliCwd, userConfig);

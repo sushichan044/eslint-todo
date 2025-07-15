@@ -74,7 +74,14 @@ export const correctModeArguments = {
   },
   "correct.limit.count": {
     description: "Limit the number of violations or files to fix.",
-    type: "number",
+    parse: (value) => {
+      const number_ = Number(value);
+      if (Number.isNaN(number_)) {
+        throw new TypeError("limit must be a number");
+      }
+      return number_;
+    },
+    type: "custom",
   },
   "correct.limit.type": {
     choices: ["file", "violation"],
