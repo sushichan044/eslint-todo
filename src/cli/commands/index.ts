@@ -4,13 +4,14 @@ import { cli, define } from "gunshi";
 import { renderHeader as defaultHeaderRenderer } from "gunshi/renderer";
 import { cwd } from "node:process";
 
+import type { UserConfig } from "../../config";
+
 import {
   description as packageDescription,
   name as packageName,
   version as packageVersion,
 } from "../../../package.json";
 import { resolveFileConfig } from "../../config/resolve";
-import { parseArguments } from "../arguments";
 import { handleCorrect } from "../handlers/correct";
 import { handleGenerate } from "../handlers/generate";
 import { handleMCP } from "../handlers/mcp";
@@ -57,41 +58,43 @@ const mainCmd = define({
       ...flagsExceptMode
     } = context.explicit;
     const isDirty = Object.values(flagsExceptMode).includes(true);
-
-    const {
-      context: { mode },
-      inputConfig,
-    } = parseArguments({
-      config: {
-        correct: {
-          "autoFixableOnly": context.values["correct.autoFixableOnly"],
-          "exclude.files": context.values["correct.exclude.files"],
-          "exclude.rules": context.values["correct.exclude.rules"],
-          "include.files": context.values["correct.include.files"],
-          "include.rules": context.values["correct.include.rules"],
-          "limit.count": context.values["correct.limit.count"],
-          "limit.type": context.values["correct.limit.type"],
-          "partialSelection": context.values["correct.partialSelection"],
-        },
-        root: context.values.root,
-        todoFile: context.values.todoFile,
-      },
-      mode: {
-        correct: context.values.correct,
-        mcp: context.values.mcp,
-      },
-    });
-
     if (isDirty) {
       logger.warn(
         "Ignoring config file because config is passed via CLI flags.",
       );
     }
 
-    // Get partial config from CLI flags or config file.
-    // If any flag is passed, the config file is completely ignored.
+    const mode = (() => {
+      if (context.values.correct) return "correct";
+      if (context.values.mcp) return "mcp";
+      return "generate";
+    })();
+
+    const userCLIConfig = {
+      correct: {
+        autoFixableOnly: context.values["correct.autoFixableOnly"],
+        exclude: {
+          files: context.values["correct.exclude.files"],
+          rules: context.values["correct.exclude.rules"],
+        },
+        include: {
+          files: context.values["correct.include.files"],
+          rules: context.values["correct.include.rules"],
+        },
+        limit: {
+          count: context.values["correct.limit.count"],
+          type: context.values["correct.limit.type"],
+        },
+        partialSelection: context.values["correct.partialSelection"],
+      },
+      root: context.values.root,
+      todoFile: context.values.todoFile,
+    } satisfies UserConfig;
+
     const cliCwd = cwd();
-    const userConfig = isDirty ? inputConfig : await resolveFileConfig(cliCwd);
+    const userConfig = isDirty
+      ? userCLIConfig
+      : await resolveFileConfig(cliCwd);
 
     if (mode === "mcp") {
       logger.warn(
