@@ -76,7 +76,7 @@
     "magicast": "0.3.5",
     "mlly": "1.7.4",
     "pathe": "2.0.3",
-    "picomatch": "4.0.2",
+    "picomatch": "4.0.3",
     "tinyexec": "1.0.1",
     "zod": "3.25.76"
   },
@@ -87,7 +87,7 @@
     "@samchon/openapi": "4.3.3",
     "@types/fs-extra": "11.0.4",
     "@types/node": "22.16.3",
-    "@types/picomatch": "4.0.0",
+    "@types/picomatch": "4.0.1",
     "@virtual-live-lab/eslint-config": "2.2.22",
     "@virtual-live-lab/prettier-config": "2.0.19",
     "@virtual-live-lab/tsconfig": "2.1.20",
