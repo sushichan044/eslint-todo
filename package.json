@@ -114,7 +114,7 @@
     "typescript-eslint": "8.36.0",
     "typia": "9.3.1",
     "unplugin-unused": "0.5.1",
-    "vite": "7.0.4",
+    "vite": "7.0.5",
     "vite-node": "3.2.4",
     "vitest": "3.2.4"
   },
