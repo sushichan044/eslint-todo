@@ -84,7 +84,7 @@
     "@arethetypeswrong/cli": "0.18.2",
     "@prettier/plugin-oxc": "0.0.4",
     "@ryoppippi/unplugin-typia": "2.6.5",
-    "@samchon/openapi": "4.3.3",
+    "@samchon/openapi": "4.6.0",
     "@types/fs-extra": "11.0.4",
     "@types/node": "22.16.5",
     "@types/picomatch": "4.0.0",
