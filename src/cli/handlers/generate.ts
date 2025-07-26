@@ -1,3 +1,4 @@
+import { resolveFlatConfig } from "@sushichan044/eslint-config-array-resolver";
 import { relative } from "pathe";
 
 import type { UserConfig } from "../../config";
@@ -6,13 +7,13 @@ import { ESLintTodoCore } from "../..";
 import { prepareAction } from "../../action";
 import { genAction } from "../../action/gen";
 import { configWithDefault } from "../../config/config";
-import { createESLintConfigSubset, readESLintConfig } from "../../lib/eslint";
+import { createESLintConfigSubset } from "../../lib/eslint";
 import { logger } from "../logger";
 
 export const handleGenerate = async (cwd: string, userConfig: UserConfig) => {
   const config = configWithDefault(userConfig);
 
-  const eslintConfig = await readESLintConfig(config.root);
+  const eslintConfig = await resolveFlatConfig(config.root);
   const eslintConfigSubset = createESLintConfigSubset(eslintConfig);
 
   const eslintTodoCore = new ESLintTodoCore(config);
