@@ -1,3 +1,4 @@
+import { resolveFlatConfig } from "@sushichan044/eslint-config-array-resolver";
 import { colorize } from "consola/utils";
 import { relative } from "pathe";
 
@@ -8,14 +9,13 @@ import { prepareAction } from "../../action";
 import { deleteRuleAction } from "../../action/delete-rule";
 import { selectRulesToFixAction } from "../../action/select-rule";
 import { configWithDefault } from "../../config/config";
-import { readESLintConfig } from "../../lib/eslint";
 import { createESLintConfigSubset } from "../../lib/eslint";
 import { logger } from "../logger";
 
 export const handleCorrect = async (cwd: string, userConfig: UserConfig) => {
   const config = configWithDefault(userConfig);
 
-  const eslintConfig = await readESLintConfig(config.root);
+  const eslintConfig = await resolveFlatConfig(config.root);
   const eslintConfigSubset = createESLintConfigSubset(eslintConfig);
 
   const eslintTodoCore = new ESLintTodoCore(config);

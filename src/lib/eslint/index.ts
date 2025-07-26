@@ -1,14 +1,5 @@
+import type { ESLintConfig } from "@sushichan044/eslint-config-array-resolver";
 import type { Linter } from "eslint";
-
-import type { FlatConfigItem, Payload } from "./resolve";
-
-import { readFlatConfig } from "./resolve";
-
-export interface ESLintConfig {
-  configs: FlatConfigItem[];
-  dependencies: string[];
-  payload: Payload;
-}
 
 export interface ESLintConfigSubset {
   rules: Record<
@@ -18,15 +9,6 @@ export interface ESLintConfigSubset {
     }
   >;
 }
-
-/**
- * Read the ESLint config subset.
- * @param root
- * Root directory of the project.
- */
-export const readESLintConfig = async (root: string): Promise<ESLintConfig> => {
-  return readFlatConfig(root);
-};
 
 export const createESLintConfigSubset = (
   config: ESLintConfig,
