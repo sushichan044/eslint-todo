@@ -86,7 +86,7 @@
     "@ryoppippi/unplugin-typia": "2.6.5",
     "@samchon/openapi": "4.3.3",
     "@types/fs-extra": "11.0.4",
-    "@types/node": "22.16.3",
+    "@types/node": "22.16.5",
     "@types/picomatch": "4.0.0",
     "@virtual-live-lab/eslint-config": "2.2.24",
     "@virtual-live-lab/prettier-config": "2.0.21",
