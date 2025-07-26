@@ -3,7 +3,7 @@ import { x } from "tinyexec";
 /**
  * Result of a shell command execution
  */
-export interface ShellCommandResult {
+interface ShellCommandResult {
   code: number | undefined;
   stderr: string;
   stdout: string;

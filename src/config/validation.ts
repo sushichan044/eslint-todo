@@ -1,11 +1,6 @@
 import typia from "typia";
 
-import type { Config, UserConfig } from "./config";
-
-/**
- * @package
- */
-export const ConfigSchema = typia.createValidateEquals<Config>();
+import type { UserConfig } from "./config";
 
 /**
  * @package
