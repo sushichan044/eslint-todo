@@ -14,6 +14,9 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: 1.15.1
         version: 1.15.1
+      '@sushichan044/eslint-config-array-resolver':
+        specifier: 0.1.0
+        version: 0.1.0(esbuild@0.25.6)
       '@typescript-eslint/utils':
         specifier: 8.36.0
         version: 8.36.0(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)
@@ -1175,6 +1178,9 @@ packages:
 
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
+
+  '@sushichan044/eslint-config-array-resolver@0.1.0':
+    resolution: {integrity: sha512-JKiC/+ArQBXsfVI9kxr0SGG83PXVGjWN8hnCE5AVAI1M4wM6FR0ElwnBa722bVqPw6ggngwDQXFPVFpJC5H/Wg==}
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
@@ -5214,6 +5220,15 @@ snapshots:
   '@sindresorhus/merge-streams@4.0.0': {}
 
   '@standard-schema/spec@1.0.0': {}
+
+  '@sushichan044/eslint-config-array-resolver@0.1.0(esbuild@0.25.6)':
+    dependencies:
+      bundle-require: 5.1.0(esbuild@0.25.6)
+      empathic: 2.0.0
+      mlly: 1.7.4
+      pathe: 2.0.3
+    transitivePeerDependencies:
+      - esbuild
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 

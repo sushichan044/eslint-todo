@@ -63,6 +63,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.15.1",
+    "@sushichan044/eslint-config-array-resolver": "0.1.0",
     "@typescript-eslint/utils": "8.36.0",
     "bundle-require": "5.1.0",
     "comlink": "4.4.2",
