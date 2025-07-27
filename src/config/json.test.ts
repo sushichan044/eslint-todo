@@ -19,7 +19,6 @@ describe("UserConfigJsonSchema matches snapshot", () => {
             "properties": {
               "autoFixableOnly": {
                 "description": "Allow to select non auto-fixable rules.",
-                "title": "Allow to select non auto-fixable rules",
                 "type": "boolean",
               },
               "exclude": {
@@ -30,7 +29,6 @@ describe("UserConfigJsonSchema matches snapshot", () => {
                     "items": {
                       "type": "string",
                     },
-                    "title": "Glob patterns for files to exclude from the operation",
                     "type": "array",
                   },
                   "rules": {
@@ -38,12 +36,10 @@ describe("UserConfigJsonSchema matches snapshot", () => {
                     "items": {
                       "type": "string",
                     },
-                    "title": "List of rules to exclude from the operation. Comma-separated string",
                     "type": "array",
                   },
                 },
                 "required": [],
-                "title": "Options for excluding todo items",
                 "type": "object",
               },
               "include": {
@@ -54,7 +50,6 @@ describe("UserConfigJsonSchema matches snapshot", () => {
                     "items": {
                       "type": "string",
                     },
-                    "title": "Glob patterns for files to include in the operation",
                     "type": "array",
                   },
                   "rules": {
@@ -62,19 +57,16 @@ describe("UserConfigJsonSchema matches snapshot", () => {
                     "items": {
                       "type": "string",
                     },
-                    "title": "List of rules to include in the operation",
                     "type": "array",
                   },
                 },
                 "required": [],
-                "title": "Options for including todo items",
                 "type": "object",
               },
               "limit": {
                 "properties": {
                   "count": {
                     "description": "Limit the number of violations or files to fix.",
-                    "title": "Limit the number of violations or files to fix",
                     "type": "number",
                   },
                   "type": {
@@ -87,7 +79,6 @@ describe("UserConfigJsonSchema matches snapshot", () => {
                         "const": "violation",
                       },
                     ],
-                    "title": "Type of limit to apply",
                   },
                 },
                 "required": [],
@@ -95,7 +86,6 @@ describe("UserConfigJsonSchema matches snapshot", () => {
               },
               "partialSelection": {
                 "description": "Allow partial selection of violations.",
-                "title": "Allow partial selection of violations",
                 "type": "boolean",
               },
             },
@@ -108,12 +98,10 @@ describe("UserConfigJsonSchema matches snapshot", () => {
       **This directory must contain the ESLint configuration file.**
 
       This also affects the default location of the ESLint todo file.",
-            "title": "Project root",
             "type": "string",
           },
           "todoFile": {
             "description": "The file path to read and write the ESLint todo list.",
-            "title": "The file path to read and write the ESLint todo list",
             "type": "string",
           },
         },
