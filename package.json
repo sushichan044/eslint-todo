@@ -69,6 +69,7 @@
     "comlink": "4.4.2",
     "consola": "3.4.2",
     "defu": "6.1.4",
+    "dependency-cruiser": "17.0.0",
     "empathic": "2.0.0",
     "gunshi": "0.27.0-alpha.10",
     "hookable": "5.5.3",
