@@ -97,68 +97,9 @@ type RuleFilterResult =
       isEligible: false;
     };
 
-/**
- * Selects a rule based on the given limit.
- * @param suppressions - Suppressions.
- * @param ruleMetaMap - ESLint config.
- * @param correctConfig - Correct mode config.
- */
-export const selectRuleBasedOnLimit = (
-  suppressions: ESLintSuppressionsJson,
-  eslintConfig: ESLintConfigSubset,
-  correctConfig: CorrectModeConfig,
-): SelectionResult => {
-  // Validate limit type for exhaustive checking
-  switch (correctConfig.limit.type) {
-    case "file":
-    case "violation": {
-      break;
-    }
-    default: {
-      // exhaustive check
-      const l = correctConfig.limit.type satisfies never;
-      throw new Error(`Got unknown limit type: ${JSON.stringify(l)}`);
-    }
-  }
-
-  return selectRuleBasedOnLimitInternal(
-    suppressions,
-    eslintConfig,
-    correctConfig,
-  );
-};
-
-/**
- * Internal shared implementation for rule selection based on limits.
- * @param suppressions - Suppressions.
- * @param eslintConfig - ESLint config.
- * @param config - Correct mode config.
- * @package
- */
-export const selectRuleBasedOnLimitInternal = (
-  suppressions: ESLintSuppressionsJson,
-  eslintConfig: ESLintConfigSubset,
-  config: CorrectModeConfig,
-): SelectionResult => {
-  const {
-    limit: { count: limitCount, type: limitType },
-    partialSelection: allowPartialSelection,
-  } = config;
-
-  if (limitCount <= 0) {
-    const limitTypeLabel = limitType === "file" ? "file" : "violation";
-    throw new Error(`The ${limitTypeLabel} limit must be greater than 0.`);
-  }
-
-  const ruleCounts = calculateRuleCounts(suppressions, eslintConfig, config);
-
-  return selectOptimalRule(
-    ruleCounts,
-    limitCount,
-    allowPartialSelection,
-    config,
-  );
-};
+// ============================================================================
+// Internal Helpers
+// ============================================================================
 
 /**
  * Apply rule-level and file-level filters to determine if a rule is eligible
@@ -169,7 +110,6 @@ export const selectRuleBasedOnLimitInternal = (
  * @param config - Correct mode configuration
  * @returns RuleFilterResult indicating whether rule is eligible and filtered files
  *
- * @package
  */
 export const applyRuleAndFileFilters = (
   ruleId: string,
@@ -315,29 +255,30 @@ const selectViolationsForRule = (
   return selectedViolations;
 };
 
+// ============================================================================
+// Phase 2: Optimal Selection
+// ============================================================================
+
 /**
- * Select the optimal rule from rule count information.
- * @param ruleCounts - Array of rule count information.
- * @param limitCount - The limit count.
- * @param allowPartialSelection - Whether partial selection is allowed.
+ * Decide the optimal rule from candidate rules - Phase 2 of rule selection.
+ * @param candidates - Array of candidate rule information.
  * @param config - Correct mode config.
- *
  * @returns The result of the selection.
- *
- * @package
  */
-export const selectOptimalRule = (
-  ruleCounts: RuleCountInfo[],
-  limitCount: number,
-  allowPartialSelection: boolean,
+export function decideOptimalRule(
+  candidates: RuleCountInfo[],
   config: CorrectModeConfig,
-): SelectionResult => {
-  // Guard clause: early return for empty rule counts
-  if (ruleCounts.length === 0) {
+): SelectionResult {
+  const {
+    limit: { count: limitCount },
+    partialSelection: allowPartialSelection,
+  } = config;
+  // Guard clause: early return for empty candidates
+  if (candidates.length === 0) {
     return { success: false };
   }
 
-  const sortedRules = sortRulesByPriority(ruleCounts);
+  const sortedRules = sortRulesByPriority(candidates);
   const partitionedRules = partitionRulesByLimit(sortedRules, limitCount);
 
   // Try full selection first - early return if possible
@@ -383,23 +324,24 @@ export const selectOptimalRule = (
     },
     success: true,
   };
-};
+}
+
+// ============================================================================
+// Phase 1: Candidate Collection
+// ============================================================================
 
 /**
- * Calculate rule counts with filtering applied.
+ * Collect candidate rules with filtering applied - Phase 1 of rule selection.
  * @param suppressions - Suppressions.
  * @param eslintConfig - ESLint config.
  * @param config - Correct mode config.
- *
- * @returns Array of violation information for each rule.
- *
- * @package
+ * @returns Array of violation information for each eligible rule.
  */
-export const calculateRuleCounts = (
+export function collectCandidateRules(
   suppressions: ESLintSuppressionsJson,
   eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
-): RuleCountInfo[] => {
+): RuleCountInfo[] {
   const ruleBasedSuppressions = toRuleBasedSuppression(suppressions);
   const countType = config.limit.type;
 
@@ -452,4 +394,42 @@ export const calculateRuleCounts = (
       };
     })
     .filter((info): info is RuleCountInfo => info !== null);
-};
+}
+
+// ============================================================================
+// Public API
+// ============================================================================
+
+/**
+ * Select a rule to correct based on the given configuration.
+ * @param suppressions - Suppressions.
+ * @param eslintConfig - ESLint config.
+ * @param config - Correct mode config.
+ * @returns The result of the selection.
+ */
+export function selectRuleToCorrect(
+  suppressions: ESLintSuppressionsJson,
+  eslintConfig: ESLintConfigSubset,
+  config: CorrectModeConfig,
+): SelectionResult {
+  // Validate limit type for exhaustive checking
+  switch (config.limit.type) {
+    case "file":
+    case "violation": {
+      break;
+    }
+    default: {
+      // exhaustive check
+      const l = config.limit.type satisfies never;
+      throw new Error(`Got unknown limit type: ${JSON.stringify(l)}`);
+    }
+  }
+
+  if (config.limit.count <= 0) {
+    const limitTypeLabel = config.limit.type === "file" ? "file" : "violation";
+    throw new Error(`The ${limitTypeLabel} limit must be greater than 0.`);
+  }
+
+  const candidates = collectCandidateRules(suppressions, eslintConfig, config);
+  return decideOptimalRule(candidates, config);
+}
