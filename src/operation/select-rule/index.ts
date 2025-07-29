@@ -1,11 +1,11 @@
-import type { CorrectModeConfig } from "../config/config";
-import type { ESLintConfigSubset } from "../lib/eslint";
-import type { ESLintSuppressionsJson } from "../suppressions-json/types";
+import type { CorrectModeConfig } from "../../config/config";
+import type { ESLintConfigSubset } from "../../lib/eslint";
+import type { ESLintSuppressionsJson } from "../../suppressions-json/types";
 
-import { isRuleFixable } from "../lib/eslint";
-import { toRuleBasedSuppression } from "../suppressions-json/rule-based";
-import { extractPathsByGlobs } from "../utils/glob";
-import { pick } from "../utils/object";
+import { isRuleFixable } from "../../lib/eslint";
+import { toRuleBasedSuppression } from "../../suppressions-json/rule-based";
+import { extractPathsByGlobs } from "../../utils/glob";
+import { pick } from "../../utils/object";
 import { createCandidateCollectionStrategy } from "./strategies";
 
 // ============================================================================

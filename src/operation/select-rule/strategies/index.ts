@@ -1,4 +1,4 @@
-import type { CorrectModeConfig } from "../../config/config";
+import type { CorrectModeConfig } from "../../../config/config";
 import type { CandidateCollectionStrategy } from "./types";
 
 export function createCandidateCollectionStrategy(
