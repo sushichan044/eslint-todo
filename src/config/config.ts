@@ -94,6 +94,10 @@ export type CorrectModeUserConfig = {
     type?: CorrectModeLimitType;
   };
 
+  strategy?:
+    | { entrypoints: string[]; type: "import-graph" }
+    | { type: "normal" };
+
   /**
    * Allow partial selection of violations.
    *
@@ -118,6 +122,9 @@ const DEFAULT_CONFIG = {
       type: "violation",
     },
     partialSelection: false,
+    strategy: {
+      type: "normal",
+    },
   },
   root: cwd(),
   todoFile: ".eslint-todo.js",

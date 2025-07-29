@@ -91,4 +91,14 @@ export const correctModeArguments = {
     description: "Allow partial selection of violations.",
     type: "boolean",
   },
+  "correct.strategy.entrypoints": {
+    description:
+      "Entrypoints when building import graph. (only works when correct.strategy.type is import-graph)",
+    parse: parseCommaSeparatedString,
+    type: "custom",
+  },
+  "correct.strategy.type": {
+    choices: ["normal", "import-graph"],
+    type: "enum",
+  },
 } as const satisfies CorrectModeArguments;
