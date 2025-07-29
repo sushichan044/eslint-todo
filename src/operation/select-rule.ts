@@ -6,6 +6,7 @@ import { isRuleFixable } from "../lib/eslint";
 import { toRuleBasedSuppression } from "../suppressions-json/rule-based";
 import { extractPathsByGlobs } from "../utils/glob";
 import { pick } from "../utils/object";
+import { createCandidateCollectionStrategy } from "./strategies";
 
 // ============================================================================
 // Rule Selection Types
@@ -342,11 +343,11 @@ export function filterViolations(
  * @param config - Correct mode config.
  * @returns The result of the selection.
  */
-export function selectRuleToCorrect(
+export async function selectRuleToCorrect(
   suppressions: ESLintSuppressionsJson,
   eslintConfig: ESLintConfigSubset,
   config: CorrectModeConfig,
-): SelectionResult {
+): Promise<SelectionResult> {
   // Validate limit type for exhaustive checking
   switch (config.limit.type) {
     case "file":
@@ -377,5 +378,8 @@ export function selectRuleToCorrect(
 
   const filteredViolations = filterViolations(violations, config);
 
-  return decideOptimalRule(filteredViolations, config);
+  const getCandidates = createCandidateCollectionStrategy(config);
+  const candidates = await getCandidates(filteredViolations, config);
+
+  return decideOptimalRule(candidates, config);
 }
