@@ -11,5 +11,9 @@ export type CorrectModeArguments = FlattenToArgumentSchema<
 >;
 
 type FlattenToArgumentSchema<T extends Record<PropertyKey, unknown>> = {
+  // conditional keys are not in keyof FlattenObject<T>.
+  // so we need to allow additional keys.
+  [key: string]: ArgSchema;
+} & {
   [K in keyof FlattenObject<T>]: ArgSchema;
 };
