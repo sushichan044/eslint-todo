@@ -1,11 +1,3 @@
-type ESLintSuppressedRule = {
-  count: number;
-};
-
-type ESLintSuppression = {
-  [ruleId: string]: ESLintSuppressedRule;
-};
-
 /**
  * Represents the ESLint suppressions JSON format.
  *
@@ -14,7 +6,11 @@ type ESLintSuppression = {
  * @see {@link https://eslint.org/docs/v9.x/use/suppressions}
  */
 export interface ESLintSuppressionsJson {
-  [filePath: string]: ESLintSuppression;
+  [filePath: string]: {
+    [ruleId: string]: {
+      count: number;
+    };
+  };
 }
 
 /**
@@ -22,7 +18,7 @@ export interface ESLintSuppressionsJson {
  *
  * This format makes it easier to work with suppressions by rule ID.
  *
- * @package
+ * @internal
  */
 export interface InternalRuleBasedSuppressionsJson {
   [ruleId: string]: {
