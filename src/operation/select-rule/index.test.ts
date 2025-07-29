@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import type { CorrectModeConfig } from "../config/config";
-import type { ESLintConfigSubset } from "../lib/eslint";
-import type { TodoModuleV2 } from "../todofile/v2";
-import type { RuleViolationInfo } from "./select-rule";
+import type { CorrectModeConfig } from "../../config/config";
+import type { ESLintConfigSubset } from "../../lib/eslint";
+import type { TodoModuleV2 } from "../../todofile/v2";
+import type { RuleViolationInfo } from "./index";
 
-import { SuppressionsJsonGenerator } from "../suppressions-json";
+import { SuppressionsJsonGenerator } from "../../suppressions-json";
 import {
   decideOptimalRule,
   filterViolations,
   selectRuleToCorrect,
-} from "./select-rule";
+} from "./index";
 
 // ============================================================================
 // Shared Test Utilities
