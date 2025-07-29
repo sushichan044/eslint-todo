@@ -46,8 +46,8 @@
     "format": "prettier --experimental-cli --write .",
     "format:ci": "prettier --experimental-cli --check .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest",
-    "test:run": "vitest run",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "bench": "vitest bench",
     "bench:run": "vitest bench --run",
     "eslint:inspect": "eslint --inspect-config",
@@ -66,6 +66,8 @@
     "comlink": "4.4.2",
     "consola": "3.4.2",
     "defu": "6.1.4",
+    "dependency-cruiser": "17.0.0",
+    "empathic": "2.0.0",
     "gunshi": "0.27.0-alpha.10",
     "hookable": "5.5.3",
     "jiti": "2.5.1",
@@ -119,6 +121,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "ast-grep-cli",
       "esbuild",
       "typia"
     ],
