@@ -120,6 +120,9 @@ importers:
       pkg-pr-new:
         specifier: 0.0.54
         version: 0.0.54
+      pkg-types:
+        specifier: 2.2.0
+        version: 2.2.0
       pnpm:
         specifier: 10.14.0
         version: 10.14.0
