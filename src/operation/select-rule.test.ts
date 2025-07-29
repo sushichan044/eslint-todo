@@ -28,6 +28,7 @@ const createConfig = (
   include: { files: [], rules: [] },
   limit: { count: 100, type: "file" },
   partialSelection: false,
+  strategy: { type: "normal" },
   ...overrides,
 });
 
@@ -591,7 +592,7 @@ describe("decideOptimalRule", () => {
 
 describe("selectRuleToCorrect integration", () => {
   describe("key end-to-end scenarios", () => {
-    it("file limit - basic selection", () => {
+    it("file limit - basic selection", async () => {
       const todo = {
         rule1: {
           autoFix: true,
@@ -613,7 +614,11 @@ describe("selectRuleToCorrect integration", () => {
         limit: { count: 5, type: "file" as const },
       });
 
-      const result = selectRuleToCorrect(suppressions, eslintConfig, config);
+      const result = await selectRuleToCorrect(
+        suppressions,
+        eslintConfig,
+        config,
+      );
 
       expect(result).toStrictEqual({
         selection: { ruleId: "rule2", type: "full" },
@@ -621,7 +626,7 @@ describe("selectRuleToCorrect integration", () => {
       });
     });
 
-    it("violation limit - basic selection", () => {
+    it("violation limit - basic selection", async () => {
       const todo = {
         rule1: {
           autoFix: true,
@@ -643,7 +648,11 @@ describe("selectRuleToCorrect integration", () => {
         limit: { count: 6, type: "violation" as const },
       });
 
-      const result = selectRuleToCorrect(suppressions, eslintConfig, config);
+      const result = await selectRuleToCorrect(
+        suppressions,
+        eslintConfig,
+        config,
+      );
 
       expect(result).toStrictEqual({
         selection: { ruleId: "rule2", type: "full" },
@@ -651,7 +660,7 @@ describe("selectRuleToCorrect integration", () => {
       });
     });
 
-    it("autoFixableOnly filtering", () => {
+    it("autoFixableOnly filtering", async () => {
       const todo = {
         rule1: {
           autoFix: false,
@@ -674,7 +683,11 @@ describe("selectRuleToCorrect integration", () => {
         limit: { count: 5, type: "file" as const },
       });
 
-      const result = selectRuleToCorrect(suppressions, eslintConfig, config);
+      const result = await selectRuleToCorrect(
+        suppressions,
+        eslintConfig,
+        config,
+      );
 
       expect(result).toStrictEqual({
         selection: { ruleId: "rule2", type: "full" },
@@ -682,7 +695,7 @@ describe("selectRuleToCorrect integration", () => {
       });
     });
 
-    it("partial selection", () => {
+    it("partial selection", async () => {
       const todo = {
         rule1: {
           autoFix: true,
@@ -704,7 +717,11 @@ describe("selectRuleToCorrect integration", () => {
         partialSelection: true,
       });
 
-      const result = selectRuleToCorrect(suppressions, eslintConfig, config);
+      const result = await selectRuleToCorrect(
+        suppressions,
+        eslintConfig,
+        config,
+      );
 
       expect(result).toStrictEqual({
         selection: {
@@ -716,7 +733,7 @@ describe("selectRuleToCorrect integration", () => {
       });
     });
 
-    it("prioritizes fixable rules when autoFixableOnly is false", () => {
+    it("prioritizes fixable rules when autoFixableOnly is false", async () => {
       const todo = {
         "fixable-rule": {
           autoFix: true,
@@ -739,7 +756,11 @@ describe("selectRuleToCorrect integration", () => {
         limit: { count: 10, type: "file" as const },
       });
 
-      const result = selectRuleToCorrect(suppressions, eslintConfig, config);
+      const result = await selectRuleToCorrect(
+        suppressions,
+        eslintConfig,
+        config,
+      );
 
       expect(result).toStrictEqual({
         selection: { ruleId: "fixable-rule", type: "full" },
@@ -747,7 +768,7 @@ describe("selectRuleToCorrect integration", () => {
       });
     });
 
-    it("no eligible rules", () => {
+    it("no eligible rules", async () => {
       const todo = {
         rule1: {
           autoFix: false,
@@ -765,35 +786,39 @@ describe("selectRuleToCorrect integration", () => {
         limit: { count: 5, type: "file" as const },
       });
 
-      const result = selectRuleToCorrect(suppressions, eslintConfig, config);
+      const result = await selectRuleToCorrect(
+        suppressions,
+        eslintConfig,
+        config,
+      );
 
       expect(result).toStrictEqual({ success: false });
     });
   });
 
   describe("edge cases", () => {
-    it("file limit must be greater than 0", () => {
+    it("file limit must be greater than 0", async () => {
       const todoModule = createTodoModuleV2({});
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const config = createConfig({
         limit: { count: 0, type: "file" as const },
       });
 
-      expect(() =>
+      await expect(
         selectRuleToCorrect(suppressions, createESLintConfig({}), config),
-      ).toThrowError("The file limit must be greater than 0");
+      ).rejects.toThrowError("The file limit must be greater than 0");
     });
 
-    it("violation limit must be greater than 0", () => {
+    it("violation limit must be greater than 0", async () => {
       const todoModule = createTodoModuleV2({});
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
       const config = createConfig({
         limit: { count: -1, type: "violation" as const },
       });
 
-      expect(() =>
+      await expect(
         selectRuleToCorrect(suppressions, createESLintConfig({}), config),
-      ).toThrowError("The violation limit must be greater than 0");
+      ).rejects.toThrowError("The violation limit must be greater than 0");
     });
   });
 });
