@@ -103,6 +103,7 @@
     "fs-fixture": "2.8.1",
     "globals": "16.3.0",
     "pkg-pr-new": "0.0.54",
+    "pkg-types": "2.2.0",
     "pnpm": "10.13.1",
     "prettier": "3.6.2",
     "publint": "0.3.12",
