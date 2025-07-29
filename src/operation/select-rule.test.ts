@@ -28,7 +28,6 @@ const createConfig = (
   include: { files: [], rules: [] },
   limit: { count: 100, type: "file" },
   partialSelection: false,
-  strategy: { type: "normal" },
   ...overrides,
 });
 
