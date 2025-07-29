@@ -62,6 +62,21 @@ export type RuleViolationInfo = {
 // ============================================================================
 
 /**
+ * Calculate the total count of violations for a rule based on the limit type.
+ * @param rule - Rule violation information.
+ * @param limitType - The limit type (file or violation).
+ * @returns The total count based on the limit type.
+ */
+const countRuleViolationsByLimit = (
+  rule: RuleViolationInfo,
+  limitType: "file" | "violation",
+): number => {
+  return limitType === "file"
+    ? Object.keys(rule.violations).length
+    : Object.values(rule.violations).reduce((sum, { count }) => sum + count, 0);
+};
+
+/**
  * Categorize rules for selection by partitioning by limit.
  * @param violationInfos - Array of rule violation information.
  * @param limitCount - The limit count.
@@ -80,13 +95,7 @@ const categorizeRulesForSelection = (
   // eslint-disable-next-line unicorn/no-array-reduce
   return violationInfos.reduce(
     (accumulator, rule) => {
-      const totalCount =
-        limitType === "file"
-          ? Object.keys(rule.violations).length
-          : Object.values(rule.violations).reduce(
-              (sum, { count }) => sum + count,
-              0,
-            );
+      const totalCount = countRuleViolationsByLimit(rule, limitType);
 
       if (totalCount <= limitCount) {
         accumulator.fullSelectable.push(rule);
@@ -119,21 +128,8 @@ const sortRulesByPriority = (
     }
 
     // Calculate eligible counts for comparison
-    const aEligibleCount =
-      limitType === "file"
-        ? Object.keys(a.violations).length
-        : Object.values(a.violations).reduce(
-            (sum, { count }) => sum + count,
-            0,
-          );
-
-    const bEligibleCount =
-      limitType === "file"
-        ? Object.keys(b.violations).length
-        : Object.values(b.violations).reduce(
-            (sum, { count }) => sum + count,
-            0,
-          );
+    const aEligibleCount = countRuleViolationsByLimit(a, limitType);
+    const bEligibleCount = countRuleViolationsByLimit(b, limitType);
 
     // Second: prioritize higher filtered count
     if (aEligibleCount !== bEligibleCount) {
