@@ -88,6 +88,40 @@ describe("UserConfigJsonSchema matches snapshot", () => {
                 "description": "Allow partial selection of violations.",
                 "type": "boolean",
               },
+              "strategy": {
+                "description": "Strategy for collecting candidate rules.",
+                "oneOf": [
+                  {
+                    "properties": {
+                      "entrypoints": {
+                        "items": {
+                          "type": "string",
+                        },
+                        "type": "array",
+                      },
+                      "type": {
+                        "const": "import-graph",
+                      },
+                    },
+                    "required": [
+                      "entrypoints",
+                      "type",
+                    ],
+                    "type": "object",
+                  },
+                  {
+                    "properties": {
+                      "type": {
+                        "const": "normal",
+                      },
+                    },
+                    "required": [
+                      "type",
+                    ],
+                    "type": "object",
+                  },
+                ],
+              },
             },
             "required": [],
             "type": "object",

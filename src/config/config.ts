@@ -100,6 +100,13 @@ export type CorrectModeUserConfig = {
    * @default false
    */
   partialSelection?: boolean;
+
+  /**
+   * Strategy for collecting candidate rules.
+   */
+  strategy?:
+    | { entrypoints: string[]; type: "import-graph" }
+    | { type: "normal" };
 };
 
 const DEFAULT_CONFIG = {
@@ -118,6 +125,9 @@ const DEFAULT_CONFIG = {
       type: "violation",
     },
     partialSelection: false,
+    strategy: {
+      type: "normal",
+    },
   },
   root: cwd(),
   todoFile: ".eslint-todo.js",
