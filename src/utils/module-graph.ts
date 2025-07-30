@@ -134,28 +134,3 @@ export async function resolveModules(
     modules: cruiseResult.output.modules,
   };
 }
-
-// const main = async () => {
-//   const graph = await resolveModules(["src/index.ts"], {
-//     tsConfig: "tsconfig.json",
-//   });
-
-//   if (graph.error != null) {
-//     console.error(graph.error);
-//     return;
-//   }
-
-//   await writeFile("cruise-result.json", JSON.stringify(graph.modules, null, 2));
-//   if (typeof graph.modules === "string") {
-//     return;
-//   }
-//   const moduleMeta = graph.modules.map((module) => {
-//     return {
-//       dependencyTypes: module.dependencyTypes,
-//       source: module.source,
-//     };
-//   });
-//   await writeFile("module-names.json", JSON.stringify(moduleMeta, null, 2));
-// };
-
-// await main();
