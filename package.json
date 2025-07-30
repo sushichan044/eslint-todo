@@ -52,7 +52,7 @@
     "bench:run": "vitest bench --run",
     "eslint:inspect": "eslint --inspect-config",
     "pkg-pr-new": "pkg-pr-new publish --compact --comment=update --pnpm",
-    "check": "pnpm run build && pnpm run lint && pnpm run format:ci && pnpm run typecheck && pnpm run test:run && pnpm run attw:check",
+    "check": "pnpm run build && pnpm run lint && pnpm run format:ci && pnpm run typecheck && pnpm run test && pnpm run attw:check",
     "prepare": "ts-patch install",
     "prepublishOnly": "pnpm run build",
     "attw:check": "pnpm run build && pnpm pack && attw",

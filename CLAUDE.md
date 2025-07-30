@@ -12,8 +12,7 @@ This is `@sushichan044/eslint-todo`, a tool for temporarily disabling existing E
 
 - `pnpm run build` - Build the project using unbuild
 - `pnpm run dev` - Development mode with stubbing
-- `pnpm run test` - Run tests in watch mode using Vitest
-- `pnpm run test:run` - Run tests once
+- `pnpm run test` - Run tests in run mode (not watch)
 - `pnpm run check` - Run full CI pipeline (build, lint, format check, typecheck, test)
 
 ### Code Quality
