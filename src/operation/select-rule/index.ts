@@ -4,9 +4,7 @@ import type { ESLintSuppressionsJson } from "../../suppressions-json/types";
 
 import { isRuleFixable } from "../../lib/eslint";
 import { toRuleBasedSuppression } from "../../suppressions-json/rule-based";
-import { extractPathsByGlobs } from "../../utils/glob";
-import { pick } from "../../utils/object";
-import { createCandidateCollectionStrategy } from "./strategies";
+import { applyViolationFilters } from "./filters";
 
 // ============================================================================
 // Rule Selection Types
@@ -45,22 +43,21 @@ export type SelectionResult =
       success: false;
     };
 
+type ViolationAmount = {
+  [filePath: string]: {
+    count: number;
+  };
+};
+
 /**
  * @package
  */
 export type RuleViolationInfo = {
-  isFixable: boolean;
-  originalViolations: {
-    [filePath: string]: {
-      count: number;
-    };
+  meta: {
+    isFixable: boolean;
+    ruleId: string;
   };
-  ruleId: string;
-  selectableViolations: {
-    [filePath: string]: {
-      count: number;
-    };
-  };
+  violations: ViolationAmount;
 };
 
 // ============================================================================
@@ -74,9 +71,7 @@ export type RuleViolationInfo = {
  * @returns The total count based on the limit type.
  */
 const countRuleViolationsByLimit = (
-  violations:
-    | RuleViolationInfo["originalViolations"]
-    | RuleViolationInfo["selectableViolations"],
+  violations: ViolationAmount,
   limitType: "file" | "violation",
 ): number => {
   return limitType === "file"
@@ -85,16 +80,15 @@ const countRuleViolationsByLimit = (
 };
 
 /**
- * Categorize rules for selection by partitioning by limit.
+ * Categorize violations by partitioning by limit.
  * @param violationInfos - Array of rule violation information.
  * @param limitCount - The limit count.
  * @param limitType - The limit type (file or violation).
  * @returns Object with fullSelectable and partialSelectable arrays.
  */
-const categorizeRulesForSelection = (
+const categorizeViolationsByLimit = (
   violationInfos: RuleViolationInfo[],
-  limitCount: number,
-  limitType: "file" | "violation",
+  correctModeConfig: CorrectModeConfig,
 ): {
   fullSelectable: RuleViolationInfo[];
   partialSelectable: RuleViolationInfo[];
@@ -104,13 +98,11 @@ const categorizeRulesForSelection = (
   return violationInfos.reduce(
     (accumulator, rule) => {
       const totalCount = countRuleViolationsByLimit(
-        // If we use selectableViolations, non full-selectable rules would be marked as full-selectable.
-        // Because the count of selectableViolations is always less than or equal to the count of originalViolations.
-        rule.originalViolations,
-        limitType,
+        rule.violations,
+        correctModeConfig.limit.type,
       );
 
-      if (totalCount <= limitCount) {
+      if (totalCount <= correctModeConfig.limit.count) {
         accumulator.fullSelectable.push(rule);
       } else {
         accumulator.partialSelectable.push(rule);
@@ -136,17 +128,17 @@ const sortRulesByPriority = (
 ): RuleViolationInfo[] => {
   return violationInfos.toSorted((a, b) => {
     // First: prioritize fixable rules (true > false)
-    if (a.isFixable !== b.isFixable) {
-      return b.isFixable ? 1 : -1;
+    if (a.meta.isFixable !== b.meta.isFixable) {
+      return b.meta.isFixable ? 1 : -1;
     }
 
     // Calculate selectable violation counts for comparison
     const aSelectableCount = countRuleViolationsByLimit(
-      a.selectableViolations,
+      a.violations,
       limitType,
     );
     const bSelectableCount = countRuleViolationsByLimit(
-      b.selectableViolations,
+      b.violations,
       limitType,
     );
 
@@ -156,7 +148,7 @@ const sortRulesByPriority = (
     }
 
     // Third: use rule ID as tiebreaker (lexicographical order)
-    return a.ruleId.localeCompare(b.ruleId);
+    return a.meta.ruleId.localeCompare(b.meta.ruleId);
   });
 };
 
@@ -167,9 +159,8 @@ const sortRulesByPriority = (
  * @param config - Correct mode config.
  * @returns Record of selected violations by file.
  */
-const selectViolationsForRule = (
+const selectPartialViolations = (
   rule: RuleViolationInfo,
-  limitCount: number,
   config: CorrectModeConfig,
 ): {
   [filePath: string]: number;
@@ -179,12 +170,13 @@ const selectViolationsForRule = (
   } = {};
   let selectedCount = 0;
   const limitType = config.limit.type;
-  const eligibleFiles = Object.keys(rule.selectableViolations);
+  const limitCount = config.limit.count;
+  const eligibleFiles = Object.keys(rule.violations);
 
   if (limitType === "file") {
     // For file limit, select files up to the limit count
     for (const file of eligibleFiles.slice(0, limitCount)) {
-      const violationCount = rule.selectableViolations[file]?.count;
+      const violationCount = rule.violations[file]?.count;
       if (violationCount != null) {
         selectedViolations[file] = violationCount;
       }
@@ -192,7 +184,7 @@ const selectViolationsForRule = (
   } else {
     // For violation limit, select files until violation count reaches limit
     for (const file of eligibleFiles) {
-      const violationCount = rule.selectableViolations[file]?.count;
+      const violationCount = rule.violations[file]?.count;
       if (violationCount == null) continue;
 
       if (selectedCount + violationCount > limitCount) {
@@ -206,150 +198,6 @@ const selectViolationsForRule = (
 
   return selectedViolations;
 };
-
-/**
- * Decide the optimal rule from candidate rules - Phase 2 of rule selection.
- * @param violationInfos - Array of filtered rule violation information.
- * @param config - Correct mode config.
- * @returns The result of the selection.
- *
- * @package
- */
-export function decideOptimalRule(
-  violationInfos: RuleViolationInfo[],
-  config: CorrectModeConfig,
-): SelectionResult {
-  const {
-    limit: { count: limitCount, type: limitType },
-    partialSelection: allowPartialSelection,
-  } = config;
-
-  // Guard clause: early return for empty candidates
-  if (violationInfos.length === 0) {
-    return { success: false };
-  }
-
-  const partitionedRules = categorizeRulesForSelection(
-    violationInfos,
-    limitCount,
-    limitType,
-  );
-
-  // Try full selection first - early return if possible
-  if (partitionedRules.fullSelectable.length > 0) {
-    // Safe: sortedFullSelectable.length > 0 guaranteed by preceding check
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const bestRule = sortRulesByPriority(
-      partitionedRules.fullSelectable,
-      limitType,
-    )[0]!;
-
-    return {
-      selection: { ruleId: bestRule.ruleId, type: "full" },
-      success: true,
-    };
-  }
-
-  // Guard clause: early return if partial selection not allowed
-  if (!allowPartialSelection) {
-    return { success: false };
-  }
-
-  // Attempt partial selection
-  if (partitionedRules.partialSelectable.length === 0) {
-    return { success: false };
-  }
-
-  // Safe: sortedPartialSelectable.length > 0 guaranteed by preceding check
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const bestPartialSelectableRule = sortRulesByPriority(
-    partitionedRules.partialSelectable,
-    limitType,
-  )[0]!;
-
-  const selectedViolations = selectViolationsForRule(
-    bestPartialSelectableRule,
-    limitCount,
-    config,
-  );
-
-  // Guard clause: early return if no violations selected
-  if (Object.keys(selectedViolations).length === 0) {
-    return { success: false };
-  }
-
-  return {
-    selection: {
-      ruleId: bestPartialSelectableRule.ruleId,
-      type: "partial",
-      violations: selectedViolations,
-    },
-    success: true,
-  };
-}
-
-/**
- * Filter rule violation information based on the given configuration.
- * @param infos - Rule violation information.
- * @param config - Correct mode configuration.
- * @returns Array of filtered rule violation information.
- *
- * @package
- */
-export function filterViolations(
-  infos: RuleViolationInfo[],
-  config: CorrectModeConfig,
-): RuleViolationInfo[] {
-  const {
-    autoFixableOnly,
-    exclude: { files: excludeGlobs, rules: excludedRules },
-    include: { files: includeGlobs, rules: includedRules },
-  } = config;
-
-  const filteredViolationInfos: RuleViolationInfo[] = [];
-  for (const info of infos) {
-    const { isFixable, originalViolations, ruleId } = info;
-
-    // Guard clause: Check if rule is auto-fixable when required
-    if (autoFixableOnly && !isFixable) {
-      continue;
-    }
-
-    // Guard clause: Check if rule is excluded
-    if (excludedRules.includes(ruleId)) {
-      continue;
-    }
-
-    // Guard clause: Check if rule is included when include filter is specified
-    if (includedRules.length > 0 && !includedRules.includes(ruleId)) {
-      continue;
-    }
-
-    // Apply file filtering: first exclude files, then apply include filter
-    let filteredFiles: string[] = Object.keys(originalViolations);
-    // Exclude files that match exclude.files patterns
-    if (excludeGlobs.length > 0) {
-      const excludedMatches = extractPathsByGlobs(filteredFiles, excludeGlobs);
-      filteredFiles = filteredFiles.filter(
-        (file) => !excludedMatches.includes(file),
-      );
-    }
-
-    // Apply include.files filtering
-    if (includeGlobs.length > 0) {
-      filteredFiles = extractPathsByGlobs(filteredFiles, includeGlobs);
-    }
-
-    filteredViolationInfos.push({
-      isFixable,
-      originalViolations,
-      ruleId,
-      selectableViolations: pick(originalViolations, filteredFiles),
-    });
-  }
-
-  return filteredViolationInfos;
-}
 
 // ============================================================================
 // Public Functions
@@ -388,19 +236,67 @@ export async function selectRuleToCorrect(
 
   const ruleBasedSuppression = toRuleBasedSuppression(suppressions);
 
-  const violations: RuleViolationInfo[] = Object.entries(
+  // no rule found
+  if (Object.keys(ruleBasedSuppression).length === 0) {
+    return { success: false };
+  }
+
+  const violationInfos: RuleViolationInfo[] = Object.entries(
     ruleBasedSuppression,
   ).map(([ruleId, violations]) => ({
-    isFixable: isRuleFixable(eslintConfig, ruleId),
-    originalViolations: violations,
-    ruleId,
-    selectableViolations: {},
+    meta: {
+      isFixable: isRuleFixable(eslintConfig, ruleId),
+      ruleId,
+    },
+    violations,
   }));
 
-  const getCandidates = createCandidateCollectionStrategy(config);
-  const candidates = await getCandidates(violations, config);
+  const { fullSelectable, partialSelectable } = categorizeViolationsByLimit(
+    violationInfos,
+    config.correct,
+  );
 
-  const filteredViolations = filterViolations(candidates, config.correct);
+  if (fullSelectable.length > 0) {
+    const filtered = await applyViolationFilters(fullSelectable, config);
+    const bestRule = sortRulesByPriority(
+      filtered,
+      config.correct.limit.type,
+    )[0];
 
-  return decideOptimalRule(filteredViolations, config.correct);
+    if (bestRule != null) {
+      return {
+        selection: { ruleId: bestRule.meta.ruleId, type: "full" },
+        success: true,
+      };
+    }
+  }
+
+  // Guard clause: early return if partial selection not allowed
+  if (!config.correct.partialSelection) {
+    return { success: false };
+  }
+
+  const pFiltered = await applyViolationFilters(partialSelectable, config);
+  const bestPartialSelectableRule = sortRulesByPriority(
+    pFiltered,
+    config.correct.limit.type,
+  )[0];
+
+  if (bestPartialSelectableRule == null) {
+    return { success: false };
+  }
+
+  const partialSelected = selectPartialViolations(
+    bestPartialSelectableRule,
+    config.correct,
+  );
+
+  return {
+    selection: {
+      ruleId: bestPartialSelectableRule.meta.ruleId,
+      type: "partial",
+      violations: partialSelected,
+    },
+    success: true,
+  };
 }

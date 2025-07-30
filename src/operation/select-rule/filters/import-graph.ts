@@ -1,16 +1,16 @@
 import type { Config } from "../../../config/config";
 import type { RuleViolationInfo } from "../index";
-import type { CandidateCollectionStrategy } from "./types";
+import type { ViolationFilteringStrategy } from "./types";
 
 import { resolveModules } from "../../../utils/module-graph";
 import { pick } from "../../../utils/object";
 
-export const importGraphBasedStrategy: CandidateCollectionStrategy = async (
-  violations: RuleViolationInfo[],
+export const importGraphBasedStrategy: ViolationFilteringStrategy = async (
+  info: RuleViolationInfo,
   config: Config,
-): Promise<RuleViolationInfo[]> => {
+): Promise<RuleViolationInfo> => {
   if (config.correct.strategy.type !== "import-graph") {
-    return violations;
+    return info;
   }
 
   const { entrypoints } = config.correct.strategy;
@@ -21,19 +21,13 @@ export const importGraphBasedStrategy: CandidateCollectionStrategy = async (
   });
   if (moduleResult.error != null) {
     console.warn(`Module resolution failed: ${moduleResult.error}`);
-    return violations;
+    return info;
   }
 
   const reachableFiles = new Set(moduleResult.modules.map((m) => m.source));
 
-  return violations.map(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    ({ originalViolations, selectableViolations: _, ...rest }) => {
-      return {
-        ...rest,
-        originalViolations,
-        selectableViolations: pick(originalViolations, [...reachableFiles]),
-      };
-    },
-  );
+  return {
+    meta: info.meta,
+    violations: pick(info.violations, [...reachableFiles]),
+  };
 };
