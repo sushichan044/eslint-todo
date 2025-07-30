@@ -1,4 +1,4 @@
-import type { Config, CorrectModeConfig } from "../../../config/config";
+import type { Config } from "../../../config/config";
 import type { RuleViolationInfo } from "../index";
 import type { CandidateCollectionStrategy } from "./types";
 
@@ -27,6 +27,7 @@ export const importGraphBasedStrategy: CandidateCollectionStrategy = async (
   const reachableFiles = new Set(moduleResult.modules.map((m) => m.source));
 
   return violations.map(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ({ originalViolations, selectableViolations: _, ...rest }) => {
       return {
         ...rest,

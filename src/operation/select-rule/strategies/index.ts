@@ -12,6 +12,7 @@ export function createCandidateCollectionStrategy(
     }
     case "normal": {
       return (v) =>
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         v.map(({ originalViolations, selectableViolations: _, ...rest }) => ({
           ...rest,
           originalViolations,
