@@ -397,10 +397,10 @@ export async function selectRuleToCorrect(
     selectableViolations: {},
   }));
 
-  const filteredViolations = filterViolations(violations, config.correct);
-
   const getCandidates = createCandidateCollectionStrategy(config);
-  const candidates = await getCandidates(filteredViolations, config);
+  const candidates = await getCandidates(violations, config);
 
-  return decideOptimalRule(candidates, config.correct);
+  const filteredViolations = filterViolations(candidates, config.correct);
+
+  return decideOptimalRule(filteredViolations, config.correct);
 }
