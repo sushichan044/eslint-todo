@@ -28,7 +28,9 @@ export async function applyTransforms<T, C>(
     try {
       result = await transform(result, options.context);
     } catch (error_) {
+      // abort immediately on error
       error = error_ instanceof Error ? error_ : new Error(String(error_));
+      break;
     }
   }
 
