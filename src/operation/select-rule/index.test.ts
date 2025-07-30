@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import type { Config, CorrectModeConfig } from "../../config/config";
 import type { ESLintConfigSubset } from "../../lib/eslint";
 import type { TodoModuleV2 } from "../../todofile/v2";
 
+import { configWithDefault } from "../../config/config";
 import { SuppressionsJsonGenerator } from "../../suppressions-json";
 import { selectRuleToCorrect } from "./index";
 
@@ -14,20 +14,6 @@ import { selectRuleToCorrect } from "./index";
 const createESLintConfig = (
   rules: Record<string, { fixable: boolean }>,
 ): ESLintConfigSubset => ({ rules });
-
-const createConfig = (overrides: Partial<CorrectModeConfig> = {}): Config => ({
-  correct: {
-    autoFixableOnly: false,
-    exclude: { files: [], rules: [] },
-    include: { files: [], rules: [] },
-    limit: { count: 100, type: "file" },
-    partialSelection: false,
-    strategy: { type: "normal" },
-    ...overrides,
-  },
-  root: ".",
-  todoFile: ".eslint-todo.js",
-});
 
 const createTodoModuleV2 = (todo: TodoModuleV2["todo"]): TodoModuleV2 => ({
   meta: { version: 2 },
@@ -54,8 +40,10 @@ describe("selectRuleToCorrect integration", () => {
         rule1: { fixable: true },
         rule2: { fixable: true },
       });
-      const config = createConfig({
-        limit: { count: 5, type: "file" as const },
+      const config = configWithDefault({
+        correct: {
+          limit: { count: 5, type: "file" as const },
+        },
       });
 
       const result = await selectRuleToCorrect(
@@ -88,8 +76,10 @@ describe("selectRuleToCorrect integration", () => {
         rule1: { fixable: true },
         rule2: { fixable: true },
       });
-      const config = createConfig({
-        limit: { count: 6, type: "violation" as const },
+      const config = configWithDefault({
+        correct: {
+          limit: { count: 6, type: "violation" as const },
+        },
       });
 
       const result = await selectRuleToCorrect(
@@ -122,9 +112,11 @@ describe("selectRuleToCorrect integration", () => {
         rule1: { fixable: false },
         rule2: { fixable: true },
       });
-      const config = createConfig({
-        autoFixableOnly: true,
-        limit: { count: 5, type: "file" as const },
+      const config = configWithDefault({
+        correct: {
+          autoFixableOnly: true,
+          limit: { count: 5, type: "file" as const },
+        },
       });
 
       const result = await selectRuleToCorrect(
@@ -156,9 +148,11 @@ describe("selectRuleToCorrect integration", () => {
       const eslintConfig = createESLintConfig({
         rule1: { fixable: true },
       });
-      const config = createConfig({
-        limit: { count: 2, type: "file" as const },
-        partialSelection: true,
+      const config = configWithDefault({
+        correct: {
+          limit: { count: 2, type: "file" as const },
+          partialSelection: true,
+        },
       });
 
       const result = await selectRuleToCorrect(
@@ -195,9 +189,11 @@ describe("selectRuleToCorrect integration", () => {
         "fixable-rule": { fixable: true },
         "non-fixable-rule": { fixable: false },
       });
-      const config = createConfig({
-        autoFixableOnly: false,
-        limit: { count: 10, type: "file" as const },
+      const config = configWithDefault({
+        correct: {
+          autoFixableOnly: false,
+          limit: { count: 10, type: "file" as const },
+        },
       });
 
       const result = await selectRuleToCorrect(
@@ -225,9 +221,11 @@ describe("selectRuleToCorrect integration", () => {
       const eslintConfig = createESLintConfig({
         rule1: { fixable: false },
       });
-      const config = createConfig({
-        autoFixableOnly: true,
-        limit: { count: 5, type: "file" },
+      const config = configWithDefault({
+        correct: {
+          autoFixableOnly: true,
+          limit: { count: 5, type: "file" },
+        },
       });
 
       const result = await selectRuleToCorrect(
@@ -265,10 +263,12 @@ describe("selectRuleToCorrect integration", () => {
         "should-be-excluded": { fixable: true },
         "should-be-selected": { fixable: true },
       });
-      const config = createConfig({
-        exclude: { files: [], rules: ["should-be-excluded"] },
-        limit: { count: 2, type: "file" },
-        partialSelection: true,
+      const config = configWithDefault({
+        correct: {
+          exclude: { files: [], rules: ["should-be-excluded"] },
+          limit: { count: 2, type: "file" },
+          partialSelection: true,
+        },
       });
 
       const result = await selectRuleToCorrect(
@@ -287,7 +287,7 @@ describe("selectRuleToCorrect integration", () => {
       });
     });
 
-    it("partial selection stops when violation limit would be exceeded", async () => {
+    it("partial selection uses remaining capacity when violation limit would be exceeded", async () => {
       const todo = {
         rule1: {
           autoFix: true,
@@ -304,9 +304,11 @@ describe("selectRuleToCorrect integration", () => {
       const eslintConfig = createESLintConfig({
         rule1: { fixable: true },
       });
-      const config = createConfig({
-        limit: { count: 6, type: "violation" as const },
-        partialSelection: true,
+      const config = configWithDefault({
+        correct: {
+          limit: { count: 6, type: "violation" as const },
+          partialSelection: true,
+        },
       });
 
       const result = await selectRuleToCorrect(
@@ -319,7 +321,7 @@ describe("selectRuleToCorrect integration", () => {
         selection: {
           ruleId: "rule1",
           type: "partial",
-          violations: { "file1.ts": 3 },
+          violations: { "file1.ts": 3, "file2.ts": 3 },
         },
         success: true,
       });
@@ -330,8 +332,10 @@ describe("selectRuleToCorrect integration", () => {
     it("file limit must be greater than 0", async () => {
       const todoModule = createTodoModuleV2({});
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
-      const config = createConfig({
-        limit: { count: 0, type: "file" as const },
+      const config = configWithDefault({
+        correct: {
+          limit: { count: 0, type: "file" as const },
+        },
       });
 
       await expect(
@@ -342,8 +346,10 @@ describe("selectRuleToCorrect integration", () => {
     it("violation limit must be greater than 0", async () => {
       const todoModule = createTodoModuleV2({});
       const suppressions = SuppressionsJsonGenerator.fromV2(todoModule);
-      const config = createConfig({
-        limit: { count: -1, type: "violation" as const },
+      const config = configWithDefault({
+        correct: {
+          limit: { count: -1, type: "violation" as const },
+        },
       });
 
       await expect(

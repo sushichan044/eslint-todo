@@ -188,6 +188,11 @@ const selectPartialViolations = (
       if (violationCount == null) continue;
 
       if (selectedCount + violationCount > limitCount) {
+        // Calculate remaining capacity and add partial violations if possible
+        const remainingCapacity = limitCount - selectedCount;
+        if (remainingCapacity > 0) {
+          selectedViolations[file] = remainingCapacity;
+        }
         break;
       }
 
