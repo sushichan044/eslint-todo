@@ -24,10 +24,13 @@ export const importGraphBasedStrategy: CandidateCollectionStrategy = async (
 
   const reachableFiles = new Set(moduleResult.modules.map((m) => m.source));
 
-  return violations.map(({ violations, ...rest }) => {
-    return {
-      ...rest,
-      violations: pick(violations, Array.from(reachableFiles)),
-    };
-  });
+  return violations.map(
+    ({ originalViolations, selectableViolations: _, ...rest }) => {
+      return {
+        ...rest,
+        originalViolations,
+        selectableViolations: pick(originalViolations, [...reachableFiles]),
+      };
+    },
+  );
 };
