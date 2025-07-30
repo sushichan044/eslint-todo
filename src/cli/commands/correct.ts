@@ -45,6 +45,20 @@ export const correctCmd = define({
           type: context.values["correct.limit.type"],
         },
         partialSelection: context.values["correct.partialSelection"],
+        strategy: (() => {
+          if (context.values["correct.strategy.type"] === "import-graph") {
+            return {
+              entrypoints: context.values["correct.strategy.entrypoints"] ?? [],
+              type: "import-graph",
+            };
+          }
+          if (context.values["correct.strategy.type"] === "normal") {
+            return {
+              type: "normal",
+            };
+          }
+          return;
+        })(),
       },
       root: context.values.root,
       todoFile: context.values.todoFile,
