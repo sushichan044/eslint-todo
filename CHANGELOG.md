@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.2.3
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Migrate into gunshi &nbsp;-&nbsp; by **Kentaro Suzuki** in https://github.com/sushichan044/eslint-todo/issues/268 [<samp>(e4de7)</samp>](https://github.com/sushichan044/eslint-todo/commit/e4de795)
+- Always prioritize auto-fixable violations when selecting violataions to fix &nbsp;-&nbsp; by **Kentaro Suzuki** in https://github.com/sushichan044/eslint-todo/issues/274 [<samp>(698aa)</samp>](https://github.com/sushichan044/eslint-todo/commit/698aa14)
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Replace find-up with empathic &nbsp;-&nbsp; by **Kentaro Suzuki** in https://github.com/sushichan044/eslint-todo/issues/270 [<samp>(2f6c5)</samp>](https://github.com/sushichan044/eslint-todo/commit/2f6c51e)
+- **deps**:
+  - Update dependency zod to v3.25.64 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/258 [<samp>(29fa7)</samp>](https://github.com/sushichan044/eslint-todo/commit/29fa763)
+  - Update dependency minimatch to v10.0.3 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/257 [<samp>(6818b)</samp>](https://github.com/sushichan044/eslint-todo/commit/6818bcb)
+  - Update dependency @modelcontextprotocol/sdk to v1.12.3 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/256 [<samp>(522d6)</samp>](https://github.com/sushichan044/eslint-todo/commit/522d6b2)
+  - Update dependency @modelcontextprotocol/sdk to v1.13.0 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/266 [<samp>(ab627)</samp>](https://github.com/sushichan044/eslint-todo/commit/ab6278c)
+  - Update dependency zod to v3.25.67 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/264 [<samp>(6ed55)</samp>](https://github.com/sushichan044/eslint-todo/commit/6ed5532)
+  - Update typescript-eslint monorepo to v8.34.1 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/265 [<samp>(dab15)</samp>](https://github.com/sushichan044/eslint-todo/commit/dab1543)
+  - Update typescript-eslint monorepo to v8.35.0 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/285 [<samp>(e8c7b)</samp>](https://github.com/sushichan044/eslint-todo/commit/e8c7b24)
+  - Update dependency @modelcontextprotocol/sdk to v1.13.2 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/281 [<samp>(e33ae)</samp>](https://github.com/sushichan044/eslint-todo/commit/e33ae6c)
+  - Update dependency zod to v3.25.76 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/292 [<samp>(48132)</samp>](https://github.com/sushichan044/eslint-todo/commit/4813244)
+  - Update dependency @modelcontextprotocol/sdk to v1.15.0 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/296 [<samp>(84fdb)</samp>](https://github.com/sushichan044/eslint-todo/commit/84fdb9d)
+  - Update typescript-eslint monorepo to v8.36.0 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/293 [<samp>(57f30)</samp>](https://github.com/sushichan044/eslint-todo/commit/57f3082)
+  - Update dependency @modelcontextprotocol/sdk to v1.15.1 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/302 [<samp>(cf307)</samp>](https://github.com/sushichan044/eslint-todo/commit/cf3073a)
+  - Migrate into typia 9.6+ &nbsp;-&nbsp; by **Kentaro Suzuki** in https://github.com/sushichan044/eslint-todo/issues/318 [<samp>(ddc6a)</samp>](https://github.com/sushichan044/eslint-todo/commit/ddc6a08)
+  - Update typescript-eslint monorepo to v8.38.0 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/327 [<samp>(4d74c)</samp>](https://github.com/sushichan044/eslint-todo/commit/4d74c0f)
+  - Update dependency @modelcontextprotocol/sdk to v1.17.0 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/325 [<samp>(9f50d)</samp>](https://github.com/sushichan044/eslint-todo/commit/9f50d9e)
+  - Update dependency picomatch to v4.0.3 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/321 [<samp>(f57bc)</samp>](https://github.com/sushichan044/eslint-todo/commit/f57bc92)
+  - Update dependency gunshi to v0.27.0-alpha.10 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/320 [<samp>(2f981)</samp>](https://github.com/sushichan044/eslint-todo/commit/2f981ad)
+  - Update dependency jiti to v2.5.1 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/326 [<samp>(8efc5)</samp>](https://github.com/sushichan044/eslint-todo/commit/8efc53b)
+
+### &nbsp;&nbsp;&nbsp;Performance
+
+- Classifying all violations at once for faster performance &nbsp;-&nbsp; by **Kentaro Suzuki** in https://github.com/sushichan044/eslint-todo/issues/275 [<samp>(b9daa)</samp>](https://github.com/sushichan044/eslint-todo/commit/b9daabb)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.2.2...0.2.3)
+
 ## 0.2.2
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes
