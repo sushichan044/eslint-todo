@@ -25,11 +25,7 @@ export const selectRulesToFixAction = defineAction<
   const suppressions = SuppressionsJsonGenerator.fromV2(currentModule);
 
   await hooks.callHook("before:select-rule");
-  const result = await selectRuleToCorrect(
-    suppressions,
-    eslintConfig,
-    config.correct,
-  );
+  const result = await selectRuleToCorrect(suppressions, eslintConfig, config);
   await hooks.callHook("after:select-rule", result);
 
   return result;
