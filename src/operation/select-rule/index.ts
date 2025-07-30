@@ -1,4 +1,4 @@
-import type { CorrectModeConfig } from "../../config/config";
+import type { Config, CorrectModeConfig } from "../../config/config";
 import type { ESLintConfigSubset } from "../../lib/eslint";
 import type { ESLintSuppressionsJson } from "../../suppressions-json/types";
 
@@ -365,23 +365,24 @@ export function filterViolations(
 export async function selectRuleToCorrect(
   suppressions: ESLintSuppressionsJson,
   eslintConfig: ESLintConfigSubset,
-  config: CorrectModeConfig,
+  config: Config,
 ): Promise<SelectionResult> {
   // Validate limit type for exhaustive checking
-  switch (config.limit.type) {
+  switch (config.correct.limit.type) {
     case "file":
     case "violation": {
       break;
     }
     default: {
       // exhaustive check
-      const l = config.limit.type satisfies never;
+      const l = config.correct.limit.type satisfies never;
       throw new Error(`Got unknown limit type: ${JSON.stringify(l)}`);
     }
   }
 
-  if (config.limit.count <= 0) {
-    const limitTypeLabel = config.limit.type === "file" ? "file" : "violation";
+  if (config.correct.limit.count <= 0) {
+    const limitTypeLabel =
+      config.correct.limit.type === "file" ? "file" : "violation";
     throw new Error(`The ${limitTypeLabel} limit must be greater than 0.`);
   }
 
@@ -396,10 +397,10 @@ export async function selectRuleToCorrect(
     selectableViolations: {},
   }));
 
-  const filteredViolations = filterViolations(violations, config);
+  const filteredViolations = filterViolations(violations, config.correct);
 
   const getCandidates = createCandidateCollectionStrategy(config);
   const candidates = await getCandidates(filteredViolations, config);
 
-  return decideOptimalRule(candidates, config);
+  return decideOptimalRule(candidates, config.correct);
 }

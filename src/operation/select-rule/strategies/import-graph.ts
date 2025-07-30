@@ -1,4 +1,4 @@
-import type { CorrectModeConfig } from "../../../config/config";
+import type { Config, CorrectModeConfig } from "../../../config/config";
 import type { RuleViolationInfo } from "../index";
 import type { CandidateCollectionStrategy } from "./types";
 
@@ -7,16 +7,18 @@ import { pick } from "../../../utils/object";
 
 export const importGraphBasedStrategy: CandidateCollectionStrategy = async (
   violations: RuleViolationInfo[],
-  config: CorrectModeConfig,
+  config: Config,
 ): Promise<RuleViolationInfo[]> => {
-  if (config.strategy?.type !== "import-graph") {
+  if (config.correct.strategy.type !== "import-graph") {
     return violations;
   }
 
-  const { entrypoints } = config.strategy;
+  const { entrypoints } = config.correct.strategy;
 
   // 1. Build module graph
-  const moduleResult = await resolveModules(entrypoints);
+  const moduleResult = await resolveModules(entrypoints, {
+    baseDir: config.root,
+  });
   if (moduleResult.error != null) {
     console.warn(`Module resolution failed: ${moduleResult.error}`);
     return violations;
