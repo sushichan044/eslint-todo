@@ -37,7 +37,13 @@ export const applyViolationFilters = async (
     );
 
     if (transformed.error != null) {
-      throw transformed.error; // do not continue if any error occurs
+      // Log the error but continue processing other violations
+      console.warn(
+        `Filter error for rule ${info.meta.ruleId}: ${transformed.error.message}`,
+      );
+      // Use original info as fallback when filtering fails
+      result.push(info);
+      continue;
     }
 
     if (Object.keys(transformed.data.violations).length === 0) {
