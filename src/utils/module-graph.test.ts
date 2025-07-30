@@ -1,9 +1,7 @@
-import type { TSConfig } from "pkg-types";
-
-import defu from "defu";
 import { createFixture } from "fs-fixture";
 import { describe, expect, it } from "vitest";
 
+import { createTSConfig } from "../../tests/utils/tsconfig";
 import { resolveModules, shouldExcludeModule } from "./module-graph";
 
 describe("shouldExcludeModule", () => {
@@ -35,34 +33,6 @@ describe("shouldExcludeModule", () => {
     expect(shouldExcludeModule([])).toBe(false);
   });
 });
-
-const createTSConfig = (overrides: Partial<TSConfig> = {}): TSConfig => {
-  return defu(
-    {
-      compilerOptions: {
-        allowUnreachableCode: false,
-        esModuleInterop: true,
-        exactOptionalPropertyTypes: true,
-        forceConsistentCasingInFileNames: true,
-        isolatedModules: true,
-        module: "nodenext",
-        noFallthroughCasesInSwitch: true,
-        noImplicitOverride: true,
-        noImplicitReturns: true,
-        noPropertyAccessFromIndexSignature: true,
-        noUncheckedIndexedAccess: true,
-        noUncheckedSideEffectImports: true,
-        resolveJsonModule: true,
-        skipLibCheck: true,
-        strict: true,
-        strictNullChecks: true,
-        target: "esnext",
-        verbatimModuleSyntax: true,
-      },
-    },
-    overrides,
-  );
-};
 
 describe("resolveModules", () => {
   it("should return error if no entrypoints are provided", async () => {
