@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.4
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Make boolean options in correct mode configs to negatable &nbsp;-&nbsp; by **Kentaro Suzuki** in https://github.com/sushichan044/eslint-todo/issues/332 [<samp>(ac363)</samp>](https://github.com/sushichan044/eslint-todo/commit/ac36395)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.2.3...0.2.4)
+
 ## 0.2.3
 
 ### &nbsp;&nbsp;&nbsp;Features
