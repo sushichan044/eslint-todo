@@ -1,12 +1,12 @@
-import type { CorrectModeConfig } from "../../../config/config";
+import type { Config } from "../../../config/config";
 import type { CandidateCollectionStrategy } from "./types";
 
 import { importGraphBasedStrategy } from "./import-graph";
 
 export function createCandidateCollectionStrategy(
-  config: CorrectModeConfig,
+  config: Config,
 ): CandidateCollectionStrategy {
-  switch (config.strategy.type) {
+  switch (config.correct.strategy.type) {
     case "import-graph": {
       return importGraphBasedStrategy;
     }
@@ -21,7 +21,9 @@ export function createCandidateCollectionStrategy(
     default: {
       // Exhaustive check
       throw new Error(
-        `Unknown strategy type: ${JSON.stringify(config.strategy satisfies never)}`,
+        `Unknown strategy type: ${JSON.stringify(
+          config.correct.strategy satisfies never,
+        )}`,
       );
     }
   }
