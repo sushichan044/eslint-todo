@@ -43,17 +43,19 @@ describe("filterViolations", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: false,
-          ruleId: "no-console",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 3 },
           },
+          ruleId: "no-console",
+          selectableViolations: {},
         },
         {
           isFixable: true,
-          ruleId: "prefer-const",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 2 },
           },
+          ruleId: "prefer-const",
+          selectableViolations: {},
         },
       ];
       const config = createConfig({ autoFixableOnly: true });
@@ -68,17 +70,19 @@ describe("filterViolations", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
-          ruleId: "no-console",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 3 },
           },
+          ruleId: "no-console",
+          selectableViolations: {},
         },
         {
           isFixable: true,
-          ruleId: "prefer-const",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 2 },
           },
+          ruleId: "prefer-const",
+          selectableViolations: {},
         },
       ];
       const config = createConfig({
@@ -95,17 +99,19 @@ describe("filterViolations", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
-          ruleId: "no-console",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 3 },
           },
+          ruleId: "no-console",
+          selectableViolations: {},
         },
         {
           isFixable: true,
-          ruleId: "prefer-const",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 2 },
           },
+          ruleId: "prefer-const",
+          selectableViolations: {},
         },
       ];
       const config = createConfig({
@@ -124,12 +130,13 @@ describe("filterViolations", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
-          ruleId: "no-console",
-          violations: {
+          originalViolations: {
             "app/file3.tsx": { count: 1 },
             "dist/file2.js": { count: 2 },
             "src/file1.ts": { count: 3 },
           },
+          ruleId: "no-console",
+          selectableViolations: {},
         },
       ];
       const config = createConfig({
@@ -139,7 +146,7 @@ describe("filterViolations", () => {
       const result = filterViolations(violationInfos, config);
 
       expect(result).toHaveLength(1);
-      expect(result[0]?.violations).toEqual({
+      expect(result[0]?.selectableViolations).toEqual({
         "app/file3.tsx": { count: 1 },
         "src/file1.ts": { count: 3 },
       });
@@ -149,12 +156,13 @@ describe("filterViolations", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
-          ruleId: "no-console",
-          violations: {
+          originalViolations: {
             "app/file3.tsx": { count: 1 },
             "dist/file2.js": { count: 2 },
             "src/file1.ts": { count: 3 },
           },
+          ruleId: "no-console",
+          selectableViolations: {},
         },
       ];
       const config = createConfig({
@@ -164,7 +172,7 @@ describe("filterViolations", () => {
       const result = filterViolations(violationInfos, config);
 
       expect(result).toHaveLength(1);
-      expect(result[0]?.violations).toEqual({
+      expect(result[0]?.selectableViolations).toEqual({
         "src/file1.ts": { count: 3 },
       });
     });
@@ -173,12 +181,13 @@ describe("filterViolations", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
-          ruleId: "no-console",
-          violations: {
+          originalViolations: {
             "dist/file2.js": { count: 1 },
             "src/file1.test.ts": { count: 2 },
             "src/file1.ts": { count: 3 },
           },
+          ruleId: "no-console",
+          selectableViolations: {},
         },
       ];
       const config = createConfig({
@@ -189,7 +198,7 @@ describe("filterViolations", () => {
       const result = filterViolations(violationInfos, config);
 
       expect(result).toHaveLength(1);
-      expect(result[0]?.violations).toEqual({
+      expect(result[0]?.selectableViolations).toEqual({
         "src/file1.ts": { count: 3 },
       });
     });
@@ -200,19 +209,21 @@ describe("filterViolations", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: false,
-          ruleId: "no-console",
-          violations: {
+          originalViolations: {
             "dist/file2.js": { count: 2 },
             "src/file1.ts": { count: 3 },
           },
+          ruleId: "no-console",
+          selectableViolations: {},
         },
         {
           isFixable: true,
-          ruleId: "prefer-const",
-          violations: {
+          originalViolations: {
             "dist/file2.js": { count: 4 },
             "src/file1.ts": { count: 1 },
           },
+          ruleId: "prefer-const",
+          selectableViolations: {},
         },
       ];
       const config = createConfig({
@@ -224,7 +235,7 @@ describe("filterViolations", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]?.ruleId).toBe("prefer-const");
-      expect(result[0]?.violations).toEqual({
+      expect(result[0]?.selectableViolations).toEqual({
         "src/file1.ts": { count: 1 },
       });
     });
@@ -233,10 +244,11 @@ describe("filterViolations", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: false,
-          ruleId: "no-console",
-          violations: {
+          originalViolations: {
             "src/file1.ts": { count: 3 },
           },
+          ruleId: "no-console",
+          selectableViolations: {},
         },
       ];
       const config = createConfig({ autoFixableOnly: true });
@@ -270,16 +282,25 @@ describe("decideOptimalRule", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
+          originalViolations: {
+            "file1.ts": { count: 1 },
+            "file2.ts": { count: 2 },
+          },
           ruleId: "rule1",
-          violations: {
+          selectableViolations: {
             "file1.ts": { count: 1 },
             "file2.ts": { count: 2 },
           },
         },
         {
           isFixable: true,
+          originalViolations: {
+            "file1.ts": { count: 3 },
+            "file2.ts": { count: 4 },
+            "file3.ts": { count: 1 },
+          },
           ruleId: "rule2",
-          violations: {
+          selectableViolations: {
             "file1.ts": { count: 3 },
             "file2.ts": { count: 4 },
             "file3.ts": { count: 1 },
@@ -299,11 +320,16 @@ describe("decideOptimalRule", () => {
     });
 
     it("returns not successful when all rules exceed limit and partial selection disabled", () => {
-      const violationInfos = [
+      const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
+          originalViolations: {
+            "file1.ts": { count: 5 },
+            "file2.ts": { count: 5 },
+            "file3.ts": { count: 5 },
+          },
           ruleId: "rule1",
-          violations: {
+          selectableViolations: {
             "file1.ts": { count: 5 },
             "file2.ts": { count: 5 },
             "file3.ts": { count: 5 },
@@ -325,22 +351,24 @@ describe("decideOptimalRule", () => {
 
   describe("auto-fixable rule prioritization", () => {
     it("prioritizes auto-fixable rules over non-fixable rules with same filtered count", () => {
-      const violationInfos = [
+      const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: false,
-          ruleId: "non-fixable-rule",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 5 },
             "file2.ts": { count: 5 },
           },
+          ruleId: "non-fixable-rule",
+          selectableViolations: {},
         },
         {
           isFixable: true,
-          ruleId: "fixable-rule",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 5 },
             "file2.ts": { count: 5 },
           },
+          ruleId: "fixable-rule",
+          selectableViolations: {},
         },
       ];
 
@@ -359,20 +387,22 @@ describe("decideOptimalRule", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: false,
-          ruleId: "non-fixable-rule",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 5 },
             "file2.ts": { count: 5 },
             "file3.ts": { count: 5 },
           },
+          ruleId: "non-fixable-rule",
+          selectableViolations: {},
         },
         {
           isFixable: true,
-          ruleId: "fixable-rule",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 5 },
             "file2.ts": { count: 5 },
           },
+          ruleId: "fixable-rule",
+          selectableViolations: {},
         },
       ];
 
@@ -388,22 +418,24 @@ describe("decideOptimalRule", () => {
     });
 
     it("uses rule id as tiebreaker when fixability and filtered count are same", () => {
-      const violationInfos = [
+      const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
-          ruleId: "z-rule",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 5 },
             "file2.ts": { count: 5 },
           },
+          ruleId: "z-rule",
+          selectableViolations: {},
         },
         {
           isFixable: true,
-          ruleId: "a-rule",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 5 },
             "file2.ts": { count: 5 },
           },
+          ruleId: "a-rule",
+          selectableViolations: {},
         },
       ];
 
@@ -417,6 +449,45 @@ describe("decideOptimalRule", () => {
         success: true,
       });
     });
+
+    it("should compare originalViolations with limit", () => {
+      const violationInfos: RuleViolationInfo[] = [
+        {
+          isFixable: true,
+          originalViolations: {
+            "file1.ts": { count: 15 },
+            "file2.ts": { count: 15 },
+          },
+          ruleId: "rule-should-be-partial",
+          // if we compared selectableViolations with limit, this rule would be full-selectable
+          // and selectable violations is 9, gte 8
+          // so rule-should-be-partial would be selected instead of rule-should-be-full
+          selectableViolations: {
+            "file1.ts": { count: 9 },
+          },
+        },
+        {
+          isFixable: true,
+          originalViolations: {
+            "file1.ts": { count: 8 },
+          },
+          ruleId: "rule-should-be-full",
+          selectableViolations: {
+            "file1.ts": { count: 8 },
+          },
+        },
+      ];
+
+      const result = decideOptimalRule(
+        violationInfos,
+        createConfig({ limit: { count: 10, type: "violation" } }),
+      );
+
+      expect(result).toStrictEqual({
+        selection: { ruleId: "rule-should-be-full", type: "full" },
+        success: true,
+      });
+    });
   });
 
   describe("partial selection enabled", () => {
@@ -424,8 +495,15 @@ describe("decideOptimalRule", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
+          originalViolations: {
+            "file1.ts": { count: 3 },
+            "file2.ts": { count: 2 },
+            "file3.ts": { count: 1 },
+            "file4.ts": { count: 4 },
+            "file5.ts": { count: 2 },
+          },
           ruleId: "rule1",
-          violations: {
+          selectableViolations: {
             "file1.ts": { count: 3 },
             "file2.ts": { count: 2 },
             "file3.ts": { count: 1 },
@@ -457,8 +535,13 @@ describe("decideOptimalRule", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
+          originalViolations: {
+            "file1.ts": { count: 3 },
+            "file2.ts": { count: 4 },
+            "file3.ts": { count: 8 },
+          },
           ruleId: "rule1",
-          violations: {
+          selectableViolations: {
             "file1.ts": { count: 3 },
             "file2.ts": { count: 4 },
             "file3.ts": { count: 8 },
@@ -488,17 +571,24 @@ describe("decideOptimalRule", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
-          ruleId: "rule1",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 2 },
             "file2.ts": { count: 3 }, // total: 5 violations
+          },
+          ruleId: "rule1",
+          selectableViolations: {
+            "file1.ts": { count: 2 },
+            "file2.ts": { count: 3 },
           },
         },
         {
           isFixable: true,
-          ruleId: "rule2",
-          violations: {
+          originalViolations: {
             "file1.ts": { count: 8 }, // total: 8 violations - should be prioritized
+          },
+          ruleId: "rule2",
+          selectableViolations: {
+            "file1.ts": { count: 8 },
           },
         },
       ];
@@ -534,8 +624,12 @@ describe("decideOptimalRule", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
+          originalViolations: {
+            "file1.ts": { count: 10 },
+            "file2.ts": { count: 20 },
+          },
           ruleId: "rule1",
-          violations: {
+          selectableViolations: {
             "file1.ts": { count: 10 },
             "file2.ts": { count: 20 },
           },
@@ -557,8 +651,13 @@ describe("decideOptimalRule", () => {
       const violationInfos: RuleViolationInfo[] = [
         {
           isFixable: true,
+          originalViolations: {
+            "file1.ts": { count: 3 },
+            "file2.ts": { count: 4 },
+            "file3.ts": { count: 8 },
+          },
           ruleId: "rule1",
-          violations: {
+          selectableViolations: {
             "file1.ts": { count: 3 },
             "file2.ts": { count: 4 },
             "file3.ts": { count: 8 },
@@ -566,8 +665,12 @@ describe("decideOptimalRule", () => {
         },
         {
           isFixable: true,
+          originalViolations: {
+            "file1.ts": { count: 2 },
+            "file2.ts": { count: 2 },
+          },
           ruleId: "rule2",
-          violations: {
+          selectableViolations: {
             "file1.ts": { count: 2 },
             "file2.ts": { count: 2 },
           },

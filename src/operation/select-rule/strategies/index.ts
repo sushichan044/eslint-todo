@@ -11,7 +11,12 @@ export function createCandidateCollectionStrategy(
       return importGraphBasedStrategy;
     }
     case "normal": {
-      return (v) => v; // no additional filtering
+      return (v) =>
+        v.map(({ originalViolations, selectableViolations: _, ...rest }) => ({
+          ...rest,
+          originalViolations,
+          selectableViolations: originalViolations, // All violations are selectable
+        }));
     }
     default: {
       // Exhaustive check

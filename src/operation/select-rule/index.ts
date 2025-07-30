@@ -50,8 +50,13 @@ export type SelectionResult =
  */
 export type RuleViolationInfo = {
   isFixable: boolean;
+  originalViolations: {
+    [filePath: string]: {
+      count: number;
+    };
+  };
   ruleId: string;
-  violations: {
+  selectableViolations: {
     [filePath: string]: {
       count: number;
     };
@@ -69,12 +74,14 @@ export type RuleViolationInfo = {
  * @returns The total count based on the limit type.
  */
 const countRuleViolationsByLimit = (
-  rule: RuleViolationInfo,
+  violations:
+    | RuleViolationInfo["originalViolations"]
+    | RuleViolationInfo["selectableViolations"],
   limitType: "file" | "violation",
 ): number => {
   return limitType === "file"
-    ? Object.keys(rule.violations).length
-    : Object.values(rule.violations).reduce((sum, { count }) => sum + count, 0);
+    ? Object.keys(violations).length
+    : Object.values(violations).reduce((sum, { count }) => sum + count, 0);
 };
 
 /**
@@ -96,7 +103,12 @@ const categorizeRulesForSelection = (
   // eslint-disable-next-line unicorn/no-array-reduce
   return violationInfos.reduce(
     (accumulator, rule) => {
-      const totalCount = countRuleViolationsByLimit(rule, limitType);
+      const totalCount = countRuleViolationsByLimit(
+        // If we use selectableViolations, non full-selectable rules would be marked as full-selectable.
+        // Because the count of selectableViolations is always less than or equal to the count of originalViolations.
+        rule.originalViolations,
+        limitType,
+      );
 
       if (totalCount <= limitCount) {
         accumulator.fullSelectable.push(rule);
@@ -128,13 +140,19 @@ const sortRulesByPriority = (
       return b.isFixable ? 1 : -1;
     }
 
-    // Calculate eligible counts for comparison
-    const aEligibleCount = countRuleViolationsByLimit(a, limitType);
-    const bEligibleCount = countRuleViolationsByLimit(b, limitType);
+    // Calculate selectable violation counts for comparison
+    const aSelectableCount = countRuleViolationsByLimit(
+      a.selectableViolations,
+      limitType,
+    );
+    const bSelectableCount = countRuleViolationsByLimit(
+      b.selectableViolations,
+      limitType,
+    );
 
-    // Second: prioritize higher filtered count
-    if (aEligibleCount !== bEligibleCount) {
-      return bEligibleCount - aEligibleCount;
+    // Second: prioritize higher selectable violation count
+    if (aSelectableCount !== bSelectableCount) {
+      return bSelectableCount - aSelectableCount;
     }
 
     // Third: use rule ID as tiebreaker (lexicographical order)
@@ -161,12 +179,12 @@ const selectViolationsForRule = (
   } = {};
   let selectedCount = 0;
   const limitType = config.limit.type;
-  const eligibleFiles = Object.keys(rule.violations);
+  const eligibleFiles = Object.keys(rule.selectableViolations);
 
   if (limitType === "file") {
     // For file limit, select files up to the limit count
     for (const file of eligibleFiles.slice(0, limitCount)) {
-      const violationCount = rule.violations[file]?.count;
+      const violationCount = rule.selectableViolations[file]?.count;
       if (violationCount != null) {
         selectedViolations[file] = violationCount;
       }
@@ -174,7 +192,7 @@ const selectViolationsForRule = (
   } else {
     // For violation limit, select files until violation count reaches limit
     for (const file of eligibleFiles) {
-      const violationCount = rule.violations[file]?.count;
+      const violationCount = rule.selectableViolations[file]?.count;
       if (violationCount == null) continue;
 
       if (selectedCount + violationCount > limitCount) {
@@ -290,7 +308,7 @@ export function filterViolations(
 
   const filteredViolationInfos: RuleViolationInfo[] = [];
   for (const info of infos) {
-    const { isFixable, ruleId, violations } = info;
+    const { isFixable, originalViolations, ruleId } = info;
 
     // Guard clause: Check if rule is auto-fixable when required
     if (autoFixableOnly && !isFixable) {
@@ -308,7 +326,7 @@ export function filterViolations(
     }
 
     // Apply file filtering: first exclude files, then apply include filter
-    let filteredFiles: string[] = Object.keys(violations);
+    let filteredFiles: string[] = Object.keys(originalViolations);
     // Exclude files that match exclude.files patterns
     if (excludeGlobs.length > 0) {
       const excludedMatches = extractPathsByGlobs(filteredFiles, excludeGlobs);
@@ -324,8 +342,9 @@ export function filterViolations(
 
     filteredViolationInfos.push({
       isFixable,
+      originalViolations,
       ruleId,
-      violations: pick(violations, filteredFiles),
+      selectableViolations: pick(originalViolations, filteredFiles),
     });
   }
 
@@ -372,8 +391,9 @@ export async function selectRuleToCorrect(
     ruleBasedSuppression,
   ).map(([ruleId, violations]) => ({
     isFixable: isRuleFixable(eslintConfig, ruleId),
+    originalViolations: violations,
     ruleId,
-    violations,
+    selectableViolations: {},
   }));
 
   const filteredViolations = filterViolations(violations, config);
