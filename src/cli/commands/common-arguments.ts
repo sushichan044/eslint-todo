@@ -47,6 +47,7 @@ export const modeArguments = {
 export const correctModeArguments = {
   "correct.autoFixableOnly": {
     description: "Allow to select non auto-fixable rules.",
+    negatable: true,
     type: "boolean",
   },
   "correct.exclude.files": {
@@ -89,6 +90,7 @@ export const correctModeArguments = {
   },
   "correct.partialSelection": {
     description: "Allow partial selection of violations.",
+    negatable: true,
     type: "boolean",
   },
 } as const satisfies CorrectModeArguments;
