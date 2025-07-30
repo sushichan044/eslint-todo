@@ -4,9 +4,7 @@ import defu from "defu";
 import { createFixture } from "fs-fixture";
 import { describe, expect, it } from "vitest";
 
-import type { Config } from "../../../config/config";
-import type { RuleViolationInfo } from "../index";
-
+import { configWithDefault } from "../../../config/config";
 import { importGraphBasedStrategy } from "./import-graph";
 
 // ============================================================================
@@ -41,35 +39,6 @@ const createTSConfig = (overrides: Partial<TSConfig> = {}): TSConfig => {
   );
 };
 
-const createConfig = (
-  overrides: Partial<Config["correct"]> = {},
-  root = ".",
-): Config => ({
-  correct: {
-    autoFixableOnly: false,
-    exclude: { files: [], rules: [] },
-    include: { files: [], rules: [] },
-    limit: { count: 100, type: "file" },
-    partialSelection: false,
-    strategy: { type: "normal" },
-    ...overrides,
-  },
-  root,
-  todoFile: ".eslint-todo.js",
-});
-
-const createRuleViolationInfo = (
-  ruleId: string,
-  isFixable: boolean,
-  violations: { [file: string]: { count: number } },
-): RuleViolationInfo => ({
-  meta: {
-    isFixable,
-    ruleId,
-  },
-  violations,
-});
-
 // ============================================================================
 // Tests
 // ============================================================================
@@ -77,12 +46,17 @@ const createRuleViolationInfo = (
 describe("importGraphBasedStrategy", () => {
   describe("strategy type validation", () => {
     it("returns unchanged info when strategy type is not import-graph", async () => {
-      const info = createRuleViolationInfo("no-console", true, {
-        "src/entry.ts": { count: 1 },
-        "src/unused.ts": { count: 2 },
-      });
-      const config = createConfig({
-        strategy: { type: "normal" },
+      const info = {
+        meta: { isFixable: true, ruleId: "no-console" },
+        violations: {
+          "src/entry.ts": { count: 1 },
+          "src/unused.ts": { count: 2 },
+        },
+      };
+      const config = configWithDefault({
+        correct: {
+          strategy: { type: "normal" },
+        },
       });
 
       const result = await importGraphBasedStrategy(info, config);
@@ -110,20 +84,23 @@ console.log(helper);`,
         ),
       });
 
-      const info = createRuleViolationInfo("no-console", true, {
-        "src/entry.ts": { count: 1 },
-        "src/helper.ts": { count: 2 },
-        "src/unused.ts": { count: 3 },
-      });
-      const config = createConfig(
-        {
+      const info = {
+        meta: { isFixable: true, ruleId: "no-console" },
+        violations: {
+          "src/entry.ts": { count: 1 },
+          "src/helper.ts": { count: 2 },
+          "src/unused.ts": { count: 3 },
+        },
+      };
+      const config = configWithDefault({
+        correct: {
           strategy: {
             entrypoints: ["src/entry.ts"],
             type: "import-graph",
           },
         },
-        fixture.getPath("."),
-      );
+        root: fixture.getPath("."),
+      });
 
       const result = await importGraphBasedStrategy(info, config);
 
@@ -179,23 +156,26 @@ export const app = { config, ApiService, formatUtil };`,
         ),
       });
 
-      const info = createRuleViolationInfo("no-console", true, {
-        "src/api/service.ts": { count: 3 },
-        "src/app.ts": { count: 1 },
-        "src/config.ts": { count: 2 },
-        "src/standalone.ts": { count: 6 },
-        "src/utils/format.ts": { count: 4 },
-        "src/utils/unused.ts": { count: 5 },
-      });
-      const config = createConfig(
-        {
+      const info = {
+        meta: { isFixable: true, ruleId: "no-console" },
+        violations: {
+          "src/api/service.ts": { count: 3 },
+          "src/app.ts": { count: 1 },
+          "src/config.ts": { count: 2 },
+          "src/standalone.ts": { count: 6 },
+          "src/utils/format.ts": { count: 4 },
+          "src/utils/unused.ts": { count: 5 },
+        },
+      };
+      const config = configWithDefault({
+        correct: {
           strategy: {
             entrypoints: ["src/app.ts"],
             type: "import-graph",
           },
         },
-        fixture.getPath("."),
-      );
+        root: fixture.getPath("."),
+      });
 
       const result = await importGraphBasedStrategy(info, config);
 
@@ -227,16 +207,19 @@ export const app = { config, ApiService, formatUtil };`,
         ),
       });
 
-      const info = createRuleViolationInfo("no-console", true, {});
-      const config = createConfig(
-        {
+      const info = {
+        meta: { isFixable: true, ruleId: "no-console" },
+        violations: {},
+      };
+      const config = configWithDefault({
+        correct: {
           strategy: {
             entrypoints: ["src/entry.ts"],
             type: "import-graph",
           },
         },
-        fixture.getPath("."),
-      );
+        root: fixture.getPath("."),
+      });
 
       const result = await importGraphBasedStrategy(info, config);
 
@@ -264,20 +247,23 @@ export const app = { config, ApiService, formatUtil };`,
         ),
       });
 
-      const info = createRuleViolationInfo("no-console", true, {
-        "src/entry.ts": { count: 1 },
-        "src/nonexistent.ts": { count: 3 },
-        "src/other.ts": { count: 2 },
-      });
-      const config = createConfig(
-        {
+      const info = {
+        meta: { isFixable: true, ruleId: "no-console" },
+        violations: {
+          "src/entry.ts": { count: 1 },
+          "src/nonexistent.ts": { count: 3 },
+          "src/other.ts": { count: 2 },
+        },
+      };
+      const config = configWithDefault({
+        correct: {
           strategy: {
             entrypoints: ["src/entry.ts"],
             type: "import-graph",
           },
         },
-        fixture.getPath("."),
-      );
+        root: fixture.getPath("."),
+      });
 
       const result = await importGraphBasedStrategy(info, config);
 
