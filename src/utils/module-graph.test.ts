@@ -65,6 +65,11 @@ const createTSConfig = (overrides: Partial<TSConfig> = {}): TSConfig => {
 };
 
 describe("resolveModules", () => {
+  it("should return error if no entrypoints are provided", async () => {
+    const result = await resolveModules([]);
+    expect(result.error).toBe("At least one entrypoint must be provided");
+  });
+
   it("should resolve basic import chain", async () => {
     await using fixture = await createFixture({
       "package.json": JSON.stringify({

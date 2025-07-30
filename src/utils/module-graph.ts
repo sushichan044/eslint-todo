@@ -58,6 +58,13 @@ export async function resolveModules(
   entrypoints: string[],
   options: ResolveOptions = {},
 ): Promise<ModuleResolutionResult> {
+  if (entrypoints.length === 0) {
+    return {
+      error: "At least one entrypoint must be provided",
+      modules: null,
+    };
+  }
+
   const {
     // eslint-disable-next-line unicorn/prevent-abbreviations
     baseDir = cwd(),
