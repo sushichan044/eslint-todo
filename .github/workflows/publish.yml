@@ -38,10 +38,9 @@ jobs:
         with:
           registry-url: "https://registry.npmjs.org"
 
-      - name: Setup latest npm to use OIDC trusted publish
+      - name: Setup latest npm to use trusted publish
         run: |
-          # https://docs.npmjs.com/trusted-publishers requires npm 11.5.1 or later
-          pnpm install -g npm@^11.5.1
+          npm install -g npm@latest
 
       - name: Release
         run: pnpm exec release-it
