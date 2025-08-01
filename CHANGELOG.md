@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.5
+
+*No significant changes*
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.2.4...0.2.5)
+
 ## 0.2.4
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes
