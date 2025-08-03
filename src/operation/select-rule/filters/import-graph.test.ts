@@ -1,6 +1,7 @@
 import { createFixture } from "fs-fixture";
 import { describe, expect, it } from "vitest";
 
+import { applyViolationFilters } from ".";
 import { createTSConfig } from "../../../../tests/utils/tsconfig";
 import { configWithDefault } from "../../../config/config";
 import { ImportGraphBasedStrategy } from "./import-graph";
@@ -25,11 +26,12 @@ describe("importGraphBasedStrategy", () => {
         },
       });
 
-      const result = await new ImportGraphBasedStrategy({
+      const strategy = new ImportGraphBasedStrategy({
         config,
-      }).run(info);
+      });
+      const result = await applyViolationFilters([info], [strategy], config);
 
-      expect(result).toEqual(info);
+      expect(result.at(0)).toEqual(info);
     });
 
     it("processes info when strategy type is import-graph", async () => {
@@ -69,13 +71,13 @@ console.log(helper);`,
         },
         root: fixture.getPath("."),
       });
-
-      const result = await new ImportGraphBasedStrategy({
+      const strategy = new ImportGraphBasedStrategy({
         config,
-      }).run(info);
+      });
+      const result = await applyViolationFilters([info], [strategy], config);
 
-      expect(result.meta).toEqual(info.meta);
-      expect(result.violations).toEqual({
+      expect(result.at(0)?.meta).toEqual(info.meta);
+      expect(result.at(0)?.violations).toEqual({
         "src/entry.ts": { count: 1 },
         "src/helper.ts": { count: 2 },
         // "src/unused.ts" should be filtered out as it's not reachable
@@ -146,12 +148,13 @@ export const app = { config, ApiService, formatUtil };`,
         },
         root: fixture.getPath("."),
       });
-
-      const result = await new ImportGraphBasedStrategy({
+      const strategy = new ImportGraphBasedStrategy({
         config,
-      }).run(info);
+      });
 
-      expect(result.violations).toEqual({
+      const result = await applyViolationFilters([info], [strategy], config);
+
+      expect(result.at(0)?.violations).toEqual({
         "src/api/service.ts": { count: 3 },
         "src/app.ts": { count: 1 },
         "src/config.ts": { count: 2 },
@@ -192,12 +195,13 @@ export const app = { config, ApiService, formatUtil };`,
         },
         root: fixture.getPath("."),
       });
-
-      const result = await new ImportGraphBasedStrategy({
+      const strategy = new ImportGraphBasedStrategy({
         config,
-      }).run(info);
+      });
 
-      expect(result).toEqual({
+      const result = await applyViolationFilters([info], [strategy], config);
+
+      expect(result.at(0)).toEqual({
         meta: info.meta,
         violations: {},
       });
@@ -238,12 +242,13 @@ export const app = { config, ApiService, formatUtil };`,
         },
         root: fixture.getPath("."),
       });
-
-      const result = await new ImportGraphBasedStrategy({
+      const strategy = new ImportGraphBasedStrategy({
         config,
-      }).run(info);
+      });
 
-      expect(result.violations).toEqual({
+      const result = await applyViolationFilters([info], [strategy], config);
+
+      expect(result.at(0)?.violations).toEqual({
         "src/entry.ts": { count: 1 },
         // "src/other.ts" and "src/nonexistent.ts" should be filtered out
       });
