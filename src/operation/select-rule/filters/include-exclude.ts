@@ -16,8 +16,8 @@ export class IncludeExcludeFilter implements IViolationFilteringStrategy {
 
   readonly #context: ViolationFilteringStrategyContext;
 
-  #matchFileIsExcluded: Matcher | undefined;
-  #matchFileIsInclude: Matcher | undefined;
+  #matchFileIsExcluded: Matcher | null = null;
+  #matchFileIsInclude: Matcher | null = null;
 
   constructor(context: ViolationFilteringStrategyContext) {
     this.#context = context;
@@ -31,12 +31,12 @@ export class IncludeExcludeFilter implements IViolationFilteringStrategy {
       },
     } = this.#context.config;
 
-    if (excludeGlobs.length > 0) {
+    if (this.#matchFileIsExcluded == null && excludeGlobs.length > 0) {
       this.#matchFileIsExcluded = picomatch(excludeGlobs, {
         format: (input: string) => normalize(input),
       });
     }
-    if (includeGlobs.length > 0) {
+    if (this.#matchFileIsInclude == null && includeGlobs.length > 0) {
       this.#matchFileIsInclude = picomatch(includeGlobs, {
         format: (input: string) => normalize(input),
       });
@@ -81,7 +81,7 @@ export class IncludeExcludeFilter implements IViolationFilteringStrategy {
 
     if (this.#matchFileIsExcluded != null) {
       filteredFiles = filteredFiles.filter(
-        // this.#isExcludedFile is guaranteed by if statement above
+        // this.#matchFileIsExcluded is guaranteed by if statement above
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         (file) => !this.#matchFileIsExcluded!(file),
       );
@@ -89,7 +89,7 @@ export class IncludeExcludeFilter implements IViolationFilteringStrategy {
 
     if (this.#matchFileIsInclude != null) {
       filteredFiles = filteredFiles.filter((file) =>
-        // this.#isIncludedFile is guaranteed by if statement above
+        // this.#matchFileIsInclude is guaranteed by if statement above
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.#matchFileIsInclude!(file),
       );
