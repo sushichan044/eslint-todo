@@ -34,7 +34,7 @@ type ModuleResolutionResult =
     };
 
 // Dependency types that should be excluded (matches doNotFollow configuration)
-const EXCLUDED_DEPENDENCY_TYPES = new Set([
+const EXCLUDED_DEPENDENCY_TYPES = [
   "core",
   "npm",
   "npm-bundled",
@@ -43,7 +43,7 @@ const EXCLUDED_DEPENDENCY_TYPES = new Set([
   "npm-optional",
   "npm-peer",
   "npm-unknown",
-]);
+] as const;
 
 /**
  * Check if a module should be excluded based on its dependency types
@@ -51,7 +51,12 @@ const EXCLUDED_DEPENDENCY_TYPES = new Set([
  * @returns true if module should be excluded
  */
 export function shouldExcludeModule(dependencyTypes: string[]): boolean {
-  return dependencyTypes.some((type) => EXCLUDED_DEPENDENCY_TYPES.has(type));
+  return dependencyTypes.some((type) =>
+    EXCLUDED_DEPENDENCY_TYPES.includes(
+      // @ts-expect-error this works on runtime
+      type,
+    ),
+  );
 }
 
 export async function resolveModules(
@@ -80,15 +85,8 @@ export async function resolveModules(
       detectJSDocImports: true, // we need to trace @type{import("some-module")} in JSDoc
       doNotFollow: {
         dependencyTypes: [
-          // abort the search if we met external modules
-          "npm",
-          "npm-dev",
-          "npm-peer",
-          "npm-bundled",
-          "npm-no-pkg",
-          "npm-optional",
-          "npm-unknown",
-          "core",
+          // spread required to avoid type error...
+          ...EXCLUDED_DEPENDENCY_TYPES,
         ],
         path: "node_modules",
       },
