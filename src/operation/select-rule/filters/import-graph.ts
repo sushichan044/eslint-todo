@@ -1,42 +1,31 @@
 import type { RuleViolationInfo } from "../index";
 import type {
-  ViolationFilteringStrategy,
+  IViolationFilteringStrategy,
   ViolationFilteringStrategyContext,
 } from "./types";
 
 import { resolveModules } from "../../../utils/module-graph";
 import { pick } from "../../../utils/object";
 
-type ImportGraphBasedStrategyOptions = {
-  /**
-   * The set of files that are reachable from the entrypoints.
-   *
-   * If passed, the strategy will not resolve the module graph by itself.
-   *
-   * @example
-   * ```
-   * const reachableFiles = new Set(["src/index.ts", "src/utils/index.ts"]);
-   * ```
-   */
-  reachableFiles: Set<string>;
-};
-
-export class ImportGraphBasedStrategy implements ViolationFilteringStrategy {
+export class ImportGraphBasedStrategy implements IViolationFilteringStrategy {
   public readonly name = "import-graph";
+
+  readonly #context: ViolationFilteringStrategyContext;
   #reachableFiles: Set<string>;
 
-  constructor(options: Partial<ImportGraphBasedStrategyOptions> = {}) {
-    this.#reachableFiles = options.reachableFiles ?? new Set();
+  constructor(context: ViolationFilteringStrategyContext) {
+    this.#context = context;
+    this.#reachableFiles = new Set();
   }
 
-  async precompile(context: ViolationFilteringStrategyContext): Promise<void> {
-    if (context.config.correct.strategy.type !== "import-graph") {
+  async precompile(): Promise<void> {
+    if (this.#context.config.correct.strategy.type !== "import-graph") {
       return;
     }
 
-    const { entrypoints } = context.config.correct.strategy;
+    const { entrypoints } = this.#context.config.correct.strategy;
     const moduleResult = await resolveModules(entrypoints, {
-      baseDir: context.config.root,
+      baseDir: this.#context.config.root,
     });
     if (moduleResult.error != null) {
       return;
@@ -46,20 +35,16 @@ export class ImportGraphBasedStrategy implements ViolationFilteringStrategy {
     return;
   }
 
-  async run(
-    info: RuleViolationInfo,
-    context: ViolationFilteringStrategyContext,
-  ): Promise<RuleViolationInfo> {
-    if (context.config.correct.strategy.type !== "import-graph") {
+  async run(info: RuleViolationInfo): Promise<RuleViolationInfo> {
+    if (this.#context.config.correct.strategy.type !== "import-graph") {
       return info;
     }
 
-    const { entrypoints } = context.config.correct.strategy;
-
     // Generate module graph if not cached
     if (this.#reachableFiles.size === 0) {
+      const { entrypoints } = this.#context.config.correct.strategy;
       const moduleResult = await resolveModules(entrypoints, {
-        baseDir: context.config.root,
+        baseDir: this.#context.config.root,
       });
       if (moduleResult.error != null) {
         return info;

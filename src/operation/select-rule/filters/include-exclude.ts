@@ -1,26 +1,42 @@
+import picomatch from "picomatch";
+
 import type { RuleViolationInfo } from "../index";
 import type {
-  ViolationFilteringStrategy,
+  IViolationFilteringStrategy,
   ViolationFilteringStrategyContext,
 } from "./types";
 
-import { extractPathsByGlobs } from "../../../utils/glob";
 import { pick } from "../../../utils/object";
 
-export class IncludeExcludeFilter implements ViolationFilteringStrategy {
+export class IncludeExcludeFilter implements IViolationFilteringStrategy {
   public readonly name = "include-exclude";
 
-  run(
-    info: RuleViolationInfo,
-    context: ViolationFilteringStrategyContext,
-  ): RuleViolationInfo {
+  readonly #context: ViolationFilteringStrategyContext;
+  #excludeFilePattern: RegExp[] = [];
+  #includeFilePattern: RegExp[] = [];
+
+  constructor(context: ViolationFilteringStrategyContext) {
+    this.#context = context;
+  }
+
+  precompile(): void {
+    this.#excludeFilePattern = picomatch
+      .parse(this.#context.config.correct.exclude.files)
+      .map((p) => picomatch.compileRe(p));
+
+    this.#includeFilePattern = picomatch
+      .parse(this.#context.config.correct.include.files)
+      .map((p) => picomatch.compileRe(p));
+  }
+
+  run(info: RuleViolationInfo): RuleViolationInfo {
     const {
       correct: {
         autoFixableOnly,
-        exclude: { files: excludeGlobs, rules: excludedRules },
-        include: { files: includeGlobs, rules: includedRules },
+        exclude: { rules: excludedRules },
+        include: { rules: includedRules },
       },
-    } = context.config;
+    } = this.#context.config;
 
     // Guard clause: Check if rule is auto-fixable when required
     if (autoFixableOnly && !info.meta.isFixable) {
@@ -49,16 +65,27 @@ export class IncludeExcludeFilter implements ViolationFilteringStrategy {
     // Apply file filtering: first exclude files, then apply include filter
     let filteredFiles: string[] = Object.keys(info.violations);
     // Exclude files that match exclude.files patterns
-    if (excludeGlobs.length > 0) {
-      const excludedMatches = extractPathsByGlobs(filteredFiles, excludeGlobs);
-      filteredFiles = filteredFiles.filter(
-        (file) => !excludedMatches.includes(file),
-      );
+    if (this.#excludeFilePattern.length > 0) {
+      filteredFiles = filteredFiles.filter((file) => {
+        for (const pattern of this.#excludeFilePattern) {
+          if (pattern.test(file)) {
+            return false;
+          }
+        }
+        return true;
+      });
     }
 
     // Apply include.files filtering
-    if (includeGlobs.length > 0) {
-      filteredFiles = extractPathsByGlobs(filteredFiles, includeGlobs);
+    if (this.#includeFilePattern.length > 0) {
+      filteredFiles = filteredFiles.filter((file) => {
+        for (const pattern of this.#includeFilePattern) {
+          if (pattern.test(file)) {
+            return true;
+          }
+        }
+        return false;
+      });
     }
 
     return {

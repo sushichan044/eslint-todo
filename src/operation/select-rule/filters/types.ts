@@ -5,17 +5,11 @@ import type { RuleViolationInfo } from "../index";
 /**
  * @package
  */
-export type ViolationFilteringStrategy = {
+export interface IViolationFilteringStrategy {
   name: string;
-  run: (
-    info: RuleViolationInfo,
-    context: ViolationFilteringStrategyContext,
-  ) => MaybePromise<RuleViolationInfo>;
-
-  precompile?: (
-    context: ViolationFilteringStrategyContext,
-  ) => MaybePromise<void>;
-};
+  precompile?: () => MaybePromise<void>;
+  run: (info: RuleViolationInfo) => MaybePromise<RuleViolationInfo>;
+}
 
 /**
  * @package

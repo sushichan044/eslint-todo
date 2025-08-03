@@ -1,11 +1,10 @@
 import type { RuleViolationInfo } from "..";
 import type { Config } from "../../../config/config";
 import type {
-  ViolationFilteringStrategy,
+  IViolationFilteringStrategy,
   ViolationFilteringStrategyContext,
 } from "./types";
 
-import { resolveModules } from "../../../utils/module-graph";
 import { applyTransforms } from "../../../utils/transform";
 import { ImportGraphBasedStrategy } from "./import-graph";
 import { IncludeExcludeFilter } from "./include-exclude";
@@ -14,22 +13,11 @@ export const applyViolationFilters = async (
   infos: RuleViolationInfo[],
   config: Config,
 ): Promise<RuleViolationInfo[]> => {
-  const strategies: ViolationFilteringStrategy[] = [new IncludeExcludeFilter()];
+  const strategies: IViolationFilteringStrategy[] = [];
   if (config.correct.strategy.type === "import-graph") {
-    const resolvedModules = await resolveModules(
-      config.correct.strategy.entrypoints,
-      {
-        baseDir: config.root,
-      },
-    );
-    if (resolvedModules.error == null) {
-      strategies.unshift(
-        new ImportGraphBasedStrategy({
-          reachableFiles: new Set(resolvedModules.modules.map((m) => m.source)),
-        }),
-      );
-    }
+    strategies.push(new ImportGraphBasedStrategy({ config }));
   }
+  strategies.push(new IncludeExcludeFilter({ config }));
 
   const result: RuleViolationInfo[] = [];
 

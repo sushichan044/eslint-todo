@@ -25,9 +25,9 @@ describe("importGraphBasedStrategy", () => {
         },
       });
 
-      const result = await new ImportGraphBasedStrategy().run(info, {
+      const result = await new ImportGraphBasedStrategy({
         config,
-      });
+      }).run(info);
 
       expect(result).toEqual(info);
     });
@@ -70,9 +70,9 @@ console.log(helper);`,
         root: fixture.getPath("."),
       });
 
-      const result = await new ImportGraphBasedStrategy().run(info, {
+      const result = await new ImportGraphBasedStrategy({
         config,
-      });
+      }).run(info);
 
       expect(result.meta).toEqual(info.meta);
       expect(result.violations).toEqual({
@@ -147,9 +147,9 @@ export const app = { config, ApiService, formatUtil };`,
         root: fixture.getPath("."),
       });
 
-      const result = await new ImportGraphBasedStrategy().run(info, {
+      const result = await new ImportGraphBasedStrategy({
         config,
-      });
+      }).run(info);
 
       expect(result.violations).toEqual({
         "src/api/service.ts": { count: 3 },
@@ -193,9 +193,9 @@ export const app = { config, ApiService, formatUtil };`,
         root: fixture.getPath("."),
       });
 
-      const result = await new ImportGraphBasedStrategy().run(info, {
+      const result = await new ImportGraphBasedStrategy({
         config,
-      });
+      }).run(info);
 
       expect(result).toEqual({
         meta: info.meta,
@@ -239,9 +239,9 @@ export const app = { config, ApiService, formatUtil };`,
         root: fixture.getPath("."),
       });
 
-      const result = await new ImportGraphBasedStrategy().run(info, {
+      const result = await new ImportGraphBasedStrategy({
         config,
-      });
+      }).run(info);
 
       expect(result.violations).toEqual({
         "src/entry.ts": { count: 1 },
