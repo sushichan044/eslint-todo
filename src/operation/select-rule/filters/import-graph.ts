@@ -29,6 +29,23 @@ export class ImportGraphBasedStrategy implements ViolationFilteringStrategy {
     this.#reachableFiles = options.reachableFiles ?? new Set();
   }
 
+  async precompile(context: ViolationFilteringStrategyContext): Promise<void> {
+    if (context.config.correct.strategy.type !== "import-graph") {
+      return;
+    }
+
+    const { entrypoints } = context.config.correct.strategy;
+    const moduleResult = await resolveModules(entrypoints, {
+      baseDir: context.config.root,
+    });
+    if (moduleResult.error != null) {
+      return;
+    }
+
+    this.#reachableFiles = new Set(moduleResult.modules.map((m) => m.source));
+    return;
+  }
+
   async run(
     info: RuleViolationInfo,
     context: ViolationFilteringStrategyContext,

@@ -1,6 +1,9 @@
 import type { MaybePromise } from "./types";
 
-type Transform<T, C> = { run: (data: T, context: C) => MaybePromise<T> };
+type Transform<T, C> = {
+  precompile?: (context: C) => MaybePromise<void>;
+  run: (data: T, context: C) => MaybePromise<T>;
+};
 
 type TransformResult<T> =
   | {
@@ -24,6 +27,18 @@ export async function applyTransforms<T, C>(
   let result: T = data;
   let error: Error | null = null;
 
+  // Precompile all transformers
+  await Promise.all(
+    transforms.map(async (transform) => {
+      try {
+        await transform.precompile?.(options.context);
+      } catch (error_) {
+        error = error_ instanceof Error ? error_ : new Error(String(error_));
+      }
+    }),
+  );
+
+  // Run all transformers
   for (const transform of transforms) {
     try {
       result = await transform.run(result, options.context);
