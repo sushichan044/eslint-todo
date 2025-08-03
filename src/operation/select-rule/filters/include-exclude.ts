@@ -1,11 +1,19 @@
-import type { ViolationFilteringStrategy } from "./types";
+import type { RuleViolationInfo } from "../index";
+import type {
+  ViolationFilteringStrategy,
+  ViolationFilteringStrategyContext,
+} from "./types";
 
 import { extractPathsByGlobs } from "../../../utils/glob";
 import { pick } from "../../../utils/object";
 
-export const includeExcludeFilter: ViolationFilteringStrategy = {
-  name: "include-exclude",
-  run: (info, context) => {
+export class IncludeExcludeFilter implements ViolationFilteringStrategy {
+  public readonly name = "include-exclude";
+
+  run(
+    info: RuleViolationInfo,
+    context: ViolationFilteringStrategyContext,
+  ): RuleViolationInfo {
     const {
       correct: {
         autoFixableOnly,
@@ -57,5 +65,5 @@ export const includeExcludeFilter: ViolationFilteringStrategy = {
       meta: info.meta,
       violations: pick(info.violations, filteredFiles),
     };
-  },
-};
+  }
+}
