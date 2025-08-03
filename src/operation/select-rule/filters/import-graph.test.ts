@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { createTSConfig } from "../../../../tests/utils/tsconfig";
 import { configWithDefault } from "../../../config/config";
-import { importGraphBasedStrategy } from "./import-graph";
+import { ImportGraphBasedStrategy } from "./import-graph";
 
 // ============================================================================
 // Tests
@@ -25,7 +25,9 @@ describe("importGraphBasedStrategy", () => {
         },
       });
 
-      const result = await importGraphBasedStrategy(info, config);
+      const result = await new ImportGraphBasedStrategy().run(info, {
+        config,
+      });
 
       expect(result).toEqual(info);
     });
@@ -68,7 +70,9 @@ console.log(helper);`,
         root: fixture.getPath("."),
       });
 
-      const result = await importGraphBasedStrategy(info, config);
+      const result = await new ImportGraphBasedStrategy().run(info, {
+        config,
+      });
 
       expect(result.meta).toEqual(info.meta);
       expect(result.violations).toEqual({
@@ -143,7 +147,9 @@ export const app = { config, ApiService, formatUtil };`,
         root: fixture.getPath("."),
       });
 
-      const result = await importGraphBasedStrategy(info, config);
+      const result = await new ImportGraphBasedStrategy().run(info, {
+        config,
+      });
 
       expect(result.violations).toEqual({
         "src/api/service.ts": { count: 3 },
@@ -187,7 +193,9 @@ export const app = { config, ApiService, formatUtil };`,
         root: fixture.getPath("."),
       });
 
-      const result = await importGraphBasedStrategy(info, config);
+      const result = await new ImportGraphBasedStrategy().run(info, {
+        config,
+      });
 
       expect(result).toEqual({
         meta: info.meta,
@@ -231,7 +239,9 @@ export const app = { config, ApiService, formatUtil };`,
         root: fixture.getPath("."),
       });
 
-      const result = await importGraphBasedStrategy(info, config);
+      const result = await new ImportGraphBasedStrategy().run(info, {
+        config,
+      });
 
       expect(result.violations).toEqual({
         "src/entry.ts": { count: 1 },
