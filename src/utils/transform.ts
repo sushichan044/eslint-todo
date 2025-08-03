@@ -1,6 +1,6 @@
 import type { MaybePromise } from "./types";
 
-type Transform<T, C> = (data: T, context: C) => MaybePromise<T>;
+type Transform<T, C> = { run: (data: T, context: C) => MaybePromise<T> };
 
 type TransformResult<T> =
   | {
@@ -26,7 +26,7 @@ export async function applyTransforms<T, C>(
 
   for (const transform of transforms) {
     try {
-      result = await transform(result, options.context);
+      result = await transform.run(result, options.context);
     } catch (error_) {
       // abort immediately on error
       error = error_ instanceof Error ? error_ : new Error(String(error_));
