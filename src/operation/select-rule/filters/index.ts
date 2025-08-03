@@ -1,17 +1,20 @@
 import type { RuleViolationInfo } from "..";
 import type { Config } from "../../../config/config";
-import type { ViolationFilteringStrategyContext } from "./types";
+import type {
+  ViolationFilteringStrategy,
+  ViolationFilteringStrategyContext,
+} from "./types";
 
 import { resolveModules } from "../../../utils/module-graph";
 import { applyTransforms } from "../../../utils/transform";
 import { ImportGraphBasedStrategy } from "./import-graph";
-import { includeExcludeFilter } from "./include-exclude";
+import { IncludeExcludeFilter } from "./include-exclude";
 
 export const applyViolationFilters = async (
   infos: RuleViolationInfo[],
   config: Config,
 ): Promise<RuleViolationInfo[]> => {
-  const strategies = [includeExcludeFilter];
+  const strategies: ViolationFilteringStrategy[] = [new IncludeExcludeFilter()];
   if (config.correct.strategy.type === "import-graph") {
     const resolvedModules = await resolveModules(
       config.correct.strategy.entrypoints,

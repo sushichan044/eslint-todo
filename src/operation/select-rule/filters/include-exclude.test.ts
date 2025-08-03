@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import { configWithDefault } from "../../../config/config";
-import { includeExcludeFilter } from "./include-exclude";
+import { IncludeExcludeFilter } from "./include-exclude";
 
 // ============================================================================
 // Tests
 // ============================================================================
 
-describe("includeExcludeFilter", () => {
+describe("IncludeExcludeFilter", () => {
   describe("autoFixableOnly filtering", () => {
     it("excludes non-fixable rules when autoFixableOnly is true", () => {
       const info = {
@@ -20,7 +20,8 @@ describe("includeExcludeFilter", () => {
         correct: { autoFixableOnly: true },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: false, ruleId: "no-console" },
@@ -39,7 +40,8 @@ describe("includeExcludeFilter", () => {
         correct: { autoFixableOnly: true },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "prefer-const" },
@@ -60,7 +62,8 @@ describe("includeExcludeFilter", () => {
         correct: { autoFixableOnly: false },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: false, ruleId: "no-console" },
@@ -85,7 +88,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "no-console" },
@@ -106,7 +110,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "prefer-const" },
@@ -129,7 +134,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "no-console" },
@@ -152,7 +158,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "prefer-const" },
@@ -173,7 +180,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "prefer-const" },
@@ -200,7 +208,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "no-console" },
@@ -226,7 +235,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "no-console" },
@@ -252,7 +262,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "no-console" },
@@ -276,7 +287,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "no-console" },
@@ -291,7 +303,8 @@ describe("includeExcludeFilter", () => {
       };
       const config = configWithDefault();
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "no-console" },
@@ -316,7 +329,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: false, ruleId: "no-console" },
@@ -340,7 +354,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "no-console" },
@@ -366,7 +381,8 @@ describe("includeExcludeFilter", () => {
         },
       });
 
-      const result = includeExcludeFilter.run(info, { config });
+      const filter = new IncludeExcludeFilter();
+      const result = filter.run(info, { config });
 
       expect(result).toEqual({
         meta: { isFixable: true, ruleId: "no-console" },
