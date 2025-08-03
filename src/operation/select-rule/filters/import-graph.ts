@@ -39,16 +39,15 @@ export class ImportGraphBasedStrategy implements ViolationFilteringStrategy {
 
     const { entrypoints } = context.config.correct.strategy;
 
-    // 1. Build module graph
-    const moduleResult = await resolveModules(entrypoints, {
-      baseDir: context.config.root,
-    });
-    if (moduleResult.error != null) {
-      console.warn(`Module resolution failed: ${moduleResult.error}`);
-      return info;
-    }
-
+    // Generate module graph if not cached
     if (this.#reachableFiles.size === 0) {
+      const moduleResult = await resolveModules(entrypoints, {
+        baseDir: context.config.root,
+      });
+      if (moduleResult.error != null) {
+        return info;
+      }
+
       this.#reachableFiles = new Set(moduleResult.modules.map((m) => m.source));
     }
 
