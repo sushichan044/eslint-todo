@@ -1,3 +1,6 @@
+import type { Matcher } from "picomatch";
+
+import { normalize } from "pathe";
 import picomatch from "picomatch";
 
 import type { RuleViolationInfo } from "../index";
@@ -12,21 +15,32 @@ export class IncludeExcludeFilter implements IViolationFilteringStrategy {
   public readonly name = "include-exclude";
 
   readonly #context: ViolationFilteringStrategyContext;
-  #excludeFilePattern: RegExp[] = [];
-  #includeFilePattern: RegExp[] = [];
+
+  #matchFileIsExcluded: Matcher | undefined;
+  #matchFileIsInclude: Matcher | undefined;
 
   constructor(context: ViolationFilteringStrategyContext) {
     this.#context = context;
   }
 
   precompile(): void {
-    this.#excludeFilePattern = picomatch
-      .parse(this.#context.config.correct.exclude.files)
-      .map((p) => picomatch.compileRe(p));
+    const {
+      correct: {
+        exclude: { files: excludeGlobs },
+        include: { files: includeGlobs },
+      },
+    } = this.#context.config;
 
-    this.#includeFilePattern = picomatch
-      .parse(this.#context.config.correct.include.files)
-      .map((p) => picomatch.compileRe(p));
+    if (excludeGlobs.length > 0) {
+      this.#matchFileIsExcluded = picomatch(excludeGlobs, {
+        format: (input: string) => normalize(input),
+      });
+    }
+    if (includeGlobs.length > 0) {
+      this.#matchFileIsInclude = picomatch(includeGlobs, {
+        format: (input: string) => normalize(input),
+      });
+    }
   }
 
   run(info: RuleViolationInfo): RuleViolationInfo {
@@ -64,28 +78,21 @@ export class IncludeExcludeFilter implements IViolationFilteringStrategy {
 
     // Apply file filtering: first exclude files, then apply include filter
     let filteredFiles: string[] = Object.keys(info.violations);
-    // Exclude files that match exclude.files patterns
-    if (this.#excludeFilePattern.length > 0) {
-      filteredFiles = filteredFiles.filter((file) => {
-        for (const pattern of this.#excludeFilePattern) {
-          if (pattern.test(file)) {
-            return false;
-          }
-        }
-        return true;
-      });
+
+    if (this.#matchFileIsExcluded != null) {
+      filteredFiles = filteredFiles.filter(
+        // this.#isExcludedFile is guaranteed by if statement above
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        (file) => !this.#matchFileIsExcluded!(file),
+      );
     }
 
-    // Apply include.files filtering
-    if (this.#includeFilePattern.length > 0) {
-      filteredFiles = filteredFiles.filter((file) => {
-        for (const pattern of this.#includeFilePattern) {
-          if (pattern.test(file)) {
-            return true;
-          }
-        }
-        return false;
-      });
+    if (this.#matchFileIsInclude != null) {
+      filteredFiles = filteredFiles.filter((file) =>
+        // this.#isIncludedFile is guaranteed by if statement above
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.#matchFileIsInclude!(file),
+      );
     }
 
     return {
