@@ -1,10 +1,13 @@
 import type { Config, CorrectModeConfig } from "../../config/config";
 import type { ESLintConfigSubset } from "../../lib/eslint";
 import type { ESLintSuppressionsJson } from "../../suppressions-json/types";
+import type { IViolationFilteringStrategy } from "./filters/types";
 
 import { isRuleFixable } from "../../lib/eslint";
 import { toRuleBasedSuppression } from "../../suppressions-json/rule-based";
 import { applyViolationFilters } from "./filters";
+import { ImportGraphBasedStrategy } from "./filters/import-graph";
+import { IncludeExcludeFilter } from "./filters/include-exclude";
 
 // ============================================================================
 // Rule Selection Types
@@ -260,11 +263,23 @@ export async function selectRuleToCorrect(
     violationInfos,
     config.correct,
   );
+  const strategies: IViolationFilteringStrategy[] = [];
+  if (config.correct.strategy.type === "import-graph") {
+    strategies.push(new ImportGraphBasedStrategy({ config }));
+  }
+  strategies.push(new IncludeExcludeFilter({ config }));
 
   if (fullSelectable.length > 0) {
-    const filtered = await applyViolationFilters(fullSelectable, config);
+    const candidates = await applyViolationFilters(
+      fullSelectable,
+      strategies,
+      config,
+    );
+    const nonEmpty = candidates.filter(
+      (info) => Object.keys(info.violations).length > 0,
+    );
     const bestRule = sortRulesByPriority(
-      filtered,
+      nonEmpty,
       config.correct.limit.type,
     )[0];
 
@@ -281,9 +296,16 @@ export async function selectRuleToCorrect(
     return { success: false };
   }
 
-  const pFiltered = await applyViolationFilters(partialSelectable, config);
+  const pCandidates = await applyViolationFilters(
+    partialSelectable,
+    strategies,
+    config,
+  );
+  const pNonEmpty = pCandidates.filter(
+    (info) => Object.keys(info.violations).length > 0,
+  );
   const bestPartialSelectableRule = sortRulesByPriority(
-    pFiltered,
+    pNonEmpty,
     config.correct.limit.type,
   )[0];
 

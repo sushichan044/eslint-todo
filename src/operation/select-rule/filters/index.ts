@@ -6,19 +6,12 @@ import type {
 } from "./types";
 
 import { applyTransforms } from "../../../utils/transform";
-import { ImportGraphBasedStrategy } from "./import-graph";
-import { IncludeExcludeFilter } from "./include-exclude";
 
 export const applyViolationFilters = async (
   infos: RuleViolationInfo[],
+  strategies: IViolationFilteringStrategy[],
   config: Config,
 ): Promise<RuleViolationInfo[]> => {
-  const strategies: IViolationFilteringStrategy[] = [];
-  if (config.correct.strategy.type === "import-graph") {
-    strategies.push(new ImportGraphBasedStrategy({ config }));
-  }
-  strategies.push(new IncludeExcludeFilter({ config }));
-
   const result: RuleViolationInfo[] = [];
 
   for (const info of infos) {
@@ -34,11 +27,6 @@ export const applyViolationFilters = async (
       );
       // Use original info as fallback when filtering fails
       result.push(info);
-      continue;
-    }
-
-    if (Object.keys(transformed.data.violations).length === 0) {
-      // drop if all violations were wiped out
       continue;
     }
 
