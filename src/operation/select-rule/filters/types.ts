@@ -11,6 +11,10 @@ export type ViolationFilteringStrategy = {
     info: RuleViolationInfo,
     context: ViolationFilteringStrategyContext,
   ) => MaybePromise<RuleViolationInfo>;
+
+  precompile?: (
+    context: ViolationFilteringStrategyContext,
+  ) => MaybePromise<void>;
 };
 
 /**
