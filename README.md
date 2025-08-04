@@ -22,7 +22,7 @@ Requires:
   - **Flat Config Required**
   - If you are using legacy config, you must migrate into flat config first.
     - Utilities like [@eslint/compat](https://github.com/eslint/rewrite/tree/main/packages/compat) can help you.
-- Node.js: `>= 20.0.0`
+- Node.js: `^20.12.0 || ^22.0.0 || >=24.0.0`
   - May work in Deno, but not tested.
 
 ## Getting Started
