@@ -26,6 +26,12 @@ export default typegen(
       "@repo/eslint-config/base__@virtual-live-lab/eslint-config/typescript",
       {
         rules: {
+          "@typescript-eslint/no-misused-promises": [
+            "error",
+            {
+              checksVoidReturn: false,
+            },
+          ],
           "@typescript-eslint/no-restricted-imports": [
             "error",
             {
