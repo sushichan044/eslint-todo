@@ -59,7 +59,11 @@ Add `--correct` flag to launch eslint-todo with correct mode.
 
 In this mode, you can make suppressed violations detectable again according to flexible conditions.
 
-For example, to resolve 40 violations from any rule other than `@typescript-eslint/no-explicit-any`, specify it as follows.
+#### 2.1. Rule-based and File-based Filtering (Default)
+
+The default strategy allows you to filter violations by rules and file patterns.
+
+For example, to resolve 40 violations from any rule other than `@typescript-eslint/no-explicit-any`, specify it as follows:
 
 ```bash
 eslint-todo --correct \
@@ -68,6 +72,37 @@ eslint-todo --correct \
   --correct.exclude.rules '@typescript-eslint/no-explicit-any' \
   --correct.limit.count 40 \
   --correct.limit.type violation
+```
+
+#### 2.2. Import Graph Strategy
+
+The import graph strategy uses dependency analysis to target only the files that are reachable from specified entrypoints. This is useful when you want to focus on fixing violations in code that is actually being used in your project.
+
+```bash
+eslint-todo --correct \
+  --correct.strategy.type import-graph \
+  --correct.strategy.entrypoints src/pages/HomePage.tsx \
+  --correct.limit.count 20 \
+  --correct.limit.type violation
+```
+
+In this example:
+
+- Only files reachable from `src/pages/HomePage.tsx` will be considered
+- This targets a specific page and all its dependencies (components, hooks, utilities)
+- External modules (node_modules) are automatically excluded
+- Up to 20 violations will be made detectable again
+- Perfect for testing the feature on a single page before expanding
+
+You can combine import graph strategy with other filters:
+
+```bash
+eslint-todo --correct \
+  --correct.strategy.type import-graph \
+  --correct.strategy.entrypoints src/pages/settings.tsx \
+  --correct.exclude.rules 'no-console,react/button-has-type' \
+  --correct.autoFixableOnly \
+  --correct.limit.count 15
 ```
 
 This will allow ESLint to detect the errors again, enabling you to have them fixed by AI or other tools.
@@ -101,6 +136,33 @@ export default defineConfig({
       count: 30,
       type: "violation",
     },
+    // Use default rule-based and file-based filtering
+    strategy: {
+      type: "normal",
+    },
+  },
+});
+```
+
+You can also use the import graph strategy to target only files reachable from specific entrypoints:
+
+```typescript
+// example: eslint-todo.config.ts with import graph strategy
+import { defineConfig } from '@sushichan044/eslint-todo/config';
+
+export default defineConfig({
+  correct: {
+    strategy: {
+      type: "import-graph",
+      entrypoints: ["src/pages/HomePage.tsx", "src/pages/AboutPage.tsx"],
+    },
+    limit: {
+      count: 25,
+      type: "violation",
+    },
+    exclude: {
+      rules: ["no-console", "react/no-unescaped-entities"],
+    },
   },
 });
 ```
@@ -116,9 +178,33 @@ Sure!
 {
   "$schema": "node_modules/@sushichan044/eslint-todo/config-schema.json",
   "correct": {
+    "strategy": {
+      "type": "normal"
+    },
     "limit": {
       "count": 30,
       "type": "violation"
+    }
+  }
+}
+```
+
+Or with import graph strategy:
+
+```json
+{
+  "$schema": "node_modules/@sushichan044/eslint-todo/config-schema.json",
+  "correct": {
+    "strategy": {
+      "type": "import-graph",
+      "entrypoints": ["src/pages/HomePage.tsx", "src/pages/AboutPage.tsx"]
+    },
+    "limit": {
+      "count": 25,
+      "type": "violation"
+    },
+    "exclude": {
+      "rules": ["no-console", "react/no-unescaped-entities"]
     }
   }
 }
