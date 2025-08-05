@@ -87,7 +87,7 @@
     "@ryoppippi/unplugin-typia": "2.6.5",
     "@types/fs-extra": "11.0.4",
     "@types/node": "22.16.5",
-    "@types/picomatch": "4.0.1",
+    "@types/picomatch": "4.0.2",
     "@virtual-live-lab/eslint-config": "2.2.24",
     "@virtual-live-lab/prettier-config": "2.0.21",
     "@virtual-live-lab/tsconfig": "2.1.21",
