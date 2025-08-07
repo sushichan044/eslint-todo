@@ -52,10 +52,7 @@ const EXCLUDED_DEPENDENCY_TYPES = [
  */
 export function shouldExcludeModule(dependencyTypes: string[]): boolean {
   return dependencyTypes.some((type) =>
-    EXCLUDED_DEPENDENCY_TYPES.includes(
-      // @ts-expect-error this works on runtime
-      type,
-    ),
+    (EXCLUDED_DEPENDENCY_TYPES as readonly string[]).includes(type),
   );
 }
 
@@ -110,8 +107,8 @@ export async function resolveModules(
             to: { circular: true },
           },
         ],
-        // this maybe bug of dependency-cruiser, needs more investigation
-        // @ts-expect-error we need to place tsConfig here to enable `tsconfig-paths-webpack-plugin`
+        // Workaround: dependency-cruiser requires tsConfig in options to enable tsconfig-paths-webpack-plugin
+        // @ts-expect-error - dependency-cruiser types don't reflect this requirement
         options: {
           tsConfig: {
             fileName: tsConfigPath,
@@ -129,7 +126,7 @@ export async function resolveModules(
 
   if (typeof cruiseResult.output === "string") {
     return {
-      error: "Module graph build failed",
+      error: `Module graph build failed: ${cruiseResult.output}`,
       modules: null,
     };
   }
