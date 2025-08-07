@@ -23,15 +23,7 @@ export class ImportGraphBasedStrategy implements IViolationFilteringStrategy {
       return;
     }
 
-    const { entrypoints } = this.#context.config.correct.strategy;
-    const moduleResult = await resolveModules(entrypoints, {
-      baseDir: this.#context.config.root,
-    });
-    if (moduleResult.error != null) {
-      return;
-    }
-
-    this.#reachableFiles = new Set(moduleResult.modules.map((m) => m.source));
+    await this.#resolveEntrypointsAndUpdateReachableFiles();
     return;
   }
 
@@ -42,20 +34,34 @@ export class ImportGraphBasedStrategy implements IViolationFilteringStrategy {
 
     // Generate module graph if not cached
     if (this.#reachableFiles.size === 0) {
-      const { entrypoints } = this.#context.config.correct.strategy;
-      const moduleResult = await resolveModules(entrypoints, {
-        baseDir: this.#context.config.root,
-      });
-      if (moduleResult.error != null) {
-        return info;
-      }
-
-      this.#reachableFiles = new Set(moduleResult.modules.map((m) => m.source));
+      const ok = await this.#resolveEntrypointsAndUpdateReachableFiles();
+      if (!ok) return info;
     }
 
     return {
       meta: info.meta,
       violations: pick(info.violations, [...this.#reachableFiles]),
     };
+  }
+
+  /**
+   * Resolve configured entrypoints and update reachable files cache
+   * @returns whether resolution succeeded
+   */
+  async #resolveEntrypointsAndUpdateReachableFiles(): Promise<boolean> {
+    const strategy = this.#context.config.correct.strategy;
+    if (strategy.type !== "import-graph") return false;
+
+    const moduleResult = await resolveModules(strategy.entrypoints, {
+      baseDir: this.#context.config.root,
+    });
+    if (moduleResult.error !== null) {
+      return false;
+    }
+
+    this.#reachableFiles = new Set(
+      moduleResult.modules.map((moduleItem) => moduleItem.source),
+    );
+    return true;
   }
 }
