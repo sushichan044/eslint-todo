@@ -15,14 +15,8 @@ importers:
         specifier: 1.17.2
         version: 1.17.2
       '@sushichan044/eslint-config-array-resolver':
-        specifier: 0.1.1
-        version: 0.1.1(esbuild@0.25.8)
-      '@typescript-eslint/utils':
-        specifier: 8.38.0
-        version: 8.38.0(eslint@9.32.0(jiti@2.5.1))(typescript@5.9.2)
-      bundle-require:
-        specifier: 5.1.0
-        version: 5.1.0(esbuild@0.25.8)
+        specifier: 0.1.2
+        version: 0.1.2(esbuild@0.25.8)(eslint@9.32.0(jiti@2.5.1))(typescript@5.9.2)
       comlink:
         specifier: 4.4.2
         version: 4.4.2
@@ -32,9 +26,6 @@ importers:
       defu:
         specifier: 6.1.4
         version: 6.1.4
-      empathic:
-        specifier: 2.0.0
-        version: 2.0.0
       gunshi:
         specifier: 0.27.0-alpha.10
         version: 0.27.0-alpha.10
@@ -50,9 +41,6 @@ importers:
       magicast:
         specifier: 0.3.5
         version: 0.3.5
-      mlly:
-        specifier: 1.7.4
-        version: 1.7.4
       pathe:
         specifier: 2.0.3
         version: 2.0.3
@@ -1184,8 +1172,8 @@ packages:
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
-  '@sushichan044/eslint-config-array-resolver@0.1.1':
-    resolution: {integrity: sha512-SnFqC1I9Dvu/QeNkBGL1xbQp0SWIVBU0cR5RBPVrmJbviW8ZoloP0dFHsOH5E7f87rZYIoeI348yPA6ebJltKg==}
+  '@sushichan044/eslint-config-array-resolver@0.1.2':
+    resolution: {integrity: sha512-V96AuAa3D//cfzmCBfDB1wLRHCsMG3wwAJwZHiE1pkjkvJsOFdQlCRxohtziYecD9orpace6Q5VtLcSwRqqtdw==}
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
@@ -5249,14 +5237,18 @@ snapshots:
 
   '@standard-schema/spec@1.0.0': {}
 
-  '@sushichan044/eslint-config-array-resolver@0.1.1(esbuild@0.25.8)':
+  '@sushichan044/eslint-config-array-resolver@0.1.2(esbuild@0.25.8)(eslint@9.32.0(jiti@2.5.1))(typescript@5.9.2)':
     dependencies:
+      '@typescript-eslint/utils': 8.38.0(eslint@9.32.0(jiti@2.5.1))(typescript@5.9.2)
       bundle-require: 5.1.0(esbuild@0.25.8)
       empathic: 2.0.0
       mlly: 1.7.4
       pathe: 2.0.3
     transitivePeerDependencies:
       - esbuild
+      - eslint
+      - supports-color
+      - typescript
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
