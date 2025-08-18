@@ -1,7 +1,5 @@
 import { defineConfig } from "tsdown";
 
-import { typiaRolldown } from "./typia-plugin";
-
 export default defineConfig({
   attw: { profile: "esmOnly" },
   clean: true,
@@ -19,6 +17,7 @@ export default defineConfig({
     "!./src/worker/**/*.test.ts",
   ],
   format: "esm",
+  fromVite: true,
   minify: "dce-only",
   nodeProtocol: true,
   onSuccess: "pnpm run build:json-schema",
@@ -28,7 +27,6 @@ export default defineConfig({
       js: ".mjs",
     };
   },
-  plugins: [typiaRolldown],
   publint: true,
   sourcemap: false,
   treeshake: true,
