@@ -16,6 +16,7 @@ import { handleCorrect } from "../handlers/correct";
 import { handleGenerate } from "../handlers/generate";
 import { handleMCP } from "../handlers/mcp";
 import { logger } from "../logger";
+import { buildStrategyFromCLI } from "../utils/strategy";
 import {
   commonArguments,
   correctModeArguments,
@@ -86,6 +87,7 @@ const mainCmd = define({
           type: context.values["correct.limit.type"],
         },
         partialSelection: context.values["correct.partialSelection"],
+        strategy: buildStrategyFromCLI(context),
       },
       root: context.values.root,
       todoFile: context.values.todoFile,
