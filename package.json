@@ -61,7 +61,7 @@
     "eslint": "^8.57.0 || ^9.0.0"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.17.2",
+    "@modelcontextprotocol/sdk": "1.17.4",
     "@sushichan044/eslint-config-array-resolver": "0.1.2",
     "comlink": "4.4.2",
     "consola": "3.4.2",
