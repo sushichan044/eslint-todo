@@ -189,4 +189,54 @@ describe("FlattenObject", () => {
       }>();
     });
   });
+
+  describe("negative and boundary cases", () => {
+    it("should return never for top-level arrays", () => {
+      expectTypeOf<FlattenObject<string[]>>().toEqualTypeOf<never>();
+      expectTypeOf<FlattenObject<number[]>>().toEqualTypeOf<never>();
+      expectTypeOf<FlattenObject<readonly boolean[]>>().toEqualTypeOf<never>();
+    });
+
+    it("should return never for top-level functions", () => {
+      expectTypeOf<FlattenObject<() => void>>().toEqualTypeOf<never>();
+      expectTypeOf<
+        FlattenObject<(x: string) => number>
+      >().toEqualTypeOf<never>();
+    });
+
+    it("should ignore numeric-indexed keys and only flatten string keys", () => {
+      expectTypeOf<FlattenObject<{ 0: string; one: number }>>().toEqualTypeOf<{
+        one: number;
+      }>();
+
+      expectTypeOf<
+        FlattenObject<{
+          1: boolean;
+          2: string;
+          anotherKey: { nested: string };
+          validKey: number;
+        }>
+      >().toEqualTypeOf<{
+        "anotherKey.nested": string;
+        "validKey": number;
+      }>();
+    });
+
+    it("should ignore symbol keys and only flatten string keys", () => {
+      const uniqueSymbol = Symbol("unique");
+      type WithSymbol = {
+        a: number;
+        nested: {
+          b: string;
+          [uniqueSymbol]: boolean;
+        };
+        [uniqueSymbol]: string;
+      };
+
+      expectTypeOf<FlattenObject<WithSymbol>>().toEqualTypeOf<{
+        "a": number;
+        "nested.b": string;
+      }>();
+    });
+  });
 });
