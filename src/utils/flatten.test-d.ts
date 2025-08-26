@@ -145,4 +145,153 @@ describe("FlattenObject", () => {
       }>();
     });
   });
+
+  describe("discriminated union", () => {
+    it("should handle discriminated union", () => {
+      expectTypeOf<
+        FlattenObject<
+          | {
+              type: "bar";
+              value: { bar: string };
+            }
+          | {
+              type: "foo";
+              value: { foo: string };
+            }
+        >
+      >().toEqualTypeOf<
+        | {
+            "type": "bar";
+            "value.bar": string;
+          }
+        | {
+            "type": "foo";
+            "value.foo": string;
+          }
+      >();
+    });
+
+    it("should handle discriminated union with conditional keys", () => {
+      expectTypeOf<
+        FlattenObject<{
+          a:
+            | {
+                type: "bar";
+              }
+            | {
+                type: "foo";
+                value: string;
+              };
+        }>
+      >().toEqualTypeOf<{
+        "a.type": "bar" | "foo";
+        "a.value": never; // Properties not present in all union branches become never
+      }>();
+    });
+  });
+
+  describe("array preservation", () => {
+    it("should preserve arrays as terminal values regardless of nesting", () => {
+      // Top-level arrays
+      expectTypeOf<FlattenObject<string[]>>().toEqualTypeOf<string[]>();
+      expectTypeOf<FlattenObject<readonly boolean[]>>().toEqualTypeOf<
+        readonly boolean[]
+      >();
+
+      // Nested arrays are preserved in their original form
+      expectTypeOf<
+        FlattenObject<{
+          nested: {
+            array: number[];
+            deep: {
+              items: readonly string[];
+            };
+          };
+          topLevelArray: string[];
+        }>
+      >().toEqualTypeOf<{
+        "nested.array": number[];
+        "nested.deep.items": readonly string[];
+        "topLevelArray": string[];
+      }>();
+    });
+
+    it("should handle arrays containing objects without flattening array elements", () => {
+      expectTypeOf<
+        FlattenObject<{
+          items: Array<{ name: string; value: number }>;
+          nested: {
+            data: Array<{ id: number; meta: { tag: string } }>;
+          };
+        }>
+      >().toEqualTypeOf<{
+        "items": Array<{ name: string; value: number }>;
+        "nested.data": Array<{ id: number; meta: { tag: string } }>;
+      }>();
+    });
+  });
+
+  describe("function preservation", () => {
+    it("should preserve functions as terminal values regardless of nesting", () => {
+      // Top-level functions
+      expectTypeOf<FlattenObject<() => void>>().toEqualTypeOf<() => void>();
+      expectTypeOf<FlattenObject<(x: string) => number>>().toEqualTypeOf<
+        (x: string) => number
+      >();
+
+      // Nested functions are preserved in their original form
+      expectTypeOf<
+        FlattenObject<{
+          nested: {
+            deep: {
+              handler: (error: Error) => void;
+            };
+            func: (data: string) => boolean;
+          };
+          topLevelFunc: () => void;
+        }>
+      >().toEqualTypeOf<{
+        "nested.deep.handler": (error: Error) => void;
+        "nested.func": (data: string) => boolean;
+        "topLevelFunc": () => void;
+      }>();
+    });
+  });
+
+  describe("negative and boundary cases", () => {
+    it("should ignore numeric-indexed keys and only flatten string keys", () => {
+      expectTypeOf<FlattenObject<{ 0: string; one: number }>>().toEqualTypeOf<{
+        one: number;
+      }>();
+
+      expectTypeOf<
+        FlattenObject<{
+          1: boolean;
+          2: string;
+          anotherKey: { nested: string };
+          validKey: number;
+        }>
+      >().toEqualTypeOf<{
+        "anotherKey.nested": string;
+        "validKey": number;
+      }>();
+    });
+
+    it("should ignore symbol keys and only flatten string keys", () => {
+      const uniqueSymbol = Symbol("unique");
+      type WithSymbol = {
+        a: number;
+        nested: {
+          b: string;
+          [uniqueSymbol]: boolean;
+        };
+        [uniqueSymbol]: string;
+      };
+
+      expectTypeOf<FlattenObject<WithSymbol>>().toEqualTypeOf<{
+        "a": number;
+        "nested.b": string;
+      }>();
+    });
+  });
 });
