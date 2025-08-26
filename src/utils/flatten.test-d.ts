@@ -190,22 +190,75 @@ describe("FlattenObject", () => {
     });
   });
 
-  describe("negative and boundary cases", () => {
-    it("should return the array type for top-level arrays", () => {
+  describe("array preservation", () => {
+    it("should preserve arrays as terminal values regardless of nesting", () => {
+      // Top-level arrays
       expectTypeOf<FlattenObject<string[]>>().toEqualTypeOf<string[]>();
-      expectTypeOf<FlattenObject<number[]>>().toEqualTypeOf<number[]>();
       expectTypeOf<FlattenObject<readonly boolean[]>>().toEqualTypeOf<
         readonly boolean[]
       >();
+
+      // Nested arrays are preserved in their original form
+      expectTypeOf<
+        FlattenObject<{
+          nested: {
+            array: number[];
+            deep: {
+              items: readonly string[];
+            };
+          };
+          topLevelArray: string[];
+        }>
+      >().toEqualTypeOf<{
+        "nested.array": number[];
+        "nested.deep.items": readonly string[];
+        "topLevelArray": string[];
+      }>();
     });
 
-    it("should return the function type for top-level functions", () => {
+    it("should handle arrays containing objects without flattening array elements", () => {
+      expectTypeOf<
+        FlattenObject<{
+          items: Array<{ name: string; value: number }>;
+          nested: {
+            data: Array<{ id: number; meta: { tag: string } }>;
+          };
+        }>
+      >().toEqualTypeOf<{
+        "items": Array<{ name: string; value: number }>;
+        "nested.data": Array<{ id: number; meta: { tag: string } }>;
+      }>();
+    });
+  });
+
+  describe("function preservation", () => {
+    it("should preserve functions as terminal values regardless of nesting", () => {
+      // Top-level functions
       expectTypeOf<FlattenObject<() => void>>().toEqualTypeOf<() => void>();
       expectTypeOf<FlattenObject<(x: string) => number>>().toEqualTypeOf<
         (x: string) => number
       >();
-    });
 
+      // Nested functions are preserved in their original form
+      expectTypeOf<
+        FlattenObject<{
+          nested: {
+            deep: {
+              handler: (error: Error) => void;
+            };
+            func: (data: string) => boolean;
+          };
+          topLevelFunc: () => void;
+        }>
+      >().toEqualTypeOf<{
+        "nested.deep.handler": (error: Error) => void;
+        "nested.func": (data: string) => boolean;
+        "topLevelFunc": () => void;
+      }>();
+    });
+  });
+
+  describe("negative and boundary cases", () => {
     it("should ignore numeric-indexed keys and only flatten string keys", () => {
       expectTypeOf<FlattenObject<{ 0: string; one: number }>>().toEqualTypeOf<{
         one: number;
