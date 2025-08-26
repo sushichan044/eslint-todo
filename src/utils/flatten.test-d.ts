@@ -145,4 +145,48 @@ describe("FlattenObject", () => {
       }>();
     });
   });
+
+  describe("discriminated union", () => {
+    it("should handle discriminated union", () => {
+      expectTypeOf<
+        FlattenObject<
+          | {
+              type: "bar";
+              value: { bar: string };
+            }
+          | {
+              type: "foo";
+              value: { foo: string };
+            }
+        >
+      >().toEqualTypeOf<
+        | {
+            "type": "bar";
+            "value.bar": string;
+          }
+        | {
+            "type": "foo";
+            "value.foo": string;
+          }
+      >();
+    });
+
+    it("should handle discriminated union with conditional keys", () => {
+      expectTypeOf<
+        FlattenObject<{
+          a:
+            | {
+                type: "bar";
+              }
+            | {
+                type: "foo";
+                value: string;
+              };
+        }>
+      >().toEqualTypeOf<{
+        "a.type": "bar" | "foo";
+        "a.value": never; // Properties not present in all union branches become never
+      }>();
+    });
+  });
 });
