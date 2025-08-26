@@ -1,20 +1,28 @@
 type PlainObjectLike = Record<PropertyKey, unknown>;
 
-export type FlattenObject<T> = T extends PlainObjectLike
-  ? {
-      [K in FlattenKeys<T>]: K extends `${infer P}.${infer S}`
-        ? P extends keyof T & string
-          ? T[P] extends PlainObjectLike
-            ? S extends keyof FlattenObject<T[P]>
-              ? FlattenObject<T[P]>[S]
+export type FlattenObject<T> = T extends readonly unknown[]
+  ? T
+  : T extends (...args: any[]) => any
+    ? T
+    : T extends PlainObjectLike
+      ? {
+          [K in FlattenKeys<T>]: K extends `${infer P}.${infer S}`
+            ? P extends keyof T & string
+              ? T[P] extends readonly unknown[]
+                ? T[P]
+                : T[P] extends (...args: any[]) => any
+                  ? T[P]
+                  : T[P] extends PlainObjectLike
+                    ? S extends keyof FlattenObject<T[P]>
+                      ? FlattenObject<T[P]>[S]
+                      : never
+                    : never
               : never
-            : never
-          : never
-        : K extends keyof T & string
-          ? T[K]
-          : never;
-    }
-  : never;
+            : K extends keyof T & string
+              ? T[K]
+              : never;
+        }
+      : never;
 
 type FlattenKeys<T> = T extends PlainObjectLike
   ? {

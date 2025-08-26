@@ -191,17 +191,19 @@ describe("FlattenObject", () => {
   });
 
   describe("negative and boundary cases", () => {
-    it("should return never for top-level arrays", () => {
-      expectTypeOf<FlattenObject<string[]>>().toEqualTypeOf<never>();
-      expectTypeOf<FlattenObject<number[]>>().toEqualTypeOf<never>();
-      expectTypeOf<FlattenObject<readonly boolean[]>>().toEqualTypeOf<never>();
+    it("should return the array type for top-level arrays", () => {
+      expectTypeOf<FlattenObject<string[]>>().toEqualTypeOf<string[]>();
+      expectTypeOf<FlattenObject<number[]>>().toEqualTypeOf<number[]>();
+      expectTypeOf<FlattenObject<readonly boolean[]>>().toEqualTypeOf<
+        readonly boolean[]
+      >();
     });
 
-    it("should return never for top-level functions", () => {
-      expectTypeOf<FlattenObject<() => void>>().toEqualTypeOf<never>();
-      expectTypeOf<
-        FlattenObject<(x: string) => number>
-      >().toEqualTypeOf<never>();
+    it("should return the function type for top-level functions", () => {
+      expectTypeOf<FlattenObject<() => void>>().toEqualTypeOf<() => void>();
+      expectTypeOf<FlattenObject<(x: string) => number>>().toEqualTypeOf<
+        (x: string) => number
+      >();
     });
 
     it("should ignore numeric-indexed keys and only flatten string keys", () => {
