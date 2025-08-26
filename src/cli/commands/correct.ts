@@ -6,6 +6,7 @@ import type { UserConfig } from "../../config";
 import { resolveFileConfig } from "../../config/resolve";
 import { handleCorrect } from "../handlers/correct";
 import { logger } from "../logger";
+import { buildStrategyFromCLI } from "../utils/strategy";
 import { commonArguments, correctModeArguments } from "./common-arguments";
 
 /**
@@ -45,6 +46,7 @@ export const correctCmd = define({
           type: context.values["correct.limit.type"],
         },
         partialSelection: context.values["correct.partialSelection"],
+        strategy: buildStrategyFromCLI(context),
       },
       root: context.values.root,
       todoFile: context.values.todoFile,
