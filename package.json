@@ -96,8 +96,8 @@
     "fs-extra": "11.3.0",
     "fs-fixture": "2.8.1",
     "globals": "16.3.0",
-    "pkg-pr-new": "0.0.54",
-    "pnpm": "10.14.0",
+    "pkg-pr-new": "0.0.58",
+    "pnpm": "10.15.0",
     "prettier": "3.6.2",
     "publint": "0.3.12",
     "release-it": "19.0.4",
@@ -113,7 +113,7 @@
     "vite-node": "3.2.4",
     "vitest": "3.2.4"
   },
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.0",
   "engines": {
     "node": "^20.12.0 || ^22.0.0 || >=24.0.0"
   },
