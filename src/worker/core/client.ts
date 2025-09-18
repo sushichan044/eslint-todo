@@ -1,9 +1,7 @@
 import * as Comlink from "comlink";
 // @ts-expect-error comlink node adapter has no types
 import nodeEndPoint from "comlink/dist/esm/node-adapter.mjs";
-import { fileURLToPath } from "node:url";
 import { Worker } from "node:worker_threads";
-import { dirname, join } from "pathe";
 
 import type { RemoteESLintTodoCore } from ".";
 
@@ -27,9 +25,7 @@ type RemoteCore = {
     ```
  */
 export const launchRemoteESLintTodoCore = (): RemoteCore => {
-  const worker = new Worker(
-    fileURLToPath(join(dirname(import.meta.url), "index.mjs")),
-  );
+  const worker = new Worker(new URL(import.meta.resolve("./index.mjs")));
 
   const remoteCore = Comlink.wrap<typeof RemoteESLintTodoCore>(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
