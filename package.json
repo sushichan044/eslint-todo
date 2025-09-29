@@ -95,7 +95,7 @@
     "eslint-typegen": "2.3.0",
     "fs-extra": "11.3.1",
     "fs-fixture": "2.8.1",
-    "globals": "16.3.0",
+    "globals": "16.4.0",
     "pkg-pr-new": "0.0.59",
     "pnpm": "10.15.1",
     "prettier": "3.6.2",
