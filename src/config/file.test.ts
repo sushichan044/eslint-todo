@@ -1,32 +1,24 @@
+import { createFixture } from "fs-fixture";
 import typia from "typia";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import type { UserConfig } from "./config";
 
-import * as importModule from "../utils/import";
 import { readConfigFile } from "./file";
 
-vi.mock("../utils/import", () => ({
-  importDefault: vi.fn<typeof importModule.importDefault>(),
-}));
-
 describe("readConfigFile", () => {
-  afterEach(() => {
-    vi.resetAllMocks();
-  });
-
   it("should successfully load and validate a normal config file", async () => {
     const randomConfig = typia.random<UserConfig>();
-    vi.mocked(importModule.importDefault).mockResolvedValue(randomConfig);
+    await using fixture = await createFixture({
+      "eslint-todo.config.ts": `export default ${JSON.stringify(randomConfig)}`,
+    });
 
-    const result = await readConfigFile("/test");
+    const result = await readConfigFile(fixture.path);
 
     expect(result.success).toBe(true);
-    expect(result.data).toStrictEqual(randomConfig);
-    expect(importModule.importDefault).toHaveBeenCalledWith(
-      "/test/eslint-todo.config",
-      {},
-    );
+    if (result.success) {
+      expect(result.data).toEqual(randomConfig);
+    }
   });
 
   it("should omit $schema property", async () => {
@@ -35,15 +27,19 @@ describe("readConfigFile", () => {
       root: "/test/path",
       todoFile: "test-todo.js",
     };
-    vi.mocked(importModule.importDefault).mockResolvedValue(mockConfig);
+    await using fixture = await createFixture({
+      "eslint-todo.config.json": JSON.stringify(mockConfig),
+    });
 
-    const result = await readConfigFile("/test");
+    const result = await readConfigFile(fixture.path);
 
     expect(result.success).toBe(true);
-    expect(result.data).toStrictEqual({
-      root: "/test/path",
-      todoFile: "test-todo.js",
-    });
+    if (result.success) {
+      expect(result.data).toEqual({
+        root: "/test/path",
+        todoFile: "test-todo.js",
+      });
+    }
   });
 
   it("should fail validation when config file contains extra properties", async () => {
@@ -52,9 +48,11 @@ describe("readConfigFile", () => {
       todoFile: "test-todo.js",
       unknownProperty: "this should cause an error",
     };
-    vi.mocked(importModule.importDefault).mockResolvedValue(mockConfig);
+    await using fixture = await createFixture({
+      "eslint-todo.config.json": JSON.stringify(mockConfig),
+    });
 
-    const result = await readConfigFile("/test");
+    const result = await readConfigFile(fixture.path);
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -64,21 +62,23 @@ describe("readConfigFile", () => {
   });
 
   it("should successfully validate an empty config file", async () => {
-    vi.mocked(importModule.importDefault).mockResolvedValue({});
+    await using fixture = await createFixture({
+      "eslint-todo.config.json": JSON.stringify({}),
+    });
 
-    const result = await readConfigFile("/test");
+    const result = await readConfigFile(fixture.path);
 
     expect(result.success).toBe(true);
     expect(result.data).toStrictEqual({});
   });
 
   it("should return an empty object when config file is not found", async () => {
-    vi.mocked(importModule.importDefault);
+    await using fixture = await createFixture({});
 
-    const result = await readConfigFile("/test");
+    const result = await readConfigFile(fixture.path);
 
     expect(result.success).toBe(true);
-    expect(result.data).toStrictEqual({});
+    expect(result.data).toEqual({});
   });
 
   it("should correctly validate nested properties in a valid config file", async () => {
@@ -97,12 +97,14 @@ describe("readConfigFile", () => {
       root: "/test/path",
       todoFile: "test-todo.js",
     };
-    vi.mocked(importModule.importDefault).mockResolvedValue(mockConfig);
+    await using fixture = await createFixture({
+      "eslint-todo.config.ts": `export default ${JSON.stringify(mockConfig)}`,
+    });
 
-    const result = await readConfigFile("/test");
+    const result = await readConfigFile(fixture.path);
 
     expect(result.success).toBe(true);
-    expect(result.data).toStrictEqual(mockConfig);
+    expect(result.data).toEqual(mockConfig);
   });
 
   it("should fail validation when nested properties contain invalid values", async () => {
@@ -121,9 +123,11 @@ describe("readConfigFile", () => {
       root: "/test/path",
       todoFile: "test-todo.js",
     };
-    vi.mocked(importModule.importDefault).mockResolvedValue(mockConfig);
+    await using fixture = await createFixture({
+      "eslint-todo.config.ts": `export default ${JSON.stringify(mockConfig)}`,
+    });
 
-    const result = await readConfigFile("/test");
+    const result = await readConfigFile(fixture.path);
 
     expect(result.success).toBe(false);
     if (!result.success) {
