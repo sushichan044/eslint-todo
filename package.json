@@ -110,7 +110,7 @@
     "typia": "9.7.2",
     "unplugin-unused": "0.5.2",
     "vite": "7.1.11",
-    "vite-node": "3.2.4",
+    "vite-node": "5.1.0",
     "vitest": "3.2.4"
   },
   "packageManager": "pnpm@10.15.1",
