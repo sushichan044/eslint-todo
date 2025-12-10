@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.6
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- Refine FlattenObject<T> type &nbsp;-&nbsp; by **Kentaro Suzuki** in https://github.com/sushichan044/eslint-todo/issues/358 [<samp>(b07db)</samp>](https://github.com/sushichan044/eslint-todo/commit/b07db93)
+- **deps**:
+  - Update dependency @sushichan044/eslint-config-array-resolver to v0.1.1 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/342 [<samp>(5631d)</samp>](https://github.com/sushichan044/eslint-todo/commit/5631d65)
+  - Update dependency @modelcontextprotocol/sdk to v1.17.2 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/341 [<samp>(cbcf1)</samp>](https://github.com/sushichan044/eslint-todo/commit/cbcf105)
+  - Update dependency @modelcontextprotocol/sdk to v1.17.4 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/365 [<samp>(90fd3)</samp>](https://github.com/sushichan044/eslint-todo/commit/90fd37d)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.2.5...0.2.6)
+
 ## 0.2.5
 
 *No significant changes*
