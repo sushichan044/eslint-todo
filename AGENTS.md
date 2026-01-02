@@ -12,15 +12,13 @@ This is `@sushichan044/eslint-todo`, a tool for temporarily disabling existing E
 
 - `pnpm run build` - Build the project using unbuild
 - `pnpm run dev` - Development mode with stubbing
-- `pnpm run test` - Run tests in watch mode using Vitest
-- `pnpm run test:run` - Run tests once
+- `pnpm run test` - Run tests
 - `pnpm run check` - Run full CI pipeline (build, lint, format check, typecheck, test)
 
 ### Code Quality
 
 - `pnpm run lint` - ESLint with zero warnings tolerance
 - `pnpm run format` - Format code with Prettier
-- `pnpm run format:ci` - Check formatting
 - `pnpm run typecheck` - TypeScript type checking
 
 ### Testing
@@ -56,19 +54,6 @@ This is `@sushichan044/eslint-todo`, a tool for temporarily disabling existing E
 
 ## Technical Details
 
-### Build System
-
-- Uses `unbuild` with Rollup
-- TypeScript with strict mode enabled
-- Typia for runtime type validation
-- Worker scripts must be included in build entries (validated at build time)
-
-### ESLint Integration
-
-- Requires ESLint Flat Config with ES Module
-- Self-hosting: uses own eslint-todo config at bottom of `eslint.config.ts`
-- Custom rules for preventing deprecated imports
-
 ### Dependencies
 
 - Core: ESLint utils, Zod, Comlink for workers
@@ -95,9 +80,3 @@ This is `@sushichan044/eslint-todo`, a tool for temporarily disabling existing E
 - Integration tests for rule selection algorithms
 - Unit tests for core utilities and configuration
 - File-based fixtures using fs-fixture
-
-## CLI Usage
-
-- Main command: `npx @sushichan044/eslint-todo`
-- Correct mode: `--correct` flag to incrementally fix violations
-- MCP server: `--mcp --root <path>` for AI agent integration
