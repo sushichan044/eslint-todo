@@ -96,7 +96,7 @@
     "ts-patch": "3.3.0",
     "tsdown": "0.15.5",
     "typescript": "5.9.2",
-    "typescript-eslint": "8.41.0",
+    "typescript-eslint": "8.51.0",
     "typia": "9.7.2",
     "unplugin-unused": "0.5.2",
     "vite": "7.1.11",
