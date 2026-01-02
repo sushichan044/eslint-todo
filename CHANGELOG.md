@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+### &nbsp;&nbsp;&nbsp;Breaking Changes
+
+- Remove experimental MCP Server &nbsp;-&nbsp; by **sushichan044** in https://github.com/sushichan044/eslint-todo/issues/399 [<samp>(da321)</samp>](https://github.com/sushichan044/eslint-todo/commit/da32116)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.2.6...0.3.0)
+
 ## 0.2.6
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes
