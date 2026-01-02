@@ -71,14 +71,11 @@ describe("UserConfigJsonSchema matches snapshot", () => {
                   },
                   "type": {
                     "description": "Type of limit to apply.",
-                    "oneOf": [
-                      {
-                        "const": "file",
-                      },
-                      {
-                        "const": "violation",
-                      },
+                    "enum": [
+                      "file",
+                      "violation",
                     ],
+                    "type": "string",
                   },
                 },
                 "required": [],

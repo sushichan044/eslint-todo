@@ -6,6 +6,5 @@ import type { UserConfig } from "./config";
 // 今回欲しいのは普通の json schema なので HACK ではあるが typia.llm.schema を使う。
 export const UserConfigJsonSchema = typia.llm.schema<
   UserConfig,
-  "3.1",
   { constraint: true; reference: false }
 >({});
