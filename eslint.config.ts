@@ -5,74 +5,41 @@ import type { ESLint } from "eslint";
 
 import ts from "@virtual-live-lab/eslint-config/presets/ts";
 import vitest from "@vitest/eslint-plugin";
-import { composer } from "eslint-flat-config-utils";
 import importAccess from "eslint-plugin-import-access/flat-config";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import typegen from "eslint-typegen";
+import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
-import tseslint from "typescript-eslint";
 
 import eslintConfigTodo from "./dist/eslint/index.mjs";
 
 export default typegen(
-  composer(
-    // @ts-expect-error type mismatch
-    ...tseslint.config({
-      extends: ts,
-      name: "@repo/eslint-config/base",
-    }),
-  )
-    .override("@repo/eslint-config/base__@virtual-live-lab/eslint-config/typescript", {
+  defineConfig(
+    globalIgnores(["src/generated/**"]),
+    {
+      extends: [ts],
+    },
+    {
+      extends: [eslintPluginUnicorn.configs.recommended],
+      name: "@repo/eslint-config/unicorn",
       rules: {
-        "@typescript-eslint/no-restricted-imports": [
+        "unicorn/filename-case": [
           "error",
           {
-            paths: [
-              {
-                importNames: ["default"],
-                message: "Please use named imports instead.",
-                name: "pathe",
-              },
-            ],
-            patterns: [
-              {
-                message: "Todofile v1 is deprecated. Please use v2 instead.",
-                regex: "/todofile/v1$",
-              },
-            ],
+            case: "kebabCase",
           },
         ],
-        "no-restricted-imports": "off",
+        "unicorn/no-null": "off",
       },
-    })
-    .append(
-      // @ts-expect-error type mismatch
-      tseslint.config({
-        extends: [eslintPluginUnicorn.configs.recommended],
-        name: "@repo/eslint-config/unicorn",
-        rules: {
-          "unicorn/filename-case": [
-            "error",
-            {
-              case: "kebabCase",
-            },
-          ],
-          "unicorn/no-null": "off",
-        },
-      }),
-    )
-    // @ts-expect-error type mismatch
-    .append({
+    },
+    {
+      extends: [vitest.configs.recommended],
       files: ["**/*.test.ts", "**/*.spec.ts"],
-      plugins: {
-        vitest,
-      },
       rules: {
-        ...vitest.configs.recommended.rules,
         "vitest/consistent-test-filename": "error",
       },
-    })
-    .append({
+    },
+    {
       files: ["**/*.ts"],
       plugins: {
         // Plugin の型が typescript-eslint ベースなので合わない
@@ -81,8 +48,8 @@ export default typegen(
       rules: {
         "import-access/jsdoc": "error",
       },
-    })
-    .append({
+    },
+    {
       files: ["bin/eslint-todo.mjs"],
       languageOptions: {
         globals: globals.nodeBuiltin,
@@ -90,9 +57,7 @@ export default typegen(
       rules: {
         "unicorn/filename-case": "off",
       },
-    })
-    .prepend({
-      ignores: ["src/generated/**"],
-    })
-    .append(eslintConfigTodo()),
+    },
+    await eslintConfigTodo(),
+  ),
 );

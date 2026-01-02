@@ -1,7 +1,6 @@
 import type { Linter } from "eslint";
 
 import type { RuleSeverity } from "../lib/eslint";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { TodoModuleV1 } from "../todofile/v1";
 import type { TodoModuleV2 } from "../todofile/v2";
 import type { ESLintSuppressionsJson } from "./types";
