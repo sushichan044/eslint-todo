@@ -125,30 +125,3 @@ Sure!
 ```
 
 </details>
-
-## Use as MCP server (Experimental)
-
-eslint-todo provides some useful tools to AI Agents via MCP.
-
-You mus specify `--mcp` and `--root <root path>`.
-
-### Setup for VSCode
-
-update `.vscode/mcp.json` in your workspace:
-
-```json
-{
-  "servers": {
-    "eslint-todo": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "@sushichan044/eslint-todo",
-        "--mcp",
-        "--root",
-        "${workspaceFolder}"
-      ]
-    }
-  }
-}
-```
