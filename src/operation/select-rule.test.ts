@@ -6,23 +6,17 @@ import type { TodoModuleV2 } from "../todofile/v2";
 import type { RuleViolationInfo } from "./select-rule";
 
 import { SuppressionsJsonGenerator } from "../suppressions-json";
-import {
-  decideOptimalRule,
-  filterViolations,
-  selectRuleToCorrect,
-} from "./select-rule";
+import { decideOptimalRule, filterViolations, selectRuleToCorrect } from "./select-rule";
 
 // ============================================================================
 // Shared Test Utilities
 // ============================================================================
 
-const createESLintConfig = (
-  rules: Record<string, { fixable: boolean }>,
-): ESLintConfigSubset => ({ rules });
+const createESLintConfig = (rules: Record<string, { fixable: boolean }>): ESLintConfigSubset => ({
+  rules,
+});
 
-const createConfig = (
-  overrides: Partial<CorrectModeConfig> = {},
-): CorrectModeConfig => ({
+const createConfig = (overrides: Partial<CorrectModeConfig> = {}): CorrectModeConfig => ({
   autoFixableOnly: false,
   exclude: { files: [], rules: [] },
   include: { files: [], rules: [] },
@@ -779,9 +773,9 @@ describe("selectRuleToCorrect integration", () => {
         limit: { count: 0, type: "file" as const },
       });
 
-      expect(() =>
-        selectRuleToCorrect(suppressions, createESLintConfig({}), config),
-      ).toThrowError("The file limit must be greater than 0");
+      expect(() => selectRuleToCorrect(suppressions, createESLintConfig({}), config)).toThrowError(
+        "The file limit must be greater than 0",
+      );
     });
 
     it("violation limit must be greater than 0", () => {
@@ -791,9 +785,9 @@ describe("selectRuleToCorrect integration", () => {
         limit: { count: -1, type: "violation" as const },
       });
 
-      expect(() =>
-        selectRuleToCorrect(suppressions, createESLintConfig({}), config),
-      ).toThrowError("The violation limit must be greater than 0");
+      expect(() => selectRuleToCorrect(suppressions, createESLintConfig({}), config)).toThrowError(
+        "The violation limit must be greater than 0",
+      );
     });
   });
 });

@@ -13,26 +13,22 @@ type Hooks = {
   "warn:todo-module-is-dirty": () => void;
 };
 
-export const deleteRuleAction = defineAction<Input, void, Hooks>(
-  async ({ core, hooks }, input) => {
-    const currentModule = await core.readTodoModule();
-    if (!TodoModuleV2Handler.isVersion(currentModule)) {
-      throw new Error(
-        "This action requires the latest version of the todo file.",
-      );
-    }
+export const deleteRuleAction = defineAction<Input, void, Hooks>(async ({ core, hooks }, input) => {
+  const currentModule = await core.readTodoModule();
+  if (!TodoModuleV2Handler.isVersion(currentModule)) {
+    throw new Error("This action requires the latest version of the todo file.");
+  }
 
-    const hasChanges = await core.todoModuleHasUncommittedChanges();
-    if (hasChanges) {
-      await hooks.callHook("warn:todo-module-is-dirty");
-      return;
-    }
+  const hasChanges = await core.todoModuleHasUncommittedChanges();
+  if (hasChanges) {
+    await hooks.callHook("warn:todo-module-is-dirty");
+    return;
+  }
 
-    await hooks.callHook("before:delete-and-write");
+  await hooks.callHook("before:delete-and-write");
 
-    const newModule = deleteRule(currentModule, input);
-    await core.writeTodoModule(TodoModuleSerializer.fromV2(newModule));
+  const newModule = deleteRule(currentModule, input);
+  await core.writeTodoModule(TodoModuleSerializer.fromV2(newModule));
 
-    await hooks.callHook("after:delete-and-write");
-  },
-);
+  await hooks.callHook("after:delete-and-write");
+});

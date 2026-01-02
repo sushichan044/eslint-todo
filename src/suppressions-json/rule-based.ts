@@ -1,7 +1,4 @@
-import type {
-  ESLintSuppressionsJson,
-  InternalRuleBasedSuppressionsJson,
-} from "./types";
+import type { ESLintSuppressionsJson, InternalRuleBasedSuppressionsJson } from "./types";
 
 /**
  * Convert from the official ESLint suppressions JSON format to rule-based format.

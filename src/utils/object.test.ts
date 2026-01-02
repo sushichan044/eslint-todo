@@ -19,9 +19,7 @@ describe("pick", () => {
 
   it("should ignore non-existent keys", () => {
     const object = { a: 1, b: 2 };
-    const result = pick(object, ["a", "c"] as unknown as Array<
-      keyof typeof object
-    >);
+    const result = pick(object, ["a", "c"] as unknown as Array<keyof typeof object>);
 
     expect(result).toEqual({ a: 1 });
   });

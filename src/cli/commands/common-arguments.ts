@@ -20,8 +20,7 @@ const parseCommaSeparatedString = (value: string): string[] => {
  */
 export const commonArguments = {
   root: {
-    description:
-      "Root directory of the project. (default: current working directory)",
+    description: "Root directory of the project. (default: current working directory)",
     type: "string",
   },
   todoFile: {
@@ -46,20 +45,17 @@ export const correctModeArguments = {
     type: "boolean",
   },
   "correct.exclude.files": {
-    description:
-      "Glob patterns for files to exclude from the operation. Comma-separated.",
+    description: "Glob patterns for files to exclude from the operation. Comma-separated.",
     parse: parseCommaSeparatedString,
     type: "custom",
   },
   "correct.exclude.rules": {
-    description:
-      "List of rules to exclude from the operation. Comma-separated.",
+    description: "List of rules to exclude from the operation. Comma-separated.",
     parse: parseCommaSeparatedString,
     type: "custom",
   },
   "correct.include.files": {
-    description:
-      "Glob patterns for files to include in the operation. Comma-separated.",
+    description: "Glob patterns for files to include in the operation. Comma-separated.",
     parse: parseCommaSeparatedString,
     type: "custom",
   },

@@ -47,7 +47,5 @@ export const deleteRule = (
   }
 
   const _exhaustiveCheck = ruleSelection satisfies never;
-  throw new Error(
-    `Unknown rule selection type ${JSON.stringify(_exhaustiveCheck)}`,
-  );
+  throw new Error(`Unknown rule selection type ${JSON.stringify(_exhaustiveCheck)}`);
 };

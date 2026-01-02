@@ -29,9 +29,7 @@ const generateJsonSchemaFile = async (outputDirectory: string) => {
 
   await fs.writeJSON(outPath, UserConfigJsonSchema, { spaces: 2 });
 
-  console.log(
-    `scripts/json-schema.ts: JSON schema file generated at ${outPath}`,
-  );
+  console.log(`scripts/json-schema.ts: JSON schema file generated at ${outPath}`);
 };
 
 await generateJsonSchemaFile(getRepoRoot());

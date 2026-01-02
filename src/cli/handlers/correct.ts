@@ -19,13 +19,9 @@ export const handleCorrect = async (cwd: string, userConfig: UserConfig) => {
   const eslintConfigSubset = createESLintConfigSubset(eslintConfig);
 
   const eslintTodoCore = new ESLintTodoCore(config);
-  const todoFilePathFromCLI = relative(
-    cwd,
-    eslintTodoCore.getTodoModulePath().absolute,
-  );
+  const todoFilePathFromCLI = relative(cwd, eslintTodoCore.getTodoModulePath().absolute);
 
-  const todoModuleHasChanges =
-    await eslintTodoCore.todoModuleHasUncommittedChanges();
+  const todoModuleHasChanges = await eslintTodoCore.todoModuleHasUncommittedChanges();
 
   if (todoModuleHasChanges) {
     logger.warn(
@@ -80,9 +76,10 @@ If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
         }
 
         if (result.selection.type === "partial") {
-          const violationCount = Object.entries(
-            result.selection.violations,
-          ).reduce((sum, [, count]) => sum + count, 0);
+          const violationCount = Object.entries(result.selection.violations).reduce(
+            (sum, [, count]) => sum + count,
+            0,
+          );
 
           logger.success(
             `${violationCount} violations of rule ${colorize(
@@ -94,9 +91,7 @@ If you want to fix ESLint errors, please use \`eslint --fix\` instead.`,
         }
 
         const _exhaustiveCheck = result.selection satisfies never;
-        throw new Error(
-          `Unknown selection type: ${JSON.stringify(_exhaustiveCheck)}`,
-        );
+        throw new Error(`Unknown selection type: ${JSON.stringify(_exhaustiveCheck)}`);
       },
     },
   });

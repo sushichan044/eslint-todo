@@ -17,10 +17,7 @@ export const handleGenerate = async (cwd: string, userConfig: UserConfig) => {
   const eslintConfigSubset = createESLintConfigSubset(eslintConfig);
 
   const eslintTodoCore = new ESLintTodoCore(config);
-  const todoFilePathFromCLI = relative(
-    cwd,
-    eslintTodoCore.getTodoModulePath().absolute,
-  );
+  const todoFilePathFromCLI = relative(cwd, eslintTodoCore.getTodoModulePath().absolute);
 
   const genActionExecutor = prepareAction(genAction, {
     config,

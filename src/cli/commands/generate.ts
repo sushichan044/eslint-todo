@@ -23,9 +23,7 @@ export const generateCmd = define({
      */
     const isDirty = Object.values(context.explicit).includes(true);
     if (isDirty) {
-      logger.warn(
-        "Ignoring config file because config is passed via CLI flags.",
-      );
+      logger.warn("Ignoring config file because config is passed via CLI flags.");
     }
 
     const userCLIConfig = {
@@ -34,9 +32,7 @@ export const generateCmd = define({
     } satisfies UserConfig;
 
     const cliCwd = cwd();
-    const userConfig = isDirty
-      ? userCLIConfig
-      : await resolveFileConfig(cliCwd);
+    const userConfig = isDirty ? userCLIConfig : await resolveFileConfig(cliCwd);
 
     return await handleGenerate(cliCwd, userConfig);
   },

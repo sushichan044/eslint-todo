@@ -23,10 +23,7 @@ describe("readConfigFile", () => {
 
     expect(result.success).toBe(true);
     expect(result.data).toStrictEqual(randomConfig);
-    expect(importModule.importDefault).toHaveBeenCalledWith(
-      "/test/eslint-todo.config",
-      {},
-    );
+    expect(importModule.importDefault).toHaveBeenCalledWith("/test/eslint-todo.config", {});
   });
 
   it("should omit $schema property", async () => {

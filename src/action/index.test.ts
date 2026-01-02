@@ -55,9 +55,7 @@ describe("prepareAction", () => {
     });
 
     it("should accept input of action and return output of action", async () => {
-      const actionWithInputs = vi
-        .fn<Action<"input", "result">>()
-        .mockResolvedValue("result");
+      const actionWithInputs = vi.fn<Action<"input", "result">>().mockResolvedValue("result");
       const config = configWithDefault();
 
       const preparedAction = prepareAction(actionWithInputs, {
@@ -117,16 +115,14 @@ describe("prepareAction", () => {
         before: (input: string) => MaybePromise<void>;
       };
 
-      const action = defineAction<string, number, Hooks>(
-        async ({ hooks }, input) => {
-          await hooks.callHook("before", input);
+      const action = defineAction<string, number, Hooks>(async ({ hooks }, input) => {
+        await hooks.callHook("before", input);
 
-          const result = input.length;
+        const result = input.length;
 
-          await hooks.callHook("after");
-          return result;
-        },
-      );
+        await hooks.callHook("after");
+        return result;
+      });
 
       const preparedAction = prepareAction(action, {
         config: configWithDefault(),

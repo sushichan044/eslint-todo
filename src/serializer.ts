@@ -24,9 +24,7 @@ export const TodoModuleSerializer = {
  * @returns
  * JavaScript file content. Just write it to a file.
  */
-const serializeTodoModule = (
-  eslintTodo: TodoModuleV1 | TodoModuleV2,
-): string => {
+const serializeTodoModule = (eslintTodo: TodoModuleV1 | TodoModuleV2): string => {
   const js = [
     "/* eslint-disable */",
     "/**",

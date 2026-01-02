@@ -19,10 +19,7 @@ type HasGitChangesOptions = Partial<{
  * @param options Options for the git command
  * @returns true if there are changes, false otherwise
  */
-async function hasGitChanges(
-  cwd: string,
-  options: HasGitChangesOptions = {},
-): Promise<boolean> {
+async function hasGitChanges(cwd: string, options: HasGitChangesOptions = {}): Promise<boolean> {
   const { between = "working-and-staged", file = "" } = options;
 
   const command = ["git", "diff", "--quiet"];

@@ -2,12 +2,19 @@
   "name": "@sushichan044/eslint-todo",
   "version": "0.2.6",
   "description": "A simple tool to gradually resolve a large number of ESLint violations.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sushichan044/eslint-todo.git"
+  },
+  "bin": {
+    "eslint-todo": "bin/eslint-todo.mjs"
+  },
+  "files": [
+    "config-schema.json",
+    "dist"
+  ],
   "type": "module",
   "module": "./dist/index.mjs",
-  "files": [
-    "dist",
-    "config-schema.json"
-  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.mts",
@@ -23,13 +30,6 @@
     },
     "./package.json": "./package.json"
   },
-  "bin": {
-    "eslint-todo": "bin/eslint-todo.mjs"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sushichan044/eslint-todo.git"
-  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -39,8 +39,8 @@
     "build:json-schema": "vite-node scripts/json-schema.ts",
     "dev": "unbuild --stub",
     "lint": "eslint --max-warnings 0 .",
-    "format": "prettier --experimental-cli --write .",
-    "format:ci": "prettier --experimental-cli --check .",
+    "format": "oxfmt",
+    "format:ci": "oxfmt --check",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
@@ -52,9 +52,6 @@
     "prepare": "ts-patch install --silent",
     "prepublishOnly": "pnpm run build",
     "ai:prettier": "prettier --experimental-cli"
-  },
-  "peerDependencies": {
-    "eslint": "^8.57.0 || ^9.0.0"
   },
   "dependencies": {
     "@sushichan044/eslint-config-array-resolver": "0.1.2",
@@ -106,10 +103,13 @@
     "vite-node": "3.2.4",
     "vitest": "3.2.4"
   },
-  "packageManager": "pnpm@10.23.0",
+  "peerDependencies": {
+    "eslint": "^8.57.0 || ^9.0.0"
+  },
   "engines": {
     "node": "^20.12.0 || ^22.0.0 || >=24.0.0"
   },
+  "packageManager": "pnpm@10.23.0",
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",

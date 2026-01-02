@@ -20,10 +20,7 @@ export interface TodoModuleHandler<
    * Build a todo object from the lint results.
    * @param lintResult Lint results from ESLint
    */
-  buildTodoFromLintResults(
-    lintResult: ESLint.LintResult[],
-    config: Config,
-  ): CURRENT;
+  buildTodoFromLintResults(lintResult: ESLint.LintResult[], config: Config): CURRENT;
 
   /**
    * Get a default todo object.

@@ -5,10 +5,7 @@ import type { TodoModuleV1 } from "../todofile/v1";
 import type { TodoModuleV2 } from "../todofile/v2";
 import type { ESLintSuppressionsJson } from "./types";
 
-import {
-  buildESLintConfigWithSuppressionsJson,
-  SuppressionsJsonGenerator,
-} from "./index";
+import { buildESLintConfigWithSuppressionsJson, SuppressionsJsonGenerator } from "./index";
 
 describe("SuppressionsJsonGenerator", () => {
   describe("fromV1", () => {
@@ -184,10 +181,7 @@ describe("buildESLintConfigWithSuppressionsJson", () => {
       },
     };
 
-    const configs = buildESLintConfigWithSuppressionsJson(
-      suppressionsJson,
-      "off",
-    );
+    const configs = buildESLintConfigWithSuppressionsJson(suppressionsJson, "off");
 
     expect(configs).toStrictEqual([
       {
@@ -210,10 +204,7 @@ describe("buildESLintConfigWithSuppressionsJson", () => {
   it("should handle empty suppressions JSON", () => {
     const suppressionsJson: ESLintSuppressionsJson = {};
 
-    const configs = buildESLintConfigWithSuppressionsJson(
-      suppressionsJson,
-      "error",
-    );
+    const configs = buildESLintConfigWithSuppressionsJson(suppressionsJson, "error");
 
     expect(configs).toStrictEqual([]);
   });
@@ -232,10 +223,7 @@ describe("buildESLintConfigWithSuppressionsJson", () => {
       },
     };
 
-    const configs = buildESLintConfigWithSuppressionsJson(
-      suppressionsJson,
-      "off",
-    );
+    const configs = buildESLintConfigWithSuppressionsJson(suppressionsJson, "off");
 
     expect(configs).toStrictEqual([
       {

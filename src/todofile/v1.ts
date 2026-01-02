@@ -33,10 +33,7 @@ type ESLintTodoEntryV1 = {
  */
 export type TodoModuleV1 = Record<string, ESLintTodoEntryV1>;
 
-export const TodoModuleV1Handler: TodoModuleHandler<
-  TodoModuleV1,
-  TodoModuleV2
-> = {
+export const TodoModuleV1Handler: TodoModuleHandler<TodoModuleV1, TodoModuleV2> = {
   version: 1,
 
   buildTodoFromLintResults(lintResult, config) {

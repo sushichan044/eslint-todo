@@ -22,32 +22,29 @@ export default typegen(
       name: "@repo/eslint-config/base",
     }),
   )
-    .override(
-      "@repo/eslint-config/base__@virtual-live-lab/eslint-config/typescript",
-      {
-        rules: {
-          "@typescript-eslint/no-restricted-imports": [
-            "error",
-            {
-              paths: [
-                {
-                  importNames: ["default"],
-                  message: "Please use named imports instead.",
-                  name: "pathe",
-                },
-              ],
-              patterns: [
-                {
-                  message: "Todofile v1 is deprecated. Please use v2 instead.",
-                  regex: "/todofile/v1$",
-                },
-              ],
-            },
-          ],
-          "no-restricted-imports": "off",
-        },
+    .override("@repo/eslint-config/base__@virtual-live-lab/eslint-config/typescript", {
+      rules: {
+        "@typescript-eslint/no-restricted-imports": [
+          "error",
+          {
+            paths: [
+              {
+                importNames: ["default"],
+                message: "Please use named imports instead.",
+                name: "pathe",
+              },
+            ],
+            patterns: [
+              {
+                message: "Todofile v1 is deprecated. Please use v2 instead.",
+                regex: "/todofile/v1$",
+              },
+            ],
+          },
+        ],
+        "no-restricted-imports": "off",
       },
-    )
+    })
     .append(
       // @ts-expect-error type mismatch
       tseslint.config({

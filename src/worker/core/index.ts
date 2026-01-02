@@ -8,8 +8,7 @@ import type { IESLintTodoCoreLike } from "../../types";
 
 import { ESLintTodoCore } from "../../index";
 
-if (parentPort == null)
-  throw new Error("This module must be run in a worker thread.");
+if (parentPort == null) throw new Error("This module must be run in a worker thread.");
 
 export class RemoteESLintTodoCore implements IESLintTodoCoreLike {
   readonly #todoCore: ESLintTodoCore;
@@ -43,13 +42,9 @@ export class RemoteESLintTodoCore implements IESLintTodoCoreLike {
   }
 
   async readTodoModule(
-    ...parameters: Parameters<
-      ESLintTodoCore["_DO_NOT_USE_DIRECTLY_unsafeReadTodoModule"]
-    >
+    ...parameters: Parameters<ESLintTodoCore["_DO_NOT_USE_DIRECTLY_unsafeReadTodoModule"]>
   ): ReturnType<ESLintTodoCore["_DO_NOT_USE_DIRECTLY_unsafeReadTodoModule"]> {
-    return this.#todoCore._DO_NOT_USE_DIRECTLY_unsafeReadTodoModule(
-      ...parameters,
-    );
+    return this.#todoCore._DO_NOT_USE_DIRECTLY_unsafeReadTodoModule(...parameters);
   }
 
   async resetTodoModule(

@@ -12,18 +12,14 @@ describe("FlattenObject", () => {
     });
 
     it("should flatten multiple properties at same level", () => {
-      expectTypeOf<
-        FlattenObject<{ a: { b: string; c: number } }>
-      >().toEqualTypeOf<{
+      expectTypeOf<FlattenObject<{ a: { b: string; c: number } }>>().toEqualTypeOf<{
         "a.b": string;
         "a.c": number;
       }>();
     });
 
     it("should preserve primitive properties", () => {
-      expectTypeOf<
-        FlattenObject<{ a: string; b: number; c: boolean }>
-      >().toEqualTypeOf<{
+      expectTypeOf<FlattenObject<{ a: string; b: number; c: boolean }>>().toEqualTypeOf<{
         a: string;
         b: number;
         c: boolean;
@@ -44,9 +40,7 @@ describe("FlattenObject", () => {
     });
 
     it("should flatten 4-level nested object", () => {
-      expectTypeOf<
-        FlattenObject<{ a: { b: { c: { d: boolean } } } }>
-      >().toEqualTypeOf<{
+      expectTypeOf<FlattenObject<{ a: { b: { c: { d: boolean } } } }>>().toEqualTypeOf<{
         "a.b.c.d": boolean;
       }>();
     });
@@ -73,17 +67,15 @@ describe("FlattenObject", () => {
         "level1.level2b": number;
         "level1.level2c.array": string[];
         "level1.level2c.nested.deep": boolean;
-        "simple": string;
+        simple: string;
       }>();
     });
   });
 
   describe("array handling", () => {
     it("should treat arrays as terminal values", () => {
-      expectTypeOf<
-        FlattenObject<{ arr: string[]; nested: { arr: number[] } }>
-      >().toEqualTypeOf<{
-        "arr": string[];
+      expectTypeOf<FlattenObject<{ arr: string[]; nested: { arr: number[] } }>>().toEqualTypeOf<{
+        arr: string[];
         "nested.arr": number[];
       }>();
     });
@@ -95,7 +87,7 @@ describe("FlattenObject", () => {
           nested: { readonly items: readonly number[] };
         }>
       >().toEqualTypeOf<{
-        "arr": readonly string[];
+        arr: readonly string[];
         "nested.items": readonly number[];
       }>();
     });
@@ -103,9 +95,7 @@ describe("FlattenObject", () => {
 
   describe("optional properties", () => {
     it("should handle optional properties in nested objects", () => {
-      expectTypeOf<
-        FlattenObject<{ a: { b?: string; c: number } }>
-      >().toEqualTypeOf<{
+      expectTypeOf<FlattenObject<{ a: { b?: string; c: number } }>>().toEqualTypeOf<{
         "a.b": string | undefined;
         "a.c": number;
       }>();
@@ -138,10 +128,10 @@ describe("FlattenObject", () => {
           primitive: string;
         }>
       >().toEqualTypeOf<{
-        "array": boolean[];
+        array: boolean[];
         "deepNested.inner.value": string;
         "nested.value": number;
-        "primitive": string;
+        primitive: string;
       }>();
     });
   });
@@ -161,11 +151,11 @@ describe("FlattenObject", () => {
         >
       >().toEqualTypeOf<
         | {
-            "type": "bar";
+            type: "bar";
             "value.bar": string;
           }
         | {
-            "type": "foo";
+            type: "foo";
             "value.foo": string;
           }
       >();
@@ -194,9 +184,7 @@ describe("FlattenObject", () => {
     it("should preserve arrays as terminal values regardless of nesting", () => {
       // Top-level arrays
       expectTypeOf<FlattenObject<string[]>>().toEqualTypeOf<string[]>();
-      expectTypeOf<FlattenObject<readonly boolean[]>>().toEqualTypeOf<
-        readonly boolean[]
-      >();
+      expectTypeOf<FlattenObject<readonly boolean[]>>().toEqualTypeOf<readonly boolean[]>();
 
       // Nested arrays are preserved in their original form
       expectTypeOf<
@@ -212,7 +200,7 @@ describe("FlattenObject", () => {
       >().toEqualTypeOf<{
         "nested.array": number[];
         "nested.deep.items": readonly string[];
-        "topLevelArray": string[];
+        topLevelArray: string[];
       }>();
     });
 
@@ -225,7 +213,7 @@ describe("FlattenObject", () => {
           };
         }>
       >().toEqualTypeOf<{
-        "items": Array<{ name: string; value: number }>;
+        items: Array<{ name: string; value: number }>;
         "nested.data": Array<{ id: number; meta: { tag: string } }>;
       }>();
     });
@@ -235,9 +223,7 @@ describe("FlattenObject", () => {
     it("should preserve functions as terminal values regardless of nesting", () => {
       // Top-level functions
       expectTypeOf<FlattenObject<() => void>>().toEqualTypeOf<() => void>();
-      expectTypeOf<FlattenObject<(x: string) => number>>().toEqualTypeOf<
-        (x: string) => number
-      >();
+      expectTypeOf<FlattenObject<(x: string) => number>>().toEqualTypeOf<(x: string) => number>();
 
       // Nested functions are preserved in their original form
       expectTypeOf<
@@ -253,7 +239,7 @@ describe("FlattenObject", () => {
       >().toEqualTypeOf<{
         "nested.deep.handler": (error: Error) => void;
         "nested.func": (data: string) => boolean;
-        "topLevelFunc": () => void;
+        topLevelFunc: () => void;
       }>();
     });
   });
@@ -273,7 +259,7 @@ describe("FlattenObject", () => {
         }>
       >().toEqualTypeOf<{
         "anotherKey.nested": string;
-        "validKey": number;
+        validKey: number;
       }>();
     });
 
@@ -289,7 +275,7 @@ describe("FlattenObject", () => {
       };
 
       expectTypeOf<FlattenObject<WithSymbol>>().toEqualTypeOf<{
-        "a": number;
+        a: number;
         "nested.b": string;
       }>();
     });

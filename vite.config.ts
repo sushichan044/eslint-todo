@@ -16,10 +16,7 @@ export default defineConfig({
       reporter: ["text", "json-summary", "json"],
       reportOnFailure: true,
     },
-    reporters:
-      process.env["GITHUB_ACTIONS"] == null
-        ? "default"
-        : ["default", "github-actions"],
+    reporters: process.env["GITHUB_ACTIONS"] == null ? "default" : ["default", "github-actions"],
     typecheck: {
       enabled: true,
     },

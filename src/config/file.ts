@@ -15,13 +15,8 @@ import { UserConfigSchema } from "./validation";
  * @package
  */
 // eslint-todo.config.{js,cjs,mjs,ts,cts,mts,json}
-export const readConfigFile = async (
-  root: string,
-): Promise<IValidation<UserConfig>> => {
-  const loaded = await importDefault<UserConfig>(
-    resolve(root, "./eslint-todo.config"),
-    {},
-  );
+export const readConfigFile = async (root: string): Promise<IValidation<UserConfig>> => {
+  const loaded = await importDefault<UserConfig>(resolve(root, "./eslint-todo.config"), {});
   const config = loaded ?? {};
 
   if (Object.hasOwn(config, "$schema")) {

@@ -7,10 +7,7 @@ import picomatch from "picomatch";
  * @param patterns - Array of glob patterns
  * @returns Array of file paths that match any of the given glob patterns
  */
-export const extractPathsByGlobs = (
-  filePaths: string[],
-  patterns: string[],
-): string[] => {
+export const extractPathsByGlobs = (filePaths: string[], patterns: string[]): string[] => {
   if (patterns.length === 0) {
     return filePaths; // No patterns means return all file paths
   }
@@ -26,10 +23,7 @@ export const extractPathsByGlobs = (
  *
  * @package
  */
-export const pathMatchesGlobs = (
-  filePath: string,
-  patterns: string[],
-): boolean => {
+export const pathMatchesGlobs = (filePath: string, patterns: string[]): boolean => {
   if (patterns.length === 0) {
     return true; // No patterns means include all files
   }

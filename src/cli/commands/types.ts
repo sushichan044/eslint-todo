@@ -6,9 +6,7 @@ import type { FlattenObject } from "../../utils/flatten";
 /**
  * @package
  */
-export type CorrectModeArguments = FlattenToArgumentSchema<
-  Pick<Config, "correct">
->;
+export type CorrectModeArguments = FlattenToArgumentSchema<Pick<Config, "correct">>;
 
 type FlattenToArgumentSchema<T extends Record<PropertyKey, unknown>> = {
   // conditional keys are not in keyof FlattenObject<T>.

@@ -69,20 +69,14 @@ const eslintConfigTodo = async (
   if (TodoModuleV1Handler.isVersion(module)) {
     return [
       ...configs,
-      ...buildESLintConfigWithSuppressionsJson(
-        SuppressionsJsonGenerator.fromV1(module),
-        "off",
-      ),
+      ...buildESLintConfigWithSuppressionsJson(SuppressionsJsonGenerator.fromV1(module), "off"),
     ];
   }
 
   if (TodoModuleV2Handler.isVersion(module)) {
     return [
       ...configs,
-      ...buildESLintConfigWithSuppressionsJson(
-        SuppressionsJsonGenerator.fromV2(module),
-        "off",
-      ),
+      ...buildESLintConfigWithSuppressionsJson(SuppressionsJsonGenerator.fromV2(module), "off"),
     ];
   }
 

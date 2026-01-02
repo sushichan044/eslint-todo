@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type {
-  ESLintSuppressionsJson,
-  InternalRuleBasedSuppressionsJson,
-} from "./types";
+import type { ESLintSuppressionsJson, InternalRuleBasedSuppressionsJson } from "./types";
 
 import { toESLintSuppressionsJson, toRuleBasedSuppression } from "./rule-based";
 

@@ -10,27 +10,19 @@ type Hooks = {
   "before:select-rule": () => void;
 };
 
-export const selectRulesToFixAction = defineAction<
-  never,
-  SelectionResult,
-  Hooks
->(async ({ config, core, eslintConfig, hooks }) => {
-  const currentModule = await core.readTodoModule();
-  if (!TodoModuleV2Handler.isVersion(currentModule)) {
-    throw new Error(
-      "This action requires the latest version of the todo file.",
-    );
-  }
+export const selectRulesToFixAction = defineAction<never, SelectionResult, Hooks>(
+  async ({ config, core, eslintConfig, hooks }) => {
+    const currentModule = await core.readTodoModule();
+    if (!TodoModuleV2Handler.isVersion(currentModule)) {
+      throw new Error("This action requires the latest version of the todo file.");
+    }
 
-  const suppressions = SuppressionsJsonGenerator.fromV2(currentModule);
+    const suppressions = SuppressionsJsonGenerator.fromV2(currentModule);
 
-  await hooks.callHook("before:select-rule");
-  const result = selectRuleToCorrect(
-    suppressions,
-    eslintConfig,
-    config.correct,
-  );
-  await hooks.callHook("after:select-rule", result);
+    await hooks.callHook("before:select-rule");
+    const result = selectRuleToCorrect(suppressions, eslintConfig, config.correct);
+    await hooks.callHook("after:select-rule", result);
 
-  return result;
-});
+    return result;
+  },
+);

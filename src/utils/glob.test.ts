@@ -21,12 +21,8 @@ describe("glob utilities", () => {
 
     it("should match double wildcard patterns", () => {
       expect(pathMatchesGlobs("src/file.ts", ["src/**/*.ts"])).toBe(true);
-      expect(pathMatchesGlobs("src/nested/file.ts", ["src/**/*.ts"])).toBe(
-        true,
-      );
-      expect(
-        pathMatchesGlobs("src/deeply/nested/file.ts", ["src/**/*.ts"]),
-      ).toBe(true);
+      expect(pathMatchesGlobs("src/nested/file.ts", ["src/**/*.ts"])).toBe(true);
+      expect(pathMatchesGlobs("src/deeply/nested/file.ts", ["src/**/*.ts"])).toBe(true);
       expect(pathMatchesGlobs("other/file.ts", ["src/**/*.ts"])).toBe(false);
     });
 
@@ -39,13 +35,9 @@ describe("glob utilities", () => {
 
     it("should handle complex patterns", () => {
       expect(pathMatchesGlobs("pages/user.tsx", ["pages/*.tsx"])).toBe(true);
-      expect(pathMatchesGlobs("pages/index.tsx", ["pages/user.tsx"])).toBe(
-        false,
-      );
+      expect(pathMatchesGlobs("pages/index.tsx", ["pages/user.tsx"])).toBe(false);
       // Test literal bracket matching by escaping
-      expect(
-        pathMatchesGlobs("pages/[id].tsx", [String.raw`pages/\[id\].tsx`]),
-      ).toBe(true);
+      expect(pathMatchesGlobs("pages/[id].tsx", [String.raw`pages/\[id\].tsx`])).toBe(true);
     });
 
     it("should handle relative paths", () => {
@@ -75,10 +67,7 @@ describe("glob utilities", () => {
     });
 
     it("should filter by multiple patterns", () => {
-      const result = extractPathsByGlobs(files, [
-        "src/**/*.ts",
-        "app/**/*.tsx",
-      ]);
+      const result = extractPathsByGlobs(files, ["src/**/*.ts", "app/**/*.tsx"]);
       expect(result).toStrictEqual([
         "src/index.ts",
         "src/utils/helper.ts",

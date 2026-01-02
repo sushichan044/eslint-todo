@@ -42,8 +42,7 @@ describe("TodoModuleV1Handler", () => {
   describe("upgradeToNextVersion", () => {
     it("can upgrade empty todo to v2 module", () => {
       const todoModuleV1 = {} satisfies TodoModuleV1;
-      const todoModuleV2 =
-        TodoModuleV1Handler.upgradeToNextVersion(todoModuleV1);
+      const todoModuleV2 = TodoModuleV1Handler.upgradeToNextVersion(todoModuleV1);
 
       expect(todoModuleV2).toStrictEqual({
         meta: {
@@ -65,8 +64,7 @@ describe("TodoModuleV1Handler", () => {
         },
       } satisfies TodoModuleV1;
 
-      const todoModuleV2 =
-        TodoModuleV1Handler.upgradeToNextVersion(todoModuleV1);
+      const todoModuleV2 = TodoModuleV1Handler.upgradeToNextVersion(todoModuleV1);
 
       expect(todoModuleV2).toStrictEqual({
         meta: {
@@ -101,8 +99,7 @@ describe("TodoModuleV1Handler", () => {
         },
       } satisfies TodoModuleV1;
 
-      const todoModuleV2 =
-        TodoModuleV1Handler.upgradeToNextVersion(todoModuleV1);
+      const todoModuleV2 = TodoModuleV1Handler.upgradeToNextVersion(todoModuleV1);
 
       expect(todoModuleV2).toStrictEqual({
         meta: {

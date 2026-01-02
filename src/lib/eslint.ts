@@ -10,9 +10,7 @@ export interface ESLintConfigSubset {
   >;
 }
 
-export const createESLintConfigSubset = (
-  config: ESLintConfig,
-): ESLintConfigSubset => {
+export const createESLintConfigSubset = (config: ESLintConfig): ESLintConfigSubset => {
   return {
     rules: Object.fromEntries(
       Object.entries(config.payload.rules).map(([ruleId, rule]) => [
@@ -27,7 +25,4 @@ export const isRuleFixable = (config: ESLintConfigSubset, ruleId: string) => {
   return config.rules[ruleId]?.fixable ?? false;
 };
 
-export type RuleSeverity = Extract<
-  Linter.RuleSeverity,
-  "error" | "off" | "warn"
->;
+export type RuleSeverity = Extract<Linter.RuleSeverity, "error" | "off" | "warn">;

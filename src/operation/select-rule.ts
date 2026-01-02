@@ -210,20 +210,13 @@ export function decideOptimalRule(
     return { success: false };
   }
 
-  const partitionedRules = categorizeRulesForSelection(
-    violationInfos,
-    limitCount,
-    limitType,
-  );
+  const partitionedRules = categorizeRulesForSelection(violationInfos, limitCount, limitType);
 
   // Try full selection first - early return if possible
   if (partitionedRules.fullSelectable.length > 0) {
     // Safe: sortedFullSelectable.length > 0 guaranteed by preceding check
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const bestRule = sortRulesByPriority(
-      partitionedRules.fullSelectable,
-      limitType,
-    )[0]!;
+    const bestRule = sortRulesByPriority(partitionedRules.fullSelectable, limitType)[0]!;
 
     return {
       selection: { ruleId: bestRule.ruleId, type: "full" },
@@ -248,11 +241,7 @@ export function decideOptimalRule(
     limitType,
   )[0]!;
 
-  const selectedViolations = selectViolationsForRule(
-    bestPartialSelectableRule,
-    limitCount,
-    config,
-  );
+  const selectedViolations = selectViolationsForRule(bestPartialSelectableRule, limitCount, config);
 
   // Guard clause: early return if no violations selected
   if (Object.keys(selectedViolations).length === 0) {
@@ -311,9 +300,7 @@ export function filterViolations(
     // Exclude files that match exclude.files patterns
     if (excludeGlobs.length > 0) {
       const excludedMatches = extractPathsByGlobs(filteredFiles, excludeGlobs);
-      filteredFiles = filteredFiles.filter(
-        (file) => !excludedMatches.includes(file),
-      );
+      filteredFiles = filteredFiles.filter((file) => !excludedMatches.includes(file));
     }
 
     // Apply include.files filtering
@@ -367,13 +354,13 @@ export function selectRuleToCorrect(
 
   const ruleBasedSuppression = toRuleBasedSuppression(suppressions);
 
-  const violations: RuleViolationInfo[] = Object.entries(
-    ruleBasedSuppression,
-  ).map(([ruleId, violations]) => ({
-    isFixable: isRuleFixable(eslintConfig, ruleId),
-    ruleId,
-    violations,
-  }));
+  const violations: RuleViolationInfo[] = Object.entries(ruleBasedSuppression).map(
+    ([ruleId, violations]) => ({
+      isFixable: isRuleFixable(eslintConfig, ruleId),
+      ruleId,
+      violations,
+    }),
+  );
 
   const filteredViolations = filterViolations(violations, config);
 

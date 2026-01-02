@@ -15,11 +15,7 @@ import { resolveFileConfig } from "../../config/resolve";
 import { handleCorrect } from "../handlers/correct";
 import { handleGenerate } from "../handlers/generate";
 import { logger } from "../logger";
-import {
-  commonArguments,
-  correctModeArguments,
-  modeArguments,
-} from "./common-arguments";
+import { commonArguments, correctModeArguments, modeArguments } from "./common-arguments";
 import { correctCmd } from "./correct";
 import { generateCmd } from "./generate";
 
@@ -54,9 +50,7 @@ const mainCmd = define({
     } = context.explicit;
     const isDirty = Object.values(flagsExceptMode).includes(true);
     if (isDirty) {
-      logger.warn(
-        "Ignoring config file because config is passed via CLI flags.",
-      );
+      logger.warn("Ignoring config file because config is passed via CLI flags.");
     }
 
     const mode = (() => {
@@ -86,9 +80,7 @@ const mainCmd = define({
     } satisfies UserConfig;
 
     const cliCwd = cwd();
-    const userConfig = isDirty
-      ? userCLIConfig
-      : await resolveFileConfig(cliCwd);
+    const userConfig = isDirty ? userCLIConfig : await resolveFileConfig(cliCwd);
 
     if (mode === "correct") {
       logger.warn(
@@ -104,9 +96,7 @@ const mainCmd = define({
   },
 });
 
-export const getCLIExecutor = async (
-  argv: string[],
-): Promise<string | undefined> =>
+export const getCLIExecutor = async (argv: string[]): Promise<string | undefined> =>
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   cli(argv, mainCmd, {
     description: packageDescription,

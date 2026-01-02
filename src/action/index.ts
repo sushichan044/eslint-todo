@@ -14,9 +14,7 @@ type HookHandlers<Hooks extends Record<string, HookCallback>> = {
   [K in HookKeys<Hooks>]: Hooks[K];
 };
 
-type ActionAPI<
-  Hooks extends Record<string, HookCallback> = Record<string, never>,
-> = {
+type ActionAPI<Hooks extends Record<string, HookCallback> = Record<string, never>> = {
   config: Config;
   core: Remote<RemoteESLintTodoCore>;
   eslintConfig: ESLintConfigSubset;
@@ -50,9 +48,7 @@ export const defineAction = <
   return action;
 };
 
-type ActionRunnerOptions<
-  Hooks extends Record<string, HookCallback> = Record<string, never>,
-> = {
+type ActionRunnerOptions<Hooks extends Record<string, HookCallback> = Record<string, never>> = {
   config: Config;
   eslintConfig: ESLintConfigSubset;
   hooks?: Partial<HookHandlers<Hooks>>;
@@ -72,9 +68,7 @@ export function prepareAction<
 >(
   action: Action<Input, Return, Hooks>,
   options: ActionRunnerOptions<Hooks>,
-): IsNever<Input> extends true
-  ? () => Promise<Return>
-  : (input: Input) => Promise<Return> {
+): IsNever<Input> extends true ? () => Promise<Return> : (input: Input) => Promise<Return> {
   const hooks = createHooks<Hooks>();
 
   if (options.hooks) {
@@ -85,9 +79,7 @@ export function prepareAction<
   const executor = async (input?: Input) => {
     // initialize remote ESLintTodoCore
     const remoteService = launchRemoteESLintTodoCore();
-    const remoteCore = await new remoteService.RemoteESLintTodoCore(
-      options.config,
-    );
+    const remoteCore = await new remoteService.RemoteESLintTodoCore(options.config);
 
     const actionApi = {
       config: options.config,

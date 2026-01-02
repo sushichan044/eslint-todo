@@ -18,8 +18,6 @@ export const escapeGlobCharacters = (glob: string): string => {
 /**
  * Check if the ruleId is a non-empty string.
  */
-export const isNonEmptyString = (
-  maybeString?: unknown,
-): maybeString is string => {
+export const isNonEmptyString = (maybeString?: unknown): maybeString is string => {
   return typeof maybeString === "string" && maybeString !== "";
 };

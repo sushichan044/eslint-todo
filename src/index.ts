@@ -46,10 +46,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
   }
 
   buildTodoFromLintResults(lintResults: ESLint.LintResult[]): TodoModuleV2 {
-    return TodoModuleV2Handler.buildTodoFromLintResults(
-      lintResults,
-      this.#config,
-    );
+    return TodoModuleV2Handler.buildTodoFromLintResults(lintResults, this.#config);
   }
 
   getTodoModulePath(): TodoFilePath {
@@ -63,9 +60,7 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
   }
 
   async lint(): Promise<ESLint.LintResult[]> {
-    const result = await this.#eslint.lintFiles(
-      resolve(this.#config.root, "**/*"),
-    );
+    const result = await this.#eslint.lintFiles(resolve(this.#config.root, "**/*"));
     return result;
   }
 
