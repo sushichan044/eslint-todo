@@ -1,4 +1,0 @@
-*.md
-pnpm-lock.yaml
-src/generated/**
-dist/**
