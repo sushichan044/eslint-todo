@@ -92,7 +92,7 @@
     "publint": "0.3.12",
     "release-it": "19.0.4",
     "release-it-pnpm": "4.6.6",
-    "rolldown": "1.0.0-beta.35",
+    "rolldown": "1.0.0-beta.57",
     "ts-patch": "3.3.0",
     "tsdown": "0.15.5",
     "typescript": "5.9.2",
