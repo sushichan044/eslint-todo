@@ -4,7 +4,7 @@ import { typiaRolldown } from "./typia-plugin";
 
 export default defineConfig({
   attw: { level: "error", profile: "esm-only" },
-    clean: true,
+  clean: true,
   dts: true,
   entry: [
     "./src/index.ts",
@@ -17,7 +17,7 @@ export default defineConfig({
     "./src/worker/**/*.ts",
     "!./src/worker/**/*.test.ts",
   ],
-  fixedExtension:true,
+  fixedExtension: true,
   format: "esm",
   minify: "dce-only",
   nodeProtocol: true,
