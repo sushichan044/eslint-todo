@@ -1,5 +1,5 @@
 import typia from "typia";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, assert, describe, expect, it, vi } from "vitest";
 
 import type { UserConfig } from "./config";
 
@@ -53,11 +53,9 @@ describe("readConfigFile", () => {
 
     const result = await readConfigFile("/test");
 
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.errors.length).toBeGreaterThan(0);
-      expect(JSON.stringify(result.errors)).toContain("unknownProperty");
-    }
+    assert.isFalse(result.success);
+    expect(result.errors.length).toBeGreaterThan(0);
+    expect(JSON.stringify(result.errors)).toContain("unknownProperty");
   });
 
   it("should successfully validate an empty config file", async () => {
@@ -122,10 +120,8 @@ describe("readConfigFile", () => {
 
     const result = await readConfigFile("/test");
 
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.errors.length).toBeGreaterThan(0);
-      expect(JSON.stringify(result.errors)).toContain("invalid-type");
-    }
+    assert.isFalse(result.success);
+    expect(result.errors.length).toBeGreaterThan(0);
+    expect(JSON.stringify(result.errors)).toContain("invalid-type");
   });
 });

@@ -19,10 +19,10 @@ import { commonArguments, correctModeArguments, modeArguments } from "./common-a
 import { correctCmd } from "./correct";
 import { generateCmd } from "./generate";
 
-const subCommands = new Map<string, Command>();
-
-subCommands.set("generate", generateCmd);
-subCommands.set("correct", correctCmd);
+const subCommands = new Map<string, Command>([
+  ["correct", correctCmd],
+  ["generate", generateCmd],
+]);
 
 /**
  * Select sub command based on CLI flags.
