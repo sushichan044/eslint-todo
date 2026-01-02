@@ -14,7 +14,6 @@ import {
 import { resolveFileConfig } from "../../config/resolve";
 import { handleCorrect } from "../handlers/correct";
 import { handleGenerate } from "../handlers/generate";
-import { handleMCP } from "../handlers/mcp";
 import { logger } from "../logger";
 import {
   commonArguments,
@@ -23,13 +22,11 @@ import {
 } from "./common-arguments";
 import { correctCmd } from "./correct";
 import { generateCmd } from "./generate";
-import { mcpCmd } from "./mcp";
 
 const subCommands = new Map<string, Command>();
 
 subCommands.set("generate", generateCmd);
 subCommands.set("correct", correctCmd);
-subCommands.set("mcp", mcpCmd);
 
 /**
  * Select sub command based on CLI flags.
@@ -53,8 +50,6 @@ const mainCmd = define({
     const {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       correct: _explicitCorrect,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      mcp: _explicitMcp,
       ...flagsExceptMode
     } = context.explicit;
     const isDirty = Object.values(flagsExceptMode).includes(true);
@@ -66,7 +61,6 @@ const mainCmd = define({
 
     const mode = (() => {
       if (context.values.correct) return "correct";
-      if (context.values.mcp) return "mcp";
       return "generate";
     })();
 
@@ -95,14 +89,6 @@ const mainCmd = define({
     const userConfig = isDirty
       ? userCLIConfig
       : await resolveFileConfig(cliCwd);
-
-    if (mode === "mcp") {
-      logger.warn(
-        "The `--mcp` flag is deprecated and will be removed in v1. Use the `mcp` sub command instead.",
-      );
-
-      return await handleMCP(cliCwd, userConfig);
-    }
 
     if (mode === "correct") {
       logger.warn(

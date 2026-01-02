@@ -37,11 +37,6 @@ export const modeArguments = {
     description: "Launch the correct mode (default: false)",
     type: "boolean",
   },
-  mcp: {
-    default: false,
-    description: "Launch the MCP server. (default: false)",
-    type: "boolean",
-  },
 } as const satisfies Args;
 
 export const correctModeArguments = {
