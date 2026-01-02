@@ -1,4 +1,4 @@
-import type { Command } from "gunshi";
+import type { SubCommandable } from "gunshi";
 
 import { cli, define } from "gunshi";
 import { renderHeader as defaultHeaderRenderer } from "gunshi/renderer";
@@ -19,10 +19,10 @@ import { commonArguments, correctModeArguments, modeArguments } from "./common-a
 import { correctCmd } from "./correct";
 import { generateCmd } from "./generate";
 
-const subCommands = new Map<string, Command>([
-  ["correct", correctCmd],
-  ["generate", generateCmd],
-]);
+const subCommands = {
+  correct: correctCmd,
+  generate: generateCmd,
+} as const satisfies Record<string, SubCommandable>;
 
 /**
  * Select sub command based on CLI flags.
