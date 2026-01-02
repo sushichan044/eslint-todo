@@ -24,7 +24,11 @@ class TestError extends Error {
 describe("prepareAction", () => {
   const mockCore = {};
   const mockRemoteService = {
-    RemoteESLintTodoCore: vi.fn().mockResolvedValue(mockCore),
+    // https://vitest.dev/guide/migration.html#spyon-and-fn-support-constructors
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
+    RemoteESLintTodoCore: vi.fn().mockImplementation(function () {
+      return Promise.resolve(mockCore);
+    }),
     terminate: vi.fn(),
   };
 
