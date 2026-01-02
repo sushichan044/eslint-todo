@@ -40,26 +40,27 @@
     "lint": "eslint --max-warnings 0 .",
     "format": "oxfmt",
     "format:ci": "oxfmt --check",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "eslint-config-inspector": "eslint --inspect-config",
     "pkg-pr-new": "pkg-pr-new publish --compact --comment=update --pnpm",
-    "check": "pnpm run build && pnpm run lint && pnpm run format:ci && pnpm run typecheck && pnpm run test:run",
+    "check": "pnpm run build && pnpm run lint && pnpm run format:ci && pnpm run typecheck && pnpm run test",
     "prepare": "ts-patch install --silent",
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@sushichan044/eslint-config-array-resolver": "0.1.2",
+    "@sushichan044/eslint-config-array-resolver": "0.1.4",
     "comlink": "4.4.2",
     "consola": "3.4.2",
     "defu": "6.1.4",
     "gunshi": "0.27.0-alpha.10",
     "hookable": "5.5.3",
-    "jiti": "2.5.1",
+    "jiti": "2.6.1",
     "klona": "2.0.6",
     "magicast": "0.3.5",
     "pathe": "2.0.3",
     "picomatch": "4.0.3",
-    "tinyexec": "1.0.1"
+    "tinyexec": "1.0.2"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "0.18.2",
@@ -91,7 +92,8 @@
     "typia": "9.7.2",
     "unplugin-unused": "0.5.6",
     "vite": "7.3.0",
-    "vite-node": "5.2.0"
+    "vite-node": "5.2.0",
+    "vitest": "4.0.16"
   },
   "peerDependencies": {
     "eslint": "^8.57.0 || ^9.0.0"
