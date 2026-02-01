@@ -90,7 +90,7 @@
     "tsdown": "0.18.4",
     "typescript": "5.9.3",
     "typescript-eslint": "8.51.0",
-    "typia": "11.0.0",
+    "typia": "11.0.3",
     "unplugin-unused": "0.5.6",
     "vite": "7.3.0",
     "vite-node": "5.2.0",

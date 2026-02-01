@@ -50,7 +50,7 @@ importers:
         version: 0.18.2
       '@ryoppippi/unplugin-typia':
         specifier: 2.6.5
-        version: 2.6.5(rollup@4.54.0)(typescript@5.9.3)(typia@11.0.0(typescript@5.9.3))(vite@7.3.0(@types/node@22.18.0)(jiti@2.6.1)(yaml@2.8.2))
+        version: 2.6.5(rollup@4.54.0)(typescript@5.9.3)(typia@11.0.3(typescript@5.9.3))(vite@7.3.0(@types/node@22.18.0)(jiti@2.6.1)(yaml@2.8.2))
       '@types/fs-extra':
         specifier: 11.0.4
         version: 11.0.4
@@ -127,8 +127,8 @@ importers:
         specifier: 8.51.0
         version: 8.51.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       typia:
-        specifier: 11.0.0
-        version: 11.0.0(typescript@5.9.3)
+        specifier: 11.0.3
+        version: 11.0.3(typescript@5.9.3)
       unplugin-unused:
         specifier: 0.5.6
         version: 0.5.6
@@ -3621,6 +3621,7 @@ packages:
   tar@6.2.1:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   thenify-all@1.6.0:
     resolution: {integrity: sha512-RNxQH/qI8/t3thXJDwcstUO4zeqo64+Uy/+sNVRBx4Xn2OX+OZ9oP+iJnNFqplFra2ZUVeKCSa2oVWi3T4uVmA==}
@@ -3799,8 +3800,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typia@11.0.0:
-    resolution: {integrity: sha512-h1dQFo7m8XOzYkJ+YsxfAeWZeqroV81d+gXS168J4jFWjGp+47k/NizSXr/G/CXBCLlWSK86qfzoWTCPJeonIg==}
+  typia@11.0.3:
+    resolution: {integrity: sha512-L7x7WzOCpFyNCauWl6VYJVEG9EHZi5EPNBRzxTO1luaLCd6WEDf+xrJNT+hMZ8U+0X7hCsR1EUpi29LdHhvCvA==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.8.0 <5.10.0'
@@ -4926,7 +4927,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.54.0':
     optional: true
 
-  '@ryoppippi/unplugin-typia@2.6.5(rollup@4.54.0)(typescript@5.9.3)(typia@11.0.0(typescript@5.9.3))(vite@7.3.0(@types/node@22.18.0)(jiti@2.6.1)(yaml@2.8.2))':
+  '@ryoppippi/unplugin-typia@2.6.5(rollup@4.54.0)(typescript@5.9.3)(typia@11.0.3(typescript@5.9.3))(vite@7.3.0(@types/node@22.18.0)(jiti@2.6.1)(yaml@2.8.2))':
     dependencies:
       '@rollup/pluginutils': 5.2.0(rollup@4.54.0)
       bun-only: 0.0.1
@@ -4939,7 +4940,7 @@ snapshots:
       pkg-types: 2.1.0
       type-fest: 4.41.0
       typescript: 5.9.3
-      typia: 11.0.0(typescript@5.9.3)
+      typia: 11.0.3(typescript@5.9.3)
       unplugin: 2.3.5
     optionalDependencies:
       vite: 7.3.0(@types/node@22.18.0)(jiti@2.6.1)(yaml@2.8.2)
@@ -8083,7 +8084,7 @@ snapshots:
 
   typescript@5.9.3: {}
 
-  typia@11.0.0(typescript@5.9.3):
+  typia@11.0.3(typescript@5.9.3):
     dependencies:
       '@samchon/openapi': 6.0.0
       '@standard-schema/spec': 1.0.0
