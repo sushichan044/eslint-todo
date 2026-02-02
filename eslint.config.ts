@@ -4,13 +4,12 @@ import ts from "@virtual-live-lab/eslint-config/presets/ts";
 import vitest from "@vitest/eslint-plugin";
 import importAccess from "eslint-plugin-import-access/flat-config";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
-import { defineConfig, globalIgnores } from "eslint/config";
+import { defineConfig } from "eslint/config";
 import globals from "globals";
 
 import eslintConfigTodo from "./dist/eslint/index.mjs";
 
 export default defineConfig(
-  globalIgnores(["src/generated/**"]),
   {
     extends: [ts],
   },
