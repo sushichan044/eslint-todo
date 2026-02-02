@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="./eslint-typegen.d.ts" />
-
 import type { ESLint } from "eslint";
 
 import ts from "@virtual-live-lab/eslint-config/presets/ts";
