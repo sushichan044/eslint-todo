@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@sushichan044/eslint-config-array-resolver':
-        specifier: 0.2.0
-        version: 0.2.0(eslint@9.39.2(jiti@2.6.1))(synckit@0.11.11)(typescript@5.9.3)
+        specifier: 0.2.1
+        version: 0.2.1(eslint@9.39.2(jiti@2.6.1))(synckit@0.11.11)(typescript@5.9.3)
       comlink:
         specifier: 4.4.2
         version: 4.4.2
@@ -1208,8 +1208,8 @@ packages:
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
-  '@sushichan044/eslint-config-array-resolver@0.2.0':
-    resolution: {integrity: sha512-aIV9L30JlBvGcnLPVFE5Xu7SC05p6T20FAtTKhewT2XvddPIgT3hGGY2cZURYCwNB/uZmS8PmzJzjh8ZzQ45kw==}
+  '@sushichan044/eslint-config-array-resolver@0.2.1':
+    resolution: {integrity: sha512-4lQyWTCrcr3bRcemfvGQlrhV6xD9V1qQicmcnzu27av9xElxHciCFSHTYmsVThjF3m9AGMPRXLBsjU48dsCmSA==}
     peerDependencies:
       eslint: ^9.0.0
 
@@ -5151,7 +5151,7 @@ snapshots:
 
   '@standard-schema/spec@1.0.0': {}
 
-  '@sushichan044/eslint-config-array-resolver@0.2.0(eslint@9.39.2(jiti@2.6.1))(synckit@0.11.11)(typescript@5.9.3)':
+  '@sushichan044/eslint-config-array-resolver@0.2.1(eslint@9.39.2(jiti@2.6.1))(synckit@0.11.11)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/utils': 8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       empathic: 2.0.0
