@@ -10,9 +10,7 @@ import globals from "globals";
 import eslintConfigTodo from "./dist/eslint/index.mjs";
 
 export default defineConfig(
-  {
-    extends: [ts],
-  },
+  ts,
   {
     extends: [eslintPluginUnicorn.configs.recommended],
     name: "@repo/eslint-config/unicorn",
