@@ -15,7 +15,7 @@ import { logger } from "../logger";
 export const handleCorrect = async (cwd: string, userConfig: UserConfig) => {
   const config = configWithDefault(userConfig);
 
-  const eslintConfig = await resolveFlatConfig(config.root);
+  const eslintConfig = await resolveFlatConfig(config.root, { debug: true });
   const eslintConfigSubset = createESLintConfigSubset(eslintConfig);
 
   const eslintTodoCore = new ESLintTodoCore(config);

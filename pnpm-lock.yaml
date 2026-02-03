@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@sushichan044/eslint-config-array-resolver':
-        specifier: 0.2.1
-        version: 0.2.1(eslint@9.39.2(jiti@2.6.1))(synckit@0.11.11)(typescript@5.9.3)
+        specifier: https://pkg.pr.new/@sushichan044/eslint-config-array-resolver@40
+        version: https://pkg.pr.new/@sushichan044/eslint-config-array-resolver@40(eslint@9.39.2(jiti@2.6.1))(synckit@0.11.11)(typescript@5.9.3)
       comlink:
         specifier: 4.4.2
         version: 4.4.2
@@ -1165,8 +1165,9 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
-  '@sushichan044/eslint-config-array-resolver@0.2.1':
-    resolution: {integrity: sha512-4lQyWTCrcr3bRcemfvGQlrhV6xD9V1qQicmcnzu27av9xElxHciCFSHTYmsVThjF3m9AGMPRXLBsjU48dsCmSA==}
+  '@sushichan044/eslint-config-array-resolver@https://pkg.pr.new/@sushichan044/eslint-config-array-resolver@40':
+    resolution: {integrity: sha512-jDvJM3vE6u9EpXt5wXWAms+rZrKTBa25sZ4hGLVUF//D1ZHWxy3+CDPZP0W7QDQaShaDDKpnHkFkrXUqcsZIQQ==, tarball: https://pkg.pr.new/@sushichan044/eslint-config-array-resolver@40}
+    version: 0.2.1
     peerDependencies:
       eslint: ^9.0.0
 
@@ -5067,7 +5068,7 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@sushichan044/eslint-config-array-resolver@0.2.1(eslint@9.39.2(jiti@2.6.1))(synckit@0.11.11)(typescript@5.9.3)':
+  '@sushichan044/eslint-config-array-resolver@https://pkg.pr.new/@sushichan044/eslint-config-array-resolver@40(eslint@9.39.2(jiti@2.6.1))(synckit@0.11.11)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/utils': 8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       empathic: 2.0.0
