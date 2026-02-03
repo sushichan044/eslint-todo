@@ -49,7 +49,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@sushichan044/eslint-config-array-resolver": "0.2.1",
+    "@sushichan044/eslint-config-array-resolver": "https://pkg.pr.new/@sushichan044/eslint-config-array-resolver@40",
     "comlink": "4.4.2",
     "consola": "3.4.2",
     "defu": "6.1.4",
