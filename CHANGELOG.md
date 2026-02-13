@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.1
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- **deps**:
+  - Mark typia as a dependency &nbsp;-&nbsp; by **Kentaro Suzuki** in https://github.com/sushichan044/eslint-todo/issues/414 [<samp>(9c416)</samp>](https://github.com/sushichan044/eslint-todo/commit/9c416a5)
+  - Update dependency @sushichan044/eslint-config-array-resolver to v0.2.2 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/420 [<samp>(f974a)</samp>](https://github.com/sushichan044/eslint-todo/commit/f974af0)
+  - Update dependency magicast to v0.5.2 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/422 [<samp>(d5271)</samp>](https://github.com/sushichan044/eslint-todo/commit/d52718d)
+  - Update dependency typia to v11.0.3 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/423 [<samp>(83ba9)</samp>](https://github.com/sushichan044/eslint-todo/commit/83ba935)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.3.0...0.3.1)
+
 ## 0.3.0
 
 ### &nbsp;&nbsp;&nbsp;Breaking Changes
