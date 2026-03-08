@@ -97,8 +97,8 @@ importers:
         specifier: 0.0.63
         version: 0.0.63
       publint:
-        specifier: 0.3.17
-        version: 0.3.17
+        specifier: 0.3.18
+        version: 0.3.18
       release-it:
         specifier: 19.2.4
         version: 19.2.4(@types/node@24.10.12)(magicast@0.5.2)
@@ -110,7 +110,7 @@ importers:
         version: 3.3.0
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@arethetypeswrong/core@0.18.2)(publint@0.3.17)(synckit@0.11.11)(typescript@5.9.3)(unplugin-unused@0.5.7)
+        version: 0.20.3(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.11)(typescript@5.9.3)(unplugin-unused@0.5.7)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -900,8 +900,8 @@ packages:
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@publint/pack@0.1.3':
-    resolution: {integrity: sha512-dHDWeutAerz+Z2wFYAce7Y51vd4rbLBfUh0BNnyul4xKoVsPUVJBrOAFsJvtvYBwGFJSqKsxyyHf/7evZ8+Q5Q==}
+  '@publint/pack@0.1.4':
+    resolution: {integrity: sha512-HDVTWq3H0uTXiU0eeSQntcVUTPP3GamzeXI41+x7uU9J65JgWQh3qWZHblR1i0npXfFtF+mxBiU2nJH8znxWnQ==}
     engines: {node: '>=18'}
 
   '@quansync/fs@1.0.0':
@@ -1755,6 +1755,7 @@ packages:
   basic-ftp@5.1.0:
     resolution: {integrity: sha512-RkaJzeJKDbaDWTIPiJwubyljaEPwpVWkm9Rt5h9Nd6h7tEXTJ3VB4qxdZBioV7JO5yLUaOKwz7vDOzlncUsegw==}
     engines: {node: '>=10.0.0'}
+    deprecated: Security vulnerability fixed in 5.2.0, please upgrade
 
   before-after-hook@2.2.3:
     resolution: {integrity: sha512-NzUnlZexiaH/46WDhANlyR2bXRopNg4F/zuSA3OpZnllCUgRaOF2znDioDWrmbNVsuZk6l9pMquQB38cfBZwkQ==}
@@ -3468,8 +3469,8 @@ packages:
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
 
-  publint@0.3.17:
-    resolution: {integrity: sha512-Q3NLegA9XM6usW+dYQRG1g9uEHiYUzcCVBJDJ7yMcWRqVU9LYZUWdqbwMZfmTCFC5PZLQpLAmhvRcQRl3exqkw==}
+  publint@0.3.18:
+    resolution: {integrity: sha512-JRJFeBTrfx4qLwEuGFPk+haJOJN97KnPuK01yj+4k/Wj5BgoOK5uNsivporiqBjk2JDaslg7qJOhGRnpltGeog==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -5089,7 +5090,7 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@publint/pack@0.1.3': {}
+  '@publint/pack@0.1.4': {}
 
   '@quansync/fs@1.0.0':
     dependencies:
@@ -7814,9 +7815,9 @@ snapshots:
 
   proxy-from-env@1.1.0: {}
 
-  publint@0.3.17:
+  publint@0.3.18:
     dependencies:
-      '@publint/pack': 0.1.3
+      '@publint/pack': 0.1.4
       package-manager-detector: 1.6.0
       picocolors: 1.1.1
       sade: 1.8.1
@@ -8428,7 +8429,7 @@ snapshots:
       semver: 7.7.2
       strip-ansi: 6.0.1
 
-  tsdown@0.20.3(@arethetypeswrong/core@0.18.2)(publint@0.3.17)(synckit@0.11.11)(typescript@5.9.3)(unplugin-unused@0.5.7):
+  tsdown@0.20.3(@arethetypeswrong/core@0.18.2)(publint@0.3.18)(synckit@0.11.11)(typescript@5.9.3)(unplugin-unused@0.5.7):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
@@ -8448,7 +8449,7 @@ snapshots:
       unrun: 0.2.27(synckit@0.11.11)
     optionalDependencies:
       '@arethetypeswrong/core': 0.18.2
-      publint: 0.3.17
+      publint: 0.3.18
       typescript: 5.9.3
       unplugin-unused: 0.5.7
     transitivePeerDependencies:
