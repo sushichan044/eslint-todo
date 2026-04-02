@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.2
+
+### &nbsp;&nbsp;&nbsp;Bug Fixes
+
+- **deps**:
+  - Update dependency picomatch to v4.0.4 [security] &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/436 [<samp>(f9dd4)</samp>](https://github.com/sushichan044/eslint-todo/commit/f9dd4ab)
+  - Update dependency gunshi to v0.29.3 &nbsp;-&nbsp; in https://github.com/sushichan044/eslint-todo/issues/421 [<samp>(9e703)</samp>](https://github.com/sushichan044/eslint-todo/commit/9e7031b)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.3.1...0.3.2)
+
 ## 0.3.1
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes
