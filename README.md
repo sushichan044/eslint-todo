@@ -18,11 +18,11 @@ npm install --save-dev eslint @sushichan044/eslint-todo
 Requires:
 
 - **ES Module**
-- ESLint: `^8.57.0 || ^9.0.0`
+- ESLint: `^9.0.0 || ^10.0.0`
   - **Flat Config Required**
   - If you are using legacy config, you must migrate into flat config first.
     - Utilities like [@eslint/compat](https://github.com/eslint/rewrite/tree/main/packages/compat) can help you.
-- Node.js: `^20.12.0 || ^22.0.0 || >=24.0.0`
+- Node.js: `^22.0.0 || ^24.0.0 || >=25.0.0`
   - May work in Deno, but not tested.
 
 ## Getting Started

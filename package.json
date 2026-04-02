@@ -105,8 +105,8 @@
       "typia"
     ],
     "overrides": {
-      "eslint-plugin-perfectionist": "^5.7.0",
-      "typescript-eslint": "^8.58.0"
+      "eslint-plugin-perfectionist": "5.7.0",
+      "typescript-eslint": "8.58.0"
     }
   }
 }

@@ -5,8 +5,8 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  eslint-plugin-perfectionist: ^5.7.0
-  typescript-eslint: ^8.58.0
+  eslint-plugin-perfectionist: 5.7.0
+  typescript-eslint: 8.58.0
 
 importers:
 
@@ -119,7 +119,7 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
       typescript-eslint:
-        specifier: ^8.58.0
+        specifier: 8.58.0
         version: 8.58.0(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3)
       unplugin-unused:
         specifier: 0.5.7
