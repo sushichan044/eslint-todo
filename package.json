@@ -73,7 +73,7 @@
     "@virtual-live-lab/prettier-config": "2.0.22",
     "@virtual-live-lab/tsconfig": "2.1.21",
     "@vitest/eslint-plugin": "1.6.6",
-    "eslint": "9.39.2",
+    "eslint": "10.1.0",
     "eslint-plugin-import-access": "3.1.0",
     "eslint-plugin-unicorn": "62.0.0",
     "fs-extra": "11.3.3",
@@ -86,14 +86,14 @@
     "ts-patch": "3.3.0",
     "tsdown": "0.20.3",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.54.0",
+    "typescript-eslint": "8.58.0",
     "unplugin-unused": "0.5.7",
     "vite": "7.3.1",
     "vite-node": "5.3.0",
     "vitest": "4.0.18"
   },
   "peerDependencies": {
-    "eslint": "^8.57.0 || ^9.0.0"
+    "eslint": "^9.0.0 || ^10.0.0"
   },
   "engines": {
     "node": "^22.0.0 || ^24.0.0 || >=25.0.0"
@@ -103,6 +103,10 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "typia"
-    ]
+    ],
+    "overrides": {
+      "eslint-plugin-perfectionist": "5.7.0",
+      "typescript-eslint": "8.58.0"
+    }
   }
 }
