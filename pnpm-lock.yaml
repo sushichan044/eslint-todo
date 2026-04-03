@@ -77,8 +77,8 @@ importers:
         specifier: 2.1.21
         version: 2.1.21(typescript@5.9.3)
       '@vitest/eslint-plugin':
-        specifier: 1.6.6
-        version: 1.6.6(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.18(@types/node@24.10.12)(jiti@2.6.1)(yaml@2.8.2))
+        specifier: 1.6.14
+        version: 1.6.14(@typescript-eslint/eslint-plugin@8.58.0(@typescript-eslint/parser@8.58.0(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3))(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3))(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.18(@types/node@24.10.12)(jiti@2.6.1)(yaml@2.8.2))
       eslint:
         specifier: 10.1.0
         version: 10.1.0(jiti@2.6.1)
@@ -1583,14 +1583,17 @@ packages:
     peerDependencies:
       typescript: ^5.0.0
 
-  '@vitest/eslint-plugin@1.6.6':
-    resolution: {integrity: sha512-bwgQxQWRtnTVzsUHK824tBmHzjV0iTx3tZaiQIYDjX3SA7TsQS8CuDVqxXrRY3FaOUMgbGavesCxI9MOfFLm7Q==}
+  '@vitest/eslint-plugin@1.6.14':
+    resolution: {integrity: sha512-PXZ5ysw4eHU9h8nDtBvVcGC7Z2C/T9CFdheqSw1NNXFYqViojub0V9bgdYI67iBTOcra2mwD0EYldlY9bGPf2Q==}
     engines: {node: '>=18'}
     peerDependencies:
+      '@typescript-eslint/eslint-plugin': '*'
       eslint: '>=8.57.0'
       typescript: '>=5.0.0'
       vitest: '*'
     peerDependenciesMeta:
+      '@typescript-eslint/eslint-plugin':
+        optional: true
       typescript:
         optional: true
       vitest:
@@ -5724,12 +5727,13 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  '@vitest/eslint-plugin@1.6.6(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.18(@types/node@24.10.12)(jiti@2.6.1)(yaml@2.8.2))':
+  '@vitest/eslint-plugin@1.6.14(@typescript-eslint/eslint-plugin@8.58.0(@typescript-eslint/parser@8.58.0(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3))(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3))(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3)(vitest@4.0.18(@types/node@24.10.12)(jiti@2.6.1)(yaml@2.8.2))':
     dependencies:
-      '@typescript-eslint/scope-manager': 8.54.0
-      '@typescript-eslint/utils': 8.54.0(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/scope-manager': 8.58.0
+      '@typescript-eslint/utils': 8.58.0(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3)
       eslint: 10.1.0(jiti@2.6.1)
     optionalDependencies:
+      '@typescript-eslint/eslint-plugin': 8.58.0(@typescript-eslint/parser@8.58.0(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3))(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3)
       typescript: 5.9.3
       vitest: 4.0.18(@types/node@24.10.12)(jiti@2.6.1)(yaml@2.8.2)
     transitivePeerDependencies:
@@ -5909,7 +5913,7 @@ snapshots:
   astro-eslint-parser@1.2.2:
     dependencies:
       '@astrojs/compiler': 2.12.2
-      '@typescript-eslint/scope-manager': 8.51.0
+      '@typescript-eslint/scope-manager': 8.58.0
       '@typescript-eslint/types': 8.51.0
       astrojs-compiler-sync: 1.1.1(@astrojs/compiler@2.12.2)
       debug: 4.4.3
