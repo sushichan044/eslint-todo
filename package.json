@@ -80,7 +80,7 @@
     "globals": "17.3.0",
     "oxfmt": "0.28.0",
     "pkg-pr-new": "0.0.66",
-    "publint": "0.3.17",
+    "publint": "0.3.18",
     "release-it": "19.2.4",
     "release-it-pnpm": "4.6.6",
     "ts-patch": "3.3.0",
