@@ -77,7 +77,7 @@
     "eslint-plugin-import-access": "3.1.0",
     "eslint-plugin-unicorn": "62.0.0",
     "fs-extra": "11.3.3",
-    "globals": "17.3.0",
+    "globals": "17.5.0",
     "oxfmt": "0.28.0",
     "pkg-pr-new": "0.0.66",
     "publint": "0.3.17",
