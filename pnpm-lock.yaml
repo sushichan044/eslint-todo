@@ -37,8 +37,8 @@ importers:
         specifier: 2.0.6
         version: 2.0.6
       magicast:
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       pathe:
         specifier: 2.0.3
         version: 2.0.3
@@ -105,10 +105,10 @@ importers:
         version: 0.3.17
       release-it:
         specifier: 19.2.4
-        version: 19.2.4(@types/node@24.10.12)(magicast@0.5.2)
+        version: 19.2.4(@types/node@24.10.12)(magicast@0.5.3)
       release-it-pnpm:
         specifier: 4.6.6
-        version: 4.6.6(magicast@0.5.2)(release-it@19.2.4(@types/node@24.10.12)(magicast@0.5.2))
+        version: 4.6.6(magicast@0.5.3)(release-it@19.2.4(@types/node@24.10.12)(magicast@0.5.3))
       ts-patch:
         specifier: 3.3.0
         version: 3.3.0
@@ -263,6 +263,11 @@ packages:
 
   '@babel/parser@7.29.0':
     resolution: {integrity: sha512-IyDgFV5GeDUVX4YdF/3CPULtVGSXXMLh1xVIgdCgxApktqnQV0r7/8Nqthg+8YLGaAtdyIlo2qIdZrbCv4+7ww==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
+  '@babel/parser@7.29.3':
+    resolution: {integrity: sha512-b3ctpQwp+PROvU/cttc4OYl4MzfJUWy6FZg+PMXfzmt/+39iHVF0sDfqay8TQM3JA2EUOyKcFZt75jWriQijsA==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -1785,7 +1790,7 @@ packages:
   basic-ftp@5.1.0:
     resolution: {integrity: sha512-RkaJzeJKDbaDWTIPiJwubyljaEPwpVWkm9Rt5h9Nd6h7tEXTJ3VB4qxdZBioV7JO5yLUaOKwz7vDOzlncUsegw==}
     engines: {node: '>=10.0.0'}
-    deprecated: Security vulnerability fixed in 5.2.0, please upgrade
+    deprecated: Security vulnerability fixed in 5.2.1, please upgrade
 
   before-after-hook@2.2.3:
     resolution: {integrity: sha512-NzUnlZexiaH/46WDhANlyR2bXRopNg4F/zuSA3OpZnllCUgRaOF2znDioDWrmbNVsuZk6l9pMquQB38cfBZwkQ==}
@@ -3074,8 +3079,8 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  magicast@0.5.2:
-    resolution: {integrity: sha512-E3ZJh4J3S9KfwdjZhe2afj6R9lGIN5Pher1pF39UGrXRqq/VDaGVIGN13BjHd2u8B61hArAGOnso7nBOouW3TQ==}
+  magicast@0.5.3:
+    resolution: {integrity: sha512-pVKE4UdSQ7DvHzivsCIFx2BJn1mHG6KsyrFcaxFx6tONdneEuThrDx0Cj3AMg58KyN4pzYT+LHOotxDQDjNvkw==}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -4552,6 +4557,10 @@ snapshots:
     dependencies:
       '@babel/types': 7.29.0
 
+  '@babel/parser@7.29.3':
+    dependencies:
+      '@babel/types': 7.29.0
+
   '@babel/parser@8.0.0-rc.1':
     dependencies:
       '@babel/types': 8.0.0-rc.1
@@ -5998,11 +6007,11 @@ snapshots:
 
   builtin-modules@5.0.0: {}
 
-  bumpp@10.2.0(magicast@0.5.2):
+  bumpp@10.2.0(magicast@0.5.3):
     dependencies:
       ansis: 4.2.0
       args-tokenizer: 0.3.0
-      c12: 3.0.4(magicast@0.5.2)
+      c12: 3.0.4(magicast@0.5.3)
       cac: 6.7.14
       escalade: 3.2.0
       jsonc-parser: 3.3.1
@@ -6020,7 +6029,7 @@ snapshots:
     dependencies:
       run-applescript: 7.0.0
 
-  c12@1.11.2(magicast@0.5.2):
+  c12@1.11.2(magicast@0.5.3):
     dependencies:
       chokidar: 3.6.0
       confbox: 0.1.8
@@ -6035,9 +6044,9 @@ snapshots:
       pkg-types: 1.3.1
       rc9: 2.1.2
     optionalDependencies:
-      magicast: 0.5.2
+      magicast: 0.5.3
 
-  c12@3.0.4(magicast@0.5.2):
+  c12@3.0.4(magicast@0.5.3):
     dependencies:
       chokidar: 4.0.3
       confbox: 0.2.2
@@ -6052,9 +6061,9 @@ snapshots:
       pkg-types: 2.3.0
       rc9: 2.1.2
     optionalDependencies:
-      magicast: 0.5.2
+      magicast: 0.5.3
 
-  c12@3.3.3(magicast@0.5.2):
+  c12@3.3.3(magicast@0.5.3):
     dependencies:
       chokidar: 5.0.0
       confbox: 0.2.2
@@ -6069,7 +6078,7 @@ snapshots:
       pkg-types: 2.3.0
       rc9: 2.1.2
     optionalDependencies:
-      magicast: 0.5.2
+      magicast: 0.5.3
 
   cac@6.7.14: {}
 
@@ -6109,9 +6118,9 @@ snapshots:
 
   change-case@5.4.4: {}
 
-  changelogen@0.5.7(magicast@0.5.2):
+  changelogen@0.5.7(magicast@0.5.3):
     dependencies:
-      c12: 1.11.2(magicast@0.5.2)
+      c12: 1.11.2(magicast@0.5.3)
       colorette: 2.0.20
       consola: 3.4.2
       convert-gitmoji: 0.1.5
@@ -6128,12 +6137,12 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  changelogithub@13.16.0(magicast@0.5.2):
+  changelogithub@13.16.0(magicast@0.5.3):
     dependencies:
       ansis: 4.2.0
-      c12: 3.0.4(magicast@0.5.2)
+      c12: 3.0.4(magicast@0.5.3)
       cac: 6.7.14
-      changelogen: 0.5.7(magicast@0.5.2)
+      changelogen: 0.5.7(magicast@0.5.3)
       convert-gitmoji: 0.1.5
       execa: 9.6.0
       ofetch: 1.4.1
@@ -7411,9 +7420,9 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  magicast@0.5.2:
+  magicast@0.5.3:
     dependencies:
-      '@babel/parser': 7.29.0
+      '@babel/parser': 7.29.3
       '@babel/types': 7.29.0
       source-map-js: 1.2.1
 
@@ -7962,25 +7971,25 @@ snapshots:
     dependencies:
       jsesc: 3.1.0
 
-  release-it-pnpm@4.6.6(magicast@0.5.2)(release-it@19.2.4(@types/node@24.10.12)(magicast@0.5.2)):
+  release-it-pnpm@4.6.6(magicast@0.5.3)(release-it@19.2.4(@types/node@24.10.12)(magicast@0.5.3)):
     dependencies:
-      bumpp: 10.2.0(magicast@0.5.2)
-      changelogithub: 13.16.0(magicast@0.5.2)
+      bumpp: 10.2.0(magicast@0.5.3)
+      changelogithub: 13.16.0(magicast@0.5.3)
       conventional-changelog-conventionalcommits: 9.0.0
       conventional-recommended-bump: 11.2.0
       kolorist: 1.8.0
-      release-it: 19.2.4(@types/node@24.10.12)(magicast@0.5.2)
+      release-it: 19.2.4(@types/node@24.10.12)(magicast@0.5.3)
       semver: 7.7.2
     transitivePeerDependencies:
       - magicast
 
-  release-it@19.2.4(@types/node@24.10.12)(magicast@0.5.2):
+  release-it@19.2.4(@types/node@24.10.12)(magicast@0.5.3):
     dependencies:
       '@nodeutils/defaults-deep': 1.1.0
       '@octokit/rest': 22.0.1
       '@phun-ky/typeof': 2.0.3
       async-retry: 1.3.3
-      c12: 3.3.3(magicast@0.5.2)
+      c12: 3.3.3(magicast@0.5.3)
       ci-info: 4.3.1
       eta: 4.5.0
       git-url-parse: 16.1.0
