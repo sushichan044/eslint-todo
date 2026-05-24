@@ -71,8 +71,8 @@ importers:
         specifier: 2.3.1
         version: 2.3.1(@typescript-eslint/parser@8.58.0(eslint@10.1.0(jiti@2.6.1))(typescript@5.9.3))(eslint@10.1.0(jiti@2.6.1))(tailwindcss@3.4.17)(typescript@5.9.3)
       '@virtual-live-lab/prettier-config':
-        specifier: 2.0.22
-        version: 2.0.22(prettier@3.6.2)
+        specifier: 2.0.26
+        version: 2.0.26(prettier@3.6.2)
       '@virtual-live-lab/tsconfig':
         specifier: 2.1.21
         version: 2.1.21(typescript@5.9.3)
@@ -1569,8 +1569,8 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
 
-  '@virtual-live-lab/prettier-config@2.0.22':
-    resolution: {integrity: sha512-3E4DxOg+UPED3MFDiVtG2EtDJRbBom6SOJY7PFGNpANkJW76BGKQQLQDXrpt48KvUCX7wDVk/2UXozwe1NLqzQ==}
+  '@virtual-live-lab/prettier-config@2.0.26':
+    resolution: {integrity: sha512-mUMi//kT9j2JGPJrqCf33q51GmyhN6uC6f9O0QUl5Ilec2kwTBUrev2sbAjBYNYdbYuClMCw3/oQCy6aoiTtpg==}
     peerDependencies:
       prettier: ^3.0.0
       prettier-plugin-astro: '>=0.11.0 <0.15.0'
@@ -1785,7 +1785,7 @@ packages:
   basic-ftp@5.1.0:
     resolution: {integrity: sha512-RkaJzeJKDbaDWTIPiJwubyljaEPwpVWkm9Rt5h9Nd6h7tEXTJ3VB4qxdZBioV7JO5yLUaOKwz7vDOzlncUsegw==}
     engines: {node: '>=10.0.0'}
-    deprecated: Security vulnerability fixed in 5.2.0, please upgrade
+    deprecated: Security vulnerability fixed in 5.2.1, please upgrade
 
   before-after-hook@2.2.3:
     resolution: {integrity: sha512-NzUnlZexiaH/46WDhANlyR2bXRopNg4F/zuSA3OpZnllCUgRaOF2znDioDWrmbNVsuZk6l9pMquQB38cfBZwkQ==}
@@ -2138,6 +2138,9 @@ packages:
 
   defu@6.1.4:
     resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
+
+  defu@6.1.6:
+    resolution: {integrity: sha512-f8mefEW4WIVg4LckePx3mALjQSPQgFlg9U8yaPdlsbdYcHQyj9n2zL2LJEA52smeYxOvmd/nB7TpMtHGMTHcug==}
 
   degenerator@5.0.1:
     resolution: {integrity: sha512-TllpMR/t0M5sqCXfj85i4XaAzxmS5tVA16dqvdkMwGmzI+dXLXnw3J+3Vdv7VKw+ThlTMboK6i9rnZ6Nntj5CQ==}
@@ -5715,9 +5718,9 @@ snapshots:
       - typescript
       - vue
 
-  '@virtual-live-lab/prettier-config@2.0.22(prettier@3.6.2)':
+  '@virtual-live-lab/prettier-config@2.0.26(prettier@3.6.2)':
     dependencies:
-      defu: 6.1.4
+      defu: 6.1.6
       prettier: 3.6.2
 
   '@virtual-live-lab/tsconfig@2.1.21(typescript@5.9.3)':
@@ -6336,6 +6339,8 @@ snapshots:
       object-keys: 1.1.1
 
   defu@6.1.4: {}
+
+  defu@6.1.6: {}
 
   degenerator@5.0.1:
     dependencies:
