@@ -25,8 +25,8 @@ importers:
         specifier: 6.1.4
         version: 6.1.4
       gunshi:
-        specifier: 0.29.3
-        version: 0.29.3
+        specifier: 0.32.0
+        version: 0.32.0
       hookable:
         specifier: 6.0.1
         version: 6.0.1
@@ -1785,7 +1785,7 @@ packages:
   basic-ftp@5.1.0:
     resolution: {integrity: sha512-RkaJzeJKDbaDWTIPiJwubyljaEPwpVWkm9Rt5h9Nd6h7tEXTJ3VB4qxdZBioV7JO5yLUaOKwz7vDOzlncUsegw==}
     engines: {node: '>=10.0.0'}
-    deprecated: Security vulnerability fixed in 5.2.0, please upgrade
+    deprecated: Security vulnerability fixed in 5.2.1, please upgrade
 
   before-after-hook@2.2.3:
     resolution: {integrity: sha512-NzUnlZexiaH/46WDhANlyR2bXRopNg4F/zuSA3OpZnllCUgRaOF2znDioDWrmbNVsuZk6l9pMquQB38cfBZwkQ==}
@@ -2627,9 +2627,9 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  gunshi@0.29.3:
-    resolution: {integrity: sha512-0E2ifZq5aJs2TzX3aCdkON72Mg4FjTSJDjhmaVw3OgQAdZNeyS3EfA4FybHS3NP5YxqiMj43NFcu0ezccJPGzw==}
-    engines: {node: '>= 20'}
+  gunshi@0.32.0:
+    resolution: {integrity: sha512-kvRFiIkxeiLJIE0p7reKItydbY+SKIEtveeElnot2YetMTYNN5qBH4wiuCSeir68zlDvbq0wbTdNiZflt1Y+rA==}
+    engines: {node: '>= 22'}
 
   has-bigints@1.1.0:
     resolution: {integrity: sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg==}
@@ -7003,7 +7003,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  gunshi@0.29.3: {}
+  gunshi@0.32.0: {}
 
   has-bigints@1.1.0: {}
 
