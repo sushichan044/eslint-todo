@@ -4,7 +4,7 @@ import type { TodoFilePath } from "./path";
 import type { TodoModuleV2 } from "./todofile/v2";
 import type { MaybePromisifyAllMethods } from "./utils/types";
 
-export type ESLintInitializeOptions = Pick<ESLint.Options, "overrideConfig">;
+export type ESLintInitializeOptions = Omit<ESLint.Options, "root">;
 
 export type IESLintTodoCoreLike = MaybePromisifyAllMethods<ESLintTodoCoreLike>;
 
