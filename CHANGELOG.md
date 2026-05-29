@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.3
+
+### &nbsp;&nbsp;&nbsp;Features
+
+- Support specifying all eslint's options except cwd &nbsp;-&nbsp; by **Kentaro Suzuki** in https://github.com/sushichan044/eslint-todo/issues/449 [<samp>(78342)</samp>](https://github.com/sushichan044/eslint-todo/commit/7834250)
+
+##### &nbsp;&nbsp;&nbsp;&nbsp;[View changes on GitHub](https://github.com/sushichan044/eslint-todo/compare/0.3.2...0.3.3)
+
 ## 0.3.2
 
 ### &nbsp;&nbsp;&nbsp;Bug Fixes
