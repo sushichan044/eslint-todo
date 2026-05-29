@@ -26,12 +26,12 @@ export class ESLintTodoCore implements IESLintTodoCoreLike {
   readonly #git: ReturnType<typeof initGitUtility>;
   readonly #todoFilePath: TodoFilePath;
 
-  constructor(userConfig?: UserConfig) {
+  constructor(userConfig?: UserConfig, eslintOptions?: ESLintInitializeOptions) {
     this.#config = configWithDefault(userConfig);
     this.#todoFilePath = resolveTodoModulePath(this.#config);
     this.#git = initGitUtility(this.#config.root);
 
-    this.initializeESLint();
+    this.initializeESLint(eslintOptions);
   }
   /**
    * WARNING: DO NOT USE THIS METHOD DIRECTLY.
