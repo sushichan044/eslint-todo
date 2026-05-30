@@ -1,13 +1,20 @@
 # @sushichan044/eslint-todo
 
+> [!CAUTION]
+>
+> This software is now archived and no longer maintained.
+>
+> Use [Bulk Suppressions](https://eslint.org/docs/latest/use/suppressions) instead.
+>
+> For migration, you can simply remove the eslint-todo and run `eslint --fix --suppress-all`.
+>
+> However, as ESLint doesn't suppress `warn` rules, you must change the configuration of rules like `react-hooks/exhaustive-deps` to `error` if you use eslint-todo to track them.
+
 A simple tool to gradually resolve a large number of ESLint violations.
 
 It allows you to temporarily disable violations and fix them at your own pace.
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sushichan044/eslint-todo)
-
-> [!CAUTION]
-> This library will be subject to destructive changes based on [ESLint bulk suppressions](https://eslint.org/blog/2025/04/introducing-bulk-suppressions/#getting-started).
 
 ## Installation
 
