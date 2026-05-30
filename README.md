@@ -8,7 +8,7 @@
 >
 > For migration, you can simply remove the eslint-todo and run `eslint --fix --suppress-all`.
 >
-> However, as ESLint doesn't suppress `warn` rules, you must change the configuration of rules like `react-hooks/exhaustive-deps` to `error` if you use eslint-todo to track them.
+> However, as ESLint doesn't suppress `warn` rules, you must change the configuration of rules like `react-hooks/exhaustive-deps` to `error` if you used eslint-todo to track them.
 
 A simple tool to gradually resolve a large number of ESLint violations.
 
