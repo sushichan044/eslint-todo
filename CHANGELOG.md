@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.4
+
+### &nbsp;&nbsp;&nbsp;Documentation
+
+- Archive by @sushichan044 in https://github.com/sushichan044/eslint-todo/pull/450
+
+
 ## 0.3.3
 
 ### &nbsp;&nbsp;&nbsp;Features
